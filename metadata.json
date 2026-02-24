@@ -1,0 +1,9 @@
+{
+  "name": "UNDERTHEHOOD",
+  "description": "An AI-powered automotive diagnostic tool that analyzes symptoms, sounds, and OBD-II codes to provide expert mechanical advice.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
