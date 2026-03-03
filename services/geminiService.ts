@@ -1,21 +1,18 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport, ServiceResult } from "../types";
-
-const getAI = () => new GoogleGenerativeAI((import.meta as any).env.VITE_API_KEY);
+import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from "../types";
 
 export const generateDiagnosticReport = async (
   vehicle: VehicleInfo,
   input: DiagnosticInput
 ): Promise<DiagnosticReport> => {
   const callDiagnose = async (prompt: string) => {
-  const response = await fetch('/api/diagnose', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt })
-  });
-  const data = await response.json();
-  return data.result;
-};
+    const response = await fetch('/api/diagnose', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await response.json();
+    return data.result;
+  };
 
   const prompt = `You are an ASE-certified master automotive technician with 25+ years of diagnostic experience.
 
@@ -62,9 +59,6 @@ export const analyzeTireTread = async (
   imageData: string,
   mimeType: string
 ): Promise<TireAnalysisReport> => {
-  const ai = getAI();
-  const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   const prompt = `You are a tire specialist. Analyze this tire image and respond ONLY with a valid JSON object:
 {
   "healthScore": number,
@@ -76,19 +70,24 @@ export const analyzeTireTread = async (
   "visualAnomalies": ["string"]
 }`;
 
-  const result = await model.generateContent([
-    prompt,
-    { inlineData: { data: imageData.split(',')[1], mimeType } }
-  ]);
+  const base64Data = imageData.split(',')[1] || imageData;
 
-  const text = result.response.text();
+  const response = await fetch('/api/tire-scan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ imageData: base64Data, mimeType, prompt })
+  });
+
+  const data = await response.json();
+  const text = data.result;
+
   try {
     const clean = text.replace(/```json|```/g, '').trim();
-    const data = JSON.parse(clean);
-    return { ...data, id: crypto.randomUUID(), timestamp: Date.now() } as TireAnalysisReport;
+    const parsed = JSON.parse(clean);
+    return { ...parsed, id: crypto.randomUUID(), timestamp: Date.now() };
   } catch (error) {
-    console.error("Tire analysis failed", error);
-    throw new Error("Tire scan failed. Ensure the photo is clear and shows the tread detail.");
+    console.error('Failed to parse tire scan response', error);
+    throw new Error('Tire scan failed. Please try again.');
   }
 };
 
@@ -97,20 +96,23 @@ export const searchNearbyServices = async (
   latitude: number,
   longitude: number
 ): Promise<ServiceSearchReport> => {
-  const ai = getAI();
-  const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   const prompt = type === 'mechanic'
     ? `Find highly-rated mechanic shops near latitude ${latitude}, longitude ${longitude}. Respond with a JSON object: { "text": "summary", "places": [{ "title": "string", "uri": "", "snippet": "string" }] }`
     : `Find 24/7 towing services near latitude ${latitude}, longitude ${longitude}. Respond with a JSON object: { "text": "summary", "places": [{ "title": "string", "uri": "", "snippet": "string" }] }`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const response = await fetch('/api/diagnose', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+
+  const data = await response.json();
+  const text = data.result;
 
   try {
     const clean = text.replace(/```json|```/g, '').trim();
-    const data = JSON.parse(clean);
-    return { type, text: data.text, places: data.places || [], timestamp: Date.now() };
+    const parsed = JSON.parse(clean);
+    return { type, text: parsed.text, places: parsed.places || [], timestamp: Date.now() };
   } catch {
     return { type, text: text, places: [], timestamp: Date.now() };
   }
