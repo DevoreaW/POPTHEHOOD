@@ -1,16 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import VehicleForm from './components/VehicleForm';
 import DiagnosticView from './components/DiagnosticView';
 import TireAnalysisView from './components/TireAnalysisView';
 import ServicesView from './components/ServicesView';
+import ConsentBanner from './components/ConsentBanner';
 import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices } from './services/geminiService';
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from './types';
-
-// NOTE: The aistudio property on window is assumed to be pre-configured and accessible 
-// in the execution context as per guidelines. Redefining it here caused conflicts 
-// with the existing AIStudio type provided by the environment.
 
 const STORAGE_KEY = 'underthehood_history';
 
@@ -21,8 +17,10 @@ const App: React.FC = () => {
   const [serviceReport, setServiceReport] = useState<ServiceSearchReport | null>(null);
   const [history, setHistory] = useState<(DiagnosticReport | TireAnalysisReport)[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [consentGiven, setConsentGiven] = useState<boolean>(() => {
+    return localStorage.getItem('popthehood_consent_accepted') === 'true';
+  });
 
-  // Load history from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -34,30 +32,9 @@ const App: React.FC = () => {
     }
   }, []);
 
-  const ensureApiKey = async (): Promise<boolean> => {
-    try {
-      // @ts-ignore - aistudio is pre-configured and accessible in the environment
-      const hasKey = await window.aistudio.hasSelectedApiKey();
-      if (!hasKey) {
-        // @ts-ignore
-        await window.aistudio.openSelectKey();
-        return true; // Proceed assuming selection worked (mitigate race condition)
-      }
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
   const handleServiceError = async (err: any) => {
     const errorMsg = err.message || "";
-    if (errorMsg.includes("Requested entity was not found")) {
-      setError("This feature requires a paid API key for Google Maps data. Opening key selection...");
-      // @ts-ignore
-      await window.aistudio.openSelectKey();
-    } else {
-      setError(errorMsg || "An unexpected error occurred. Please try again.");
-    }
+    setError(errorMsg || "An unexpected error occurred. Please try again.");
   };
 
   const saveToHistory = (item: DiagnosticReport | TireAnalysisReport) => {
@@ -96,7 +73,6 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      await ensureApiKey();
       const result = await analyzeTireTread(imageData, mimeType);
       setTireReport(result);
       setReport(null);
@@ -117,8 +93,6 @@ const App: React.FC = () => {
       if (!navigator.geolocation) {
         throw new Error("Geolocation is not supported by your browser.");
       }
-
-      await ensureApiKey();
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -170,6 +144,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
+      {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
       <Header />
       
       <main className="flex-grow pt-8">
@@ -205,9 +180,8 @@ const App: React.FC = () => {
           <div className="flex flex-col items-center justify-center py-20 space-y-6 animate-pulse">
             <div className="w-20 h-20 border-8 border-slate-200 border-t-red-600 rounded-full animate-spin"></div>
             <div className="text-center">
-              <h3 className="text-xl font-bold text-slate-900">Locating Help & Running Analysis...</h3>
-              <p className="text-slate-500">Retrieving real-time data for your situation.</p>
-              <p className="text-xs text-slate-400 mt-4">Note: If this is your first time using Maps tools, you may be prompted to select a key.</p>
+              <h3 className="text-xl font-bold text-slate-900">Running Analysis...</h3>
+              <p className="text-slate-500">Our AI is reviewing your vehicle information.</p>
             </div>
           </div>
         ) : (
@@ -256,11 +230,9 @@ const App: React.FC = () => {
           <div className="flex items-center space-x-6">
             <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">About</a>
             <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Support</a>
-            <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy</a>
+            <a href="/privacy" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy</a>
+            <a href="/terms" className="text-gray-500 hover:text-white text-sm transition-colors">Terms</a>
           </div>
-        </div>
-        <div className="max-w-lg md:max-w-4xl mx-auto mt-8 text-center">
-          <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" rel="noreferrer" className="text-orange-500 hover:text-orange-400 text-xs font-bold transition-colors">Billing & API Key Documentation</a>
         </div>
       </footer>
     </div>
