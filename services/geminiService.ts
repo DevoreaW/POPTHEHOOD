@@ -1,18 +1,24 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport, ServiceResult } from "../types";
+
+const getAI = () => new GoogleGenerativeAI((import.meta as any).env.VITE_API_KEY);
 
 export const generateDiagnosticReport = async (
   vehicle: VehicleInfo,
   input: DiagnosticInput
 ): Promise<DiagnosticReport> => {
-const ai = new GoogleGenAI({ apiKey: (import.meta as any).env.VITE_API_KEY });
-const systemInstruction = `You are an ASE-certified master automotive technician with 25+ years of diagnostic experience. 
-Analyze vehicle symptoms, audio of sounds (knocking, grinding, etc.), photos/videos of leaks or damage, and OBD-II codes.
-Provide a structured, professional, and honest diagnostic report. 
-Prioritize safety above all else. Use the provided JSON schema for your response.`;
+  const callDiagnose = async (prompt: string) => {
+  const response = await fetch('/api/diagnose', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await response.json();
+  return data.result;
+};
 
-  const prompt = `
+  const prompt = `You are an ASE-certified master automotive technician with 25+ years of diagnostic experience.
+
 VEHICLE CONTEXT:
 Make: ${vehicle.make}
 Model: ${vehicle.model}
@@ -26,103 +32,26 @@ ${input.description}
 OBD-II CODES:
 ${input.obdCodes || 'None provided'}
 
-DIAGNOSTIC INPUTS:
-User has provided ${input.files.length} media files (images/audio/video). 
-Please analyze them carefully to identify abnormal sounds, visual leaks, smoke patterns, or mechanical wear.
-`;
+Respond ONLY with a valid JSON object with these fields:
+{
+  "severity": "GREEN" | "YELLOW" | "RED",
+  "analysisSummary": "string",
+  "mostLikelyCauses": [{ "issue": "string", "probability": "string", "reasoning": "string" }],
+  "mechanicalExplanation": "string",
+  "recommendedActions": ["string"],
+  "costEstimate": { "parts": "string", "labor": "string", "total": "string" },
+  "diyVsPro": { "canDiy": boolean, "explanation": "string", "safetyWarnings": ["string"] },
+  "urgency": { "timeline": "string", "risksOfDelay": "string", "workarounds": "string" },
+  "followUpQuestions": ["string"],
+  "additionalContext": { "commonModelIssues": "string", "recallPotential": "string", "prevention": "string" }
+}`;
 
-  const contents = {
-    parts: [
-      { text: prompt },
-      ...input.files.map(f => ({
-        inlineData: {
-          data: f.data.split(',')[1] || f.data,
-          mimeType: f.mimeType
-        }
-      }))
-    ]
-  };
-
-  const response = await ai.models.generateContent({
-model: "gemini-2.0-flash",    contents,
-    config: {
-      systemInstruction,
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          severity: { type: Type.STRING, enum: ['GREEN', 'YELLOW', 'RED'] },
-          analysisSummary: { type: Type.STRING },
-          mostLikelyCauses: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                issue: { type: Type.STRING },
-                probability: { type: Type.STRING },
-                reasoning: { type: Type.STRING }
-              },
-              required: ['issue', 'probability', 'reasoning']
-            }
-          },
-          mechanicalExplanation: { type: Type.STRING },
-          recommendedActions: { type: Type.ARRAY, items: { type: Type.STRING } },
-          costEstimate: {
-            type: Type.OBJECT,
-            properties: {
-              parts: { type: Type.STRING },
-              labor: { type: Type.STRING },
-              total: { type: Type.STRING }
-            },
-            required: ['parts', 'labor', 'total']
-          },
-          diyVsPro: {
-            type: Type.OBJECT,
-            properties: {
-              canDiy: { type: Type.BOOLEAN },
-              explanation: { type: Type.STRING },
-              safetyWarnings: { type: Type.ARRAY, items: { type: Type.STRING } }
-            },
-            required: ['canDiy', 'explanation', 'safetyWarnings']
-          },
-          urgency: {
-            type: Type.OBJECT,
-            properties: {
-              timeline: { type: Type.STRING },
-              risksOfDelay: { type: Type.STRING },
-              workarounds: { type: Type.STRING }
-            },
-            required: ['timeline', 'risksOfDelay']
-          },
-          followUpQuestions: { type: Type.ARRAY, items: { type: Type.STRING } },
-          additionalContext: {
-            type: Type.OBJECT,
-            properties: {
-              commonModelIssues: { type: Type.STRING },
-              recallPotential: { type: Type.STRING },
-              prevention: { type: Type.STRING }
-            },
-            required: ['commonModelIssues', 'recallPotential', 'prevention']
-          }
-        },
-        required: [
-          'severity', 'analysisSummary', 'mostLikelyCauses', 
-          'mechanicalExplanation', 'recommendedActions', 
-          'costEstimate', 'diyVsPro', 'urgency', 
-          'followUpQuestions', 'additionalContext'
-        ]
-      }
-    }
-  });
+  const text = await callDiagnose(prompt);
 
   try {
-    const data = JSON.parse(response.text || '{}');
-    return {
-      ...data,
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      vehicle
-    } as DiagnosticReport;
+    const clean = text.replace(/```json|```/g, '').trim();
+    const data = JSON.parse(clean);
+    return { ...data, id: crypto.randomUUID(), timestamp: Date.now(), vehicle } as DiagnosticReport;
   } catch (error) {
     console.error("Failed to parse Gemini response", error);
     throw new Error("Diagnosis failed. Please try again with clearer inputs.");
@@ -133,50 +62,30 @@ export const analyzeTireTread = async (
   imageData: string,
   mimeType: string
 ): Promise<TireAnalysisReport> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const modelName = 'gemini-3-pro-preview';
-  
-  const systemInstruction = `You are a tire specialist and ASE mechanic. 
-Analyze the provided tire image to estimate tread depth (in 32nds of an inch), check for wear patterns (inner/outer wear, feathering), and inspect for sidewall damage, cracks, or bulges.
-Provide an honest safety assessment. Use the provided JSON schema.`;
+  const ai = getAI();
+  const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  const prompt = `Perform a high-precision tire health scan on the attached image. 
-Estimate the remaining life and identify any safety hazards.`;
+  const prompt = `You are a tire specialist. Analyze this tire image and respond ONLY with a valid JSON object:
+{
+  "healthScore": number,
+  "estimatedTreadDepth": "string",
+  "condition": "Excellent" | "Good" | "Fair" | "Replace Soon" | "Dangerous",
+  "findings": ["string"],
+  "recommendation": "string",
+  "safetyWarning": "string",
+  "visualAnomalies": ["string"]
+}`;
 
-  const response = await ai.models.generateContent({
-    model: modelName,
-    contents: {
-      parts: [
-        { text: prompt },
-        { inlineData: { data: imageData.split(',')[1], mimeType } }
-      ]
-    },
-    config: {
-      systemInstruction,
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          healthScore: { type: Type.NUMBER },
-          estimatedTreadDepth: { type: Type.STRING },
-          condition: { type: Type.STRING, enum: ['Excellent', 'Good', 'Fair', 'Replace Soon', 'Dangerous'] },
-          findings: { type: Type.ARRAY, items: { type: Type.STRING } },
-          recommendation: { type: Type.STRING },
-          safetyWarning: { type: Type.STRING },
-          visualAnomalies: { type: Type.ARRAY, items: { type: Type.STRING } }
-        },
-        required: ['healthScore', 'estimatedTreadDepth', 'condition', 'findings', 'recommendation', 'visualAnomalies']
-      }
-    }
-  });
+  const result = await model.generateContent([
+    prompt,
+    { inlineData: { data: imageData.split(',')[1], mimeType } }
+  ]);
 
+  const text = result.response.text();
   try {
-    const data = JSON.parse(response.text || '{}');
-    return {
-      ...data,
-      id: crypto.randomUUID(),
-      timestamp: Date.now()
-    } as TireAnalysisReport;
+    const clean = text.replace(/```json|```/g, '').trim();
+    const data = JSON.parse(clean);
+    return { ...data, id: crypto.randomUUID(), timestamp: Date.now() } as TireAnalysisReport;
   } catch (error) {
     console.error("Tire analysis failed", error);
     throw new Error("Tire scan failed. Ensure the photo is clear and shows the tread detail.");
@@ -188,43 +97,21 @@ export const searchNearbyServices = async (
   latitude: number,
   longitude: number
 ): Promise<ServiceSearchReport> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const modelName = 'gemini-2.5-flash'; // Correct model for maps grounding
-  
-  const prompt = type === 'mechanic' 
-    ? "Find highly-rated local mechanic shops and auto repair services near me. Provide a brief summary of their reputations."
-    : "Find immediate 24/7 towing services and roadside assistance near me. Prioritize services with quick response times.";
+  const ai = getAI();
+  const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  const response = await ai.models.generateContent({
-    model: modelName,
-    contents: prompt,
-    config: {
-      tools: [{ googleMaps: {} }],
-      toolConfig: {
-        retrievalConfig: {
-          latLng: { latitude, longitude }
-        }
-      }
-    }
-  });
+  const prompt = type === 'mechanic'
+    ? `Find highly-rated mechanic shops near latitude ${latitude}, longitude ${longitude}. Respond with a JSON object: { "text": "summary", "places": [{ "title": "string", "uri": "", "snippet": "string" }] }`
+    : `Find 24/7 towing services near latitude ${latitude}, longitude ${longitude}. Respond with a JSON object: { "text": "summary", "places": [{ "title": "string", "uri": "", "snippet": "string" }] }`;
 
-  const places: ServiceResult[] = [];
-  const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-  
-  for (const chunk of groundingChunks) {
-    if (chunk.maps) {
-      places.push({
-        title: chunk.maps.title || 'Unknown Business',
-        uri: chunk.maps.uri || '',
-        snippet: chunk.maps.placeAnswerSources?.[0]?.reviewSnippets?.[0]
-      });
-    }
+  const result = await model.generateContent(prompt);
+  const text = result.response.text();
+
+  try {
+    const clean = text.replace(/```json|```/g, '').trim();
+    const data = JSON.parse(clean);
+    return { type, text: data.text, places: data.places || [], timestamp: Date.now() };
+  } catch {
+    return { type, text: text, places: [], timestamp: Date.now() };
   }
-
-  return {
-    type,
-    text: response.text || 'Here are the nearby services I found.',
-    places: places.filter(p => p.uri),
-    timestamp: Date.now()
-  };
 };
