@@ -1,5 +1,6 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { sanitizeInput } from "./utils.js";
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -33,6 +34,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Image data and prompt are required' });
   }
 
+  const cleanPrompt = sanitizeInput(prompt);
+  const cleanMimeType = sanitizeInput(mimeType);
+
+  if (!cleanPrompt) {
+    return res.status(400).json({ error: 'Invalid input provided' });
+  }
+
   try {
     const apiKey = process.env.API_KEY || process.env.VITE_API_KEY;
 
@@ -44,8 +52,8 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           contents: [{
             parts: [
-              { text: prompt },
-              { inline_data: { mime_type: mimeType, data: imageData } }
+              { text: cleanPrompt },
+              { inline_data: { mime_type: cleanMimeType, data: imageData } }
             ]
           }]
         })
