@@ -1,6 +1,30 @@
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  analytics: true,
+});
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Get IP address
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'anonymous';
+
+  // Check rate limit
+  const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+
+  if (!success) {
+    return res.status(429).json({ 
+      error: 'Too many requests. Please try again later.',
+      limit,
+      reset,
+      remaining
+    });
   }
 
   const { imageData, mimeType, prompt } = req.body;
@@ -29,7 +53,7 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
-    console.log('Tire scan response:', JSON.stringify(data));
+    console.log('Tire scan response status:', response.status);
 
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
