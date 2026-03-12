@@ -32,7 +32,7 @@ const Header: React.FC = () => {
           {isLoaded && (
             <>
               {isSignedIn ? (
-                <UserButton afterSignOutUrl="/" appearance={{
+                <UserButton appearance={{
                   elements: {
                     avatarBox: "w-9 h-9"
                   }
