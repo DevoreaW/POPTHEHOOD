@@ -43,7 +43,7 @@ export default async function handler(req, res) {
           'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.internationalPhoneNumber,places.regularOpeningHours,places.websiteUri'
         },
         body: JSON.stringify({
-          includedTypes: [cleanType === 'mechanic' ? 'auto_repair' : 'car_repair'],
+  includedTypes: cleanType === 'mechanic' ? ['auto_repair', 'car_repair', 'car_dealer'] : ['towing_service'],
           maxResultCount: 5,
           locationRestriction: {
             circle: {
