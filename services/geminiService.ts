@@ -96,24 +96,33 @@ export const searchNearbyServices = async (
   latitude: number,
   longitude: number
 ): Promise<ServiceSearchReport> => {
-  const prompt = type === 'mechanic'
-    ? `Find highly-rated mechanic shops near latitude ${latitude}, longitude ${longitude}. Respond with a JSON object: { "text": "summary", "places": [{ "title": "string", "uri": "", "snippet": "string" }] }`
-    : `Find 24/7 towing services near latitude ${latitude}, longitude ${longitude}. Respond with a JSON object: { "text": "summary", "places": [{ "title": "string", "uri": "", "snippet": "string" }] }`;
-
-  const response = await fetch('/api/diagnose', {
+  const response = await fetch('/api/places', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt })
+    body: JSON.stringify({ latitude, longitude, type })
   });
 
   const data = await response.json();
-  const text = data.result;
 
-  try {
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    return { type, text: parsed.text, places: parsed.places || [], timestamp: Date.now() };
-  } catch {
-    return { type, text: text, places: [], timestamp: Date.now() };
+  if (!data.places || data.places.length === 0) {
+    return {
+      type,
+      text: `No ${type === 'mechanic' ? 'mechanics' : 'towing services'} found nearby.`,
+      places: [],
+      timestamp: Date.now()
+    };
   }
+
+  const places = data.places.map((place: any) => ({
+    title: place.displayName?.text || 'Unknown',
+    uri: place.websiteUri || '',
+    snippet: `${place.formattedAddress || ''} ${place.rating ? `⭐ ${place.rating} (${place.userRatingCount} reviews)` : ''} ${place.internationalPhoneNumber || ''}`
+  }));
+
+  return {
+    type,
+    text: `Found ${places.length} ${type === 'mechanic' ? 'mechanic shops' : 'towing services'} near you.`,
+    places,
+    timestamp: Date.now()
+  };
 };

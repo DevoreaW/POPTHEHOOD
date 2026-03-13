@@ -12,8 +12,6 @@ interface VehicleFormProps {
   onHistoryClear: () => void;
 }
 
-const STORAGE_KEY = 'underthehood_history';
-
 const CAR_DATA: Record<string, string[]> = {
   "Acura": ["ILX", "MDX", "RDX", "RLX", "TLX"],
   "Audi": ["A3", "A4", "A5", "A6", "A7", "A8", "Q3", "Q5", "Q7", "Q8", "TT"],
@@ -62,7 +60,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [showCamera, setShowCamera] = useState(false);
-  const [showComingSoon, setShowComingSoon] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -253,30 +250,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         />
       )}
 
-      {showComingSoon && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl">
-            <div className="bg-slate-800 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <h3 className="text-xl font-black text-white uppercase tracking-tight mb-3">Coming Soon</h3>
-            <p className="text-slate-400 text-sm font-medium mb-8">
-              {showComingSoon === 'mechanic' 
-                ? "Local mechanic finder is launching soon. We're building a network of verified shops near you."
-                : 'Emergency towing dispatch is launching soon. 24/7 roadside assistance is on the way.'}
-            </p>
-            <button
-              onClick={() => setShowComingSoon(null)}
-              className="w-full py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white font-black uppercase tracking-widest rounded-full hover:from-orange-400 hover:to-red-500 transition-all"
-            >
-              Got It
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Quick Tools Section */}
       <section className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 text-white py-12">
         <div className="mt-8 mb-6">
@@ -303,7 +276,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           <button 
             type="button"
             aria-label="Find local mechanic"
-            onClick={() => setShowComingSoon('mechanic')}
+            onClick={() => onFindServices('mechanic')}
             className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group"
           >
             <div className="bg-slate-900 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform">
@@ -315,7 +288,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           <button 
             type="button"
             aria-label="Request towing service"
-            onClick={() => setShowComingSoon('towing')}
+            onClick={() => onFindServices('towing')}
             className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group"
           >
             <div className="bg-slate-900 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform">
@@ -327,7 +300,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       </section>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Vehicle Info Card */}
         <section className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 py-12">
           <h3 className="text-xl font-bold text-white mt-8 mb-6 flex items-center uppercase tracking-wider">
             <svg className="w-6 h-6 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -393,7 +365,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           </div>
         </section>
 
-        {/* Symptom Input Card */}
         <section className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 py-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mt-8 mb-8">
             <h3 className="text-xl font-bold text-white flex items-center uppercase tracking-wider">
