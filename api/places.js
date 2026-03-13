@@ -28,10 +28,12 @@ export default async function handler(req, res) {
   }
 
   const cleanType = sanitizeInput(type);
-  const searchQuery = cleanType === 'mechanic' ? 'auto repair shop' : 'towing service';
 
   try {
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+    const includedTypes = cleanType === 'mechanic' 
+      ? ['auto_repair'] 
+      : ['towing_service'];
 
     const response = await fetch(
       `https://places.googleapis.com/v1/places:searchNearby`,
@@ -40,15 +42,15 @@ export default async function handler(req, res) {
         headers: {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': apiKey,
-          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.internationalPhoneNumber,places.regularOpeningHours,places.websiteUri'
+          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.internationalPhoneNumber,places.websiteUri'
         },
         body: JSON.stringify({
-  includedTypes: cleanType === 'mechanic' ? ['auto_repair', 'car_repair', 'car_dealer'] : ['towing_service'],
+          includedTypes,
           maxResultCount: 5,
           locationRestriction: {
             circle: {
-              center: { latitude, longitude },
-              radius: 8000
+              center: { latitude: parseFloat(latitude), longitude: parseFloat(longitude) },
+              radius: 16000
             }
           }
         })
@@ -56,12 +58,19 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
+    console.log('Places API response:', JSON.stringify(data));
 
     if (!data.places || data.places.length === 0) {
-      return res.status(200).json({ places: [] });
+      return res.status(200).json({ places: [], debug: data });
     }
 
-    return res.status(200).json({ places: data.places });
+    const places = data.places.map((place) => ({
+      title: place.displayName?.text || 'Unknown',
+      uri: place.websiteUri || '',
+      snippet: `${place.formattedAddress || ''} ${place.rating ? `⭐ ${place.rating} (${place.userRatingCount} reviews)` : ''} ${place.internationalPhoneNumber || ''}`
+    }));
+
+    return res.status(200).json({ places });
 
   } catch (error) {
     console.error('Places API error:', error);
