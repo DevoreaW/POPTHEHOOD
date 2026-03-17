@@ -32,8 +32,8 @@ export default async function handler(req, res) {
   try {
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
     const includedTypes = cleanType === 'mechanic' 
-      ? ['auto_repair'] 
-      : ['towing_service'];
+  ? ['car_repair'] 
+  : ['towing_service'];
 
     const response = await fetch(
       `https://places.googleapis.com/v1/places:searchNearby`,
