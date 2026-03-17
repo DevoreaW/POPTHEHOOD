@@ -113,11 +113,7 @@ export const searchNearbyServices = async (
     };
   }
 
-  const places = data.places.map((place: any) => ({
-    title: place.displayName?.text || 'Unknown',
-    uri: place.websiteUri || '',
-    snippet: `${place.formattedAddress || ''} ${place.rating ? `⭐ ${place.rating} (${place.userRatingCount} reviews)` : ''} ${place.internationalPhoneNumber || ''}`
-  }));
+  const places = data.places;
 
   return {
     type,
