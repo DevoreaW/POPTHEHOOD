@@ -113,7 +113,11 @@ export const searchNearbyServices = async (
     };
   }
 
-  const places = data.places;
+  const places = data.places.map((place: any) => ({
+  title: place.title || 'Unknown',
+  uri: place.uri || '',
+  snippet: place.snippet || ''
+}));
 
   return {
     type,
