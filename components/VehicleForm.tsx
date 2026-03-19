@@ -253,7 +253,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       {/* Quick Tools Section */}
       <section className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 text-white py-12">
         <div className="mt-8 mb-6">
-          <h3 className="text-xl font-bold flex items-center text-orange-500 uppercase tracking-wider">
+          <h3 className="text-xl font-bold flex items-center text-white uppercase tracking-wider whitespace-nowrap">
             <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
