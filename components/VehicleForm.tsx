@@ -35,6 +35,8 @@ const CAR_DATA: Record<string, string[]> = {
 
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
+const selectClass = "w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white font-bold text-base appearance-none cursor-pointer";
+
 const VehicleForm: React.FC<VehicleFormProps> = ({ 
   onDiagnose, 
   onTireScan, 
@@ -182,14 +184,23 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (name === 'make') {
+      setVehicle(prev => ({ ...prev, make: value, model: '' }));
+    } else {
+      setVehicle(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name in vehicle) {
-      setVehicle(prev => ({ ...prev, [name]: value }));
-    } else if (name === 'description') {
+    if (name === 'description') {
       setDescription(value);
     } else if (name === 'obdCodes') {
       setObdCodes(value);
+    } else if (name === 'mileage') {
+      setVehicle(prev => ({ ...prev, mileage: value }));
     }
   };
 
@@ -314,48 +325,46 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Make</label>
-                <input 
-                  name="make" 
-                  list="makes"
-                  value={vehicle.make} 
-                  onChange={handleInputChange} 
-                  placeholder="e.g. Honda" 
-                  className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-bold text-base" 
-                />
-                <datalist id="makes">
-                  {Object.keys(CAR_DATA).map(make => <option key={make} value={make} />)}
-                </datalist>
+                <select
+                  name="make"
+                  value={vehicle.make}
+                  onChange={handleSelectChange}
+                  className={selectClass}
+                >
+                  <option value="" disabled>Select Make</option>
+                  {Object.keys(CAR_DATA).sort().map(make => (
+                    <option key={make} value={make}>{make}</option>
+                  ))}
+                </select>
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Model</label>
-                <input 
-                  name="model" 
-                  list="models"
-                  value={vehicle.model} 
-                  onChange={handleInputChange} 
-                  placeholder="e.g. Civic" 
-                  className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-bold text-base" 
-                />
-                <datalist id="models">
-                  {vehicle.make && CAR_DATA[vehicle.make] 
-                    ? CAR_DATA[vehicle.make].map(model => <option key={model} value={model} />)
-                    : Object.values(CAR_DATA).flat().slice(0, 50).map((model, i) => <option key={i} value={model} />)
-                  }
-                </datalist>
+                <select
+                  name="model"
+                  value={vehicle.model}
+                  onChange={handleSelectChange}
+                  disabled={!vehicle.make}
+                  className={`${selectClass} ${!vehicle.make ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <option value="" disabled>Select Model</option>
+                  {vehicle.make && CAR_DATA[vehicle.make]?.map(model => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                </select>
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Year</label>
-                <input 
-                  name="year" 
-                  list="years"
-                  value={vehicle.year} 
-                  onChange={handleInputChange} 
-                  placeholder="2022" 
-                  className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-bold text-base" 
-                />
-                <datalist id="years">
-                  {YEARS.map(year => <option key={year} value={year} />)}
-                </datalist>
+                <select
+                  name="year"
+                  value={vehicle.year}
+                  onChange={handleSelectChange}
+                  className={selectClass}
+                >
+                  <option value="" disabled>Select Year</option>
+                  {YEARS.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="space-y-2">
