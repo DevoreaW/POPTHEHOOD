@@ -257,7 +257,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
-            Emergency & Quick Tools
+            Quick Tools
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
