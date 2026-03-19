@@ -12,6 +12,66 @@ interface VehicleFormProps {
   onHistoryClear: () => void;
 }
 
+const POPULAR_MAKES = ["BMW", "Chevrolet", "Ford", "Honda", "Hyundai", "Jeep", "Nissan", "Ram", "Toyota", "Volkswagen"];
+
+const ALL_MAKES = [
+  "Acura", "AM General", "American LaFrance", "Aston Martin", "Audi", "Autocar LLC", "Bentley",
+  "Blue Bird", "BMW", "Bugatti", "Buick", "Cadillac", "Capacity Of Texas", "Caterpillar",
+  "Chevrolet", "Chrysler", "Crane Carrier", "Dodge", "El Dorado", "Emergency One", "Evobus",
+  "Ferrara", "Ferrari", "Ford", "Freightliner", "Gillig", "GMC", "Hendrickson", "Hino",
+  "Honda", "Hyundai", "IC Corporation", "INFINITI", "International", "Isuzu", "Jaguar",
+  "Jeep", "Kalmar", "Kenworth", "Kia", "Kovatch", "Lamborghini", "Land Rover", "Lexus",
+  "Lincoln", "Lotus", "Mack", "Maserati", "Maybach", "Mazda", "Mercedes-Benz", "Mercury",
+  "Mini", "Mitsubishi", "Mitsubishi Fuso", "Motor Coach Industries", "Nissan", "Nova Bus Corporation",
+  "Orion Bus", "Oshkosh Motor Truck Co.", "Peterbilt", "Pierce Mfg. Inc.", "Porsche", "Prevost",
+  "Ram", "Roadmaster Rail", "Rolls-Royce", "Saab", "Scion", "Smart", "Spartan Motors",
+  "Spyker", "Subaru", "Suzuki", "Temsa Bus", "Terex", "Tesla", "Think", "Thomas",
+  "Toyota", "UD", "Van Hool", "Volkswagen", "Volvo"
+];
+
+const CAR_MODELS: Record<string, string[]> = {
+  "Acura": ["ILX", "MDX", "RDX", "RLX", "TLX", "NSX", "ZDX"],
+  "Audi": ["A3", "A4", "A5", "A6", "A7", "A8", "Q3", "Q5", "Q7", "Q8", "TT", "R8", "e-tron"],
+  "BMW": ["2 Series", "3 Series", "4 Series", "5 Series", "7 Series", "8 Series", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "M3", "M4", "M5", "Z4", "i3", "i4", "iX"],
+  "Bentley": ["Bentayga", "Continental GT", "Flying Spur", "Mulsanne"],
+  "Buick": ["Enclave", "Encore", "Envision", "LaCrosse", "Regal", "Verano"],
+  "Cadillac": ["CT4", "CT5", "Escalade", "XT4", "XT5", "XT6", "Lyriq"],
+  "Chevrolet": ["Blazer", "Camaro", "Colorado", "Corvette", "Equinox", "Malibu", "Silverado 1500", "Silverado 2500", "Silverado 3500", "Suburban", "Tahoe", "Traverse", "Trax", "Bolt EV"],
+  "Chrysler": ["300", "Pacifica", "Voyager"],
+  "Dodge": ["Challenger", "Charger", "Durango", "Grand Caravan", "Journey", "Ram 1500"],
+  "Ferrari": ["488", "812", "F8", "Roma", "SF90", "Portofino"],
+  "Ford": ["Bronco", "Bronco Sport", "Edge", "Escape", "Expedition", "Explorer", "F-150", "F-250", "F-350", "Maverick", "Mustang", "Mustang Mach-E", "Ranger", "Transit"],
+  "GMC": ["Acadia", "Canyon", "Envoy", "Sierra 1500", "Sierra 2500", "Sierra 3500", "Terrain", "Yukon", "Yukon XL"],
+  "Honda": ["Accord", "Civic", "CR-V", "Fit", "HR-V", "Insight", "Odyssey", "Passport", "Pilot", "Ridgeline", "Prologue"],
+  "Hyundai": ["Elantra", "Ioniq", "Ioniq 5", "Ioniq 6", "Kona", "Palisade", "Santa Cruz", "Santa Fe", "Sonata", "Tucson", "Veloster"],
+  "INFINITI": ["Q50", "Q60", "QX50", "QX55", "QX60", "QX80"],
+  "Isuzu": ["D-Max", "MU-X", "NPR", "NQR"],
+  "Jaguar": ["E-Pace", "F-Pace", "F-Type", "I-Pace", "XE", "XF", "XJ"],
+  "Jeep": ["Cherokee", "Compass", "Gladiator", "Grand Cherokee", "Grand Wagoneer", "Renegade", "Wagoneer", "Wrangler"],
+  "Kia": ["Carnival", "EV6", "Forte", "K5", "Niro", "Seltos", "Sorento", "Soul", "Sportage", "Stinger", "Telluride"],
+  "Lamborghini": ["Aventador", "Huracan", "Urus"],
+  "Land Rover": ["Defender", "Discovery", "Discovery Sport", "Range Rover", "Range Rover Evoque", "Range Rover Sport", "Range Rover Velar"],
+  "Lexus": ["ES", "GS", "GX", "IS", "LC", "LS", "LX", "NX", "RC", "RX", "UX"],
+  "Lincoln": ["Aviator", "Corsair", "MKZ", "Nautilus", "Navigator"],
+  "Maserati": ["Ghibli", "GranTurismo", "Grecale", "Levante", "Quattroporte"],
+  "Mazda": ["CX-3", "CX-30", "CX-5", "CX-9", "CX-50", "Mazda3", "Mazda6", "MX-5 Miata", "MX-30"],
+  "Mercedes-Benz": ["A-Class", "C-Class", "E-Class", "S-Class", "G-Class", "GLA", "GLB", "GLC", "GLE", "GLS", "AMG GT", "EQS", "EQE"],
+  "Mini": ["Clubman", "Convertible", "Countryman", "Hardtop", "Paceman"],
+  "Mitsubishi": ["Eclipse Cross", "Galant", "Outlander", "Outlander Sport"],
+  "Nissan": ["Altima", "Armada", "Frontier", "GT-R", "Kicks", "Leaf", "Maxima", "Murano", "Pathfinder", "Rogue", "Rogue Sport", "Sentra", "Titan", "Versa", "Z"],
+  "Porsche": ["718", "911", "Cayenne", "Macan", "Panamera", "Taycan"],
+  "Ram": ["1500", "2500", "3500", "ProMaster", "ProMaster City"],
+  "Rolls-Royce": ["Cullinan", "Dawn", "Ghost", "Phantom", "Wraith"],
+  "Saab": ["9-3", "9-5"],
+  "Scion": ["FR-S", "iA", "iM", "tC", "xB", "xD"],
+  "Subaru": ["Ascent", "BRZ", "Crosstrek", "Forester", "Impreza", "Legacy", "Outback", "WRX", "Solterra"],
+  "Suzuki": ["Equator", "Grand Vitara", "Kizashi", "SX4"],
+  "Tesla": ["Model 3", "Model S", "Model X", "Model Y", "Cybertruck"],
+  "Toyota": ["4Runner", "Avalon", "Camry", "Corolla", "Crown", "GR86", "Highlander", "Land Cruiser", "Prius", "RAV4", "Sequoia", "Sienna", "Tacoma", "Tundra", "Venza", "bZ4X"],
+  "Volkswagen": ["Arteon", "Atlas", "Atlas Cross Sport", "Golf", "ID.4", "Jetta", "Passat", "Taos", "Tiguan"],
+  "Volvo": ["C40", "S60", "S90", "V60", "V90", "XC40", "XC60", "XC90"],
+};
+
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
 const VehicleForm: React.FC<VehicleFormProps> = ({ 
@@ -24,17 +84,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   onHistoryClear
 }) => {
   const [vehicle, setVehicle] = useState<VehicleInfo>({
-    make: '',
-    model: '',
-    year: '',
-    mileage: '',
-    engine: ''
+    make: '', model: '', year: '', mileage: '', engine: ''
   });
-
-  const [makes, setMakes] = useState<string[]>([]);
-  const [models, setModels] = useState<string[]>([]);
-  const [makesLoading, setMakesLoading] = useState(true);
-  const [modelsLoading, setModelsLoading] = useState(false);
 
   const [description, setDescription] = useState('');
   const [interimText, setInterimText] = useState('');
@@ -50,51 +101,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const recognitionRef = useRef<any>(null);
   const timerRef = useRef<number | null>(null);
 
-  // Fetch all makes on mount
-  useEffect(() => {
-    const fetchMakes = async () => {
-      try {
-        const res = await fetch('https://vpic.nhtsa.dot.gov/api/vehicles/GetAllMakes?format=json');
-        const data = await res.json();
-        const makeNames = data.Results
-          .map((m: any) => m.Make_Name)
-          .filter((name: string) => name && name.trim().length > 0)
-          .sort();
-        setMakes(makeNames);
-      } catch (err) {
-        console.error('Failed to fetch makes:', err);
-      } finally {
-        setMakesLoading(false);
-      }
-    };
-    fetchMakes();
-  }, []);
-
-  // Fetch models when make changes
-  useEffect(() => {
-    if (!vehicle.make) {
-      setModels([]);
-      return;
-    }
-    const fetchModels = async () => {
-      setModelsLoading(true);
-      try {
-        const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${encodeURIComponent(vehicle.make)}?format=json`);
-        const data = await res.json();
-        const modelNames = data.Results
-          .map((m: any) => m.Model_Name)
-          .filter((name: string) => name && name.trim().length > 0)
-          .sort();
-        setModels(modelNames);
-      } catch (err) {
-        console.error('Failed to fetch models:', err);
-      } finally {
-        setModelsLoading(false);
-      }
-    };
-    fetchModels();
-  }, [vehicle.make]);
-
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
@@ -103,24 +109,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   useEffect(() => {
     if (isRecording) {
-      timerRef.current = window.setInterval(() => {
-        setRecordingTime(prev => prev + 1);
-      }, 1000);
+      timerRef.current = window.setInterval(() => setRecordingTime(prev => prev + 1), 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
       setRecordingTime(0);
     }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [isRecording]);
 
   const startRecording = async () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Voice input is not supported in this browser. Please use Chrome or Safari.");
-      return;
-    }
+    if (!SpeechRecognition) { alert("Voice input is not supported in this browser. Please use Chrome or Safari."); return; }
     setIsConnecting(true);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -131,65 +130,42 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       recognition.lang = 'en-US';
       recognition.onstart = () => { setIsRecording(true); setIsConnecting(false); setInterimText(''); };
       recognition.onresult = (event: any) => {
-        let currentInterim = '';
-        let finalChunk = '';
+        let currentInterim = ''; let finalChunk = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) finalChunk += transcript;
           else currentInterim += transcript;
         }
         if (finalChunk) {
-          setDescription(prev => {
-            const separator = prev && !prev.endsWith(' ') ? ' ' : '';
-            return prev + separator + finalChunk.trim();
-          });
+          setDescription(prev => { const separator = prev && !prev.endsWith(' ') ? ' ' : ''; return prev + separator + finalChunk.trim(); });
           setInterimText('');
-        } else {
-          setInterimText(currentInterim);
-        }
+        } else setInterimText(currentInterim);
       };
       recognition.onerror = (event: any) => {
-        console.error("Speech recognition error:", event.error);
-        setIsConnecting(false);
-        setIsRecording(false);
-        if (event.error === 'not-allowed') alert("Microphone access blocked. Please click the lock icon in your browser address bar and set Microphone to 'Allow'.");
+        setIsConnecting(false); setIsRecording(false);
+        if (event.error === 'not-allowed') alert("Microphone access blocked.");
         else if (event.error === 'network') alert("Network error. Voice transcription requires an internet connection.");
       };
       recognition.onend = () => { setIsRecording(false); setIsConnecting(false); setInterimText(''); };
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err: any) {
-      console.error("Failed to start speech recognition:", err);
-      setIsConnecting(false);
-      setIsRecording(false);
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        alert("Microphone permission denied. Please enable microphone access in your browser settings to use 'Tap to Speak'.");
-      }
+      setIsConnecting(false); setIsRecording(false);
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') alert("Microphone permission denied.");
     }
   };
 
   const stopRecording = () => {
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch (e) {}
-      recognitionRef.current = null;
-    }
-    setIsRecording(false);
-    setIsConnecting(false);
+    if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch (e) {} recognitionRef.current = null; }
+    setIsRecording(false); setIsConnecting(false);
   };
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  const formatTime = (seconds: number) => `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`;
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === 'make') {
-      setVehicle(prev => ({ ...prev, make: value, model: '' }));
-    } else {
-      setVehicle(prev => ({ ...prev, [name]: value }));
-    }
+    if (name === 'make') setVehicle(prev => ({ ...prev, make: value, model: '' }));
+    else setVehicle(prev => ({ ...prev, [name]: value }));
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -217,23 +193,20 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     setFiles(prev => [...prev, ...processedFiles]);
   };
 
-  const removeFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
-  };
+  const removeFile = (index: number) => setFiles(prev => prev.filter((_, i) => i !== index));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!vehicle.make || !vehicle.model || (!description && !interimText)) {
-      alert("Please provide vehicle info and describe the symptoms.");
-      return;
+      alert("Please provide vehicle info and describe the symptoms."); return;
     }
-    const finalDescription = (description + ' ' + interimText).trim();
-    onDiagnose(vehicle, { description: finalDescription, obdCodes, files });
+    onDiagnose(vehicle, { description: (description + ' ' + interimText).trim(), obdCodes, files });
   };
 
   const isTireReport = (item: any): item is TireAnalysisReport => 'healthScore' in item;
-
   const selectClass = "w-full h-12 pl-6 pr-10 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white font-bold text-base cursor-pointer appearance-none";
+  const models = CAR_MODELS[vehicle.make] || [];
+  const otherMakes = ALL_MAKES.filter(m => !POPULAR_MAKES.includes(m));
 
   return (
     <div className="max-w-lg md:max-w-4xl mx-auto px-4 pb-20 space-y-12 animate-in slide-in-from-bottom-4 duration-500">
@@ -263,7 +236,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             </div>
             <div className="font-black text-xs text-slate-100 uppercase tracking-widest">Tire Tread Scan</div>
           </button>
-
           <button type="button" aria-label="Find local mechanic" onClick={() => onFindServices('mechanic')}
             className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group">
             <div className="bg-slate-900 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform">
@@ -271,7 +243,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             </div>
             <div className="font-black text-xs text-slate-100 uppercase tracking-widest">Find Mechanic</div>
           </button>
-
           <button type="button" aria-label="Request towing service" onClick={() => onFindServices('towing')}
             className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group">
             <div className="bg-slate-900 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform">
@@ -301,12 +272,13 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Make</label>
                 <div className="relative">
                   <select name="make" value={vehicle.make} onChange={handleSelectChange} className={selectClass}>
-                    <option value="" disabled>
-                      {makesLoading ? 'Loading...' : 'Select Make'}
-                    </option>
-                    {makes.map(make => (
-                      <option key={make} value={make}>{make}</option>
-                    ))}
+                    <option value="" disabled>Select Make</option>
+                    <optgroup label="── Popular Makes ──">
+                      {POPULAR_MAKES.map(make => <option key={make} value={make}>{make}</option>)}
+                    </optgroup>
+                    <optgroup label="── All Makes ──">
+                      {otherMakes.map(make => <option key={make} value={make}>{make}</option>)}
+                    </optgroup>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                     <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
@@ -320,11 +292,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <div className="relative">
                   <select name="model" value={vehicle.model} onChange={handleSelectChange} className={selectClass}>
                     <option value="" disabled>
-                      {!vehicle.make ? 'Select Make First' : modelsLoading ? 'Loading...' : 'Select Model'}
+                      {!vehicle.make ? 'Select Make First' : 'Select Model'}
                     </option>
-                    {models.map(model => (
-                      <option key={model} value={model}>{model}</option>
-                    ))}
+                    {models.map(model => <option key={model} value={model}>{model}</option>)}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                     <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
@@ -338,9 +308,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <div className="relative">
                   <select name="year" value={vehicle.year} onChange={handleSelectChange} className={selectClass}>
                     <option value="" disabled>Select Year</option>
-                    {YEARS.map(year => (
-                      <option key={year} value={year}>{year}</option>
-                    ))}
+                    {YEARS.map(year => <option key={year} value={year}>{year}</option>)}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                     <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
@@ -363,7 +331,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <svg className="w-6 h-6 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
               Diagnostic Information
             </h3>
-
             <div className="relative">
               {isRecording && <div className="absolute inset-0 rounded-2xl ring-4 ring-orange-500 animate-ping opacity-20"></div>}
               <button type="button" aria-label="Start hands-free voice diagnosis" disabled={isConnecting}
@@ -428,7 +395,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <input name="obdCodes" value={obdCodes} onChange={handleInputChange} placeholder="P0300, P0420..."
                   className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-mono" />
               </div>
-              
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Photos or Videos (Leaks/Wear)</label>
                 <button type="button" aria-label="Attach photos or videos" onClick={() => fileInputRef.current?.click()}
