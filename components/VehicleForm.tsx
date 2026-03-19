@@ -35,8 +35,6 @@ const CAR_DATA: Record<string, string[]> = {
 
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
-const selectClass = "w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white font-bold text-base appearance-none cursor-pointer";
-
 const VehicleForm: React.FC<VehicleFormProps> = ({ 
   onDiagnose, 
   onTireScan, 
@@ -90,42 +88,27 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const startRecording = async () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    
     if (!SpeechRecognition) {
       alert("Voice input is not supported in this browser. Please use Chrome or Safari.");
       return;
     }
-
     setIsConnecting(true);
-
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       stream.getTracks().forEach(track => track.stop());
-
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
-
-      recognition.onstart = () => {
-        setIsRecording(true);
-        setIsConnecting(false);
-        setInterimText('');
-      };
-
+      recognition.onstart = () => { setIsRecording(true); setIsConnecting(false); setInterimText(''); };
       recognition.onresult = (event: any) => {
         let currentInterim = '';
         let finalChunk = '';
-
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalChunk += transcript;
-          } else {
-            currentInterim += transcript;
-          }
+          if (event.results[i].isFinal) finalChunk += transcript;
+          else currentInterim += transcript;
         }
-
         if (finalChunk) {
           setDescription(prev => {
             const separator = prev && !prev.endsWith(' ') ? ' ' : '';
@@ -136,25 +119,14 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           setInterimText(currentInterim);
         }
       };
-
       recognition.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
         setIsConnecting(false);
         setIsRecording(false);
-        
-        if (event.error === 'not-allowed') {
-          alert("Microphone access blocked. Please click the lock icon in your browser address bar and set Microphone to 'Allow'.");
-        } else if (event.error === 'network') {
-          alert("Network error. Voice transcription requires an internet connection.");
-        }
+        if (event.error === 'not-allowed') alert("Microphone access blocked. Please click the lock icon in your browser address bar and set Microphone to 'Allow'.");
+        else if (event.error === 'network') alert("Network error. Voice transcription requires an internet connection.");
       };
-
-      recognition.onend = () => {
-        setIsRecording(false);
-        setIsConnecting(false);
-        setInterimText('');
-      };
-
+      recognition.onend = () => { setIsRecording(false); setIsConnecting(false); setInterimText(''); };
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err: any) {
@@ -169,9 +141,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const stopRecording = () => {
     if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {}
+      try { recognitionRef.current.stop(); } catch (e) {}
       recognitionRef.current = null;
     }
     setIsRecording(false);
@@ -195,18 +165,13 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name === 'description') {
-      setDescription(value);
-    } else if (name === 'obdCodes') {
-      setObdCodes(value);
-    } else if (name === 'mileage') {
-      setVehicle(prev => ({ ...prev, mileage: value }));
-    }
+    if (name === 'description') setDescription(value);
+    else if (name === 'obdCodes') setObdCodes(value);
+    else if (name === 'mileage') setVehicle(prev => ({ ...prev, mileage: value }));
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    
     const newFiles = Array.from(e.target.files);
     const processedFiles: DiagnosticInput['files'] = await Promise.all(
       newFiles.map((file: File) => new Promise<DiagnosticInput['files'][0]>((resolve) => {
@@ -215,18 +180,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           let type: 'image' | 'audio' | 'video' = 'image';
           if (file.type.startsWith('audio')) type = 'audio';
           else if (file.type.startsWith('video')) type = 'video';
-          
-          resolve({
-            data: reader.result as string,
-            mimeType: file.type,
-            name: file.name,
-            type
-          });
+          resolve({ data: reader.result as string, mimeType: file.type, name: file.name, type });
         };
         reader.readAsDataURL(file);
       }))
     );
-
     setFiles(prev => [...prev, ...processedFiles]);
   };
 
@@ -244,19 +202,16 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     onDiagnose(vehicle, { description: finalDescription, obdCodes, files });
   };
 
-  const isTireReport = (item: any): item is TireAnalysisReport => {
-    return 'healthScore' in item;
-  };
+  const isTireReport = (item: any): item is TireAnalysisReport => 'healthScore' in item;
+
+  const selectClass = "w-full h-12 pl-6 pr-10 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white font-bold text-base cursor-pointer appearance-none";
 
   return (
     <div className="max-w-lg md:max-w-4xl mx-auto px-4 pb-20 space-y-12 animate-in slide-in-from-bottom-4 duration-500">
       
       {showCamera && (
         <CameraCapture 
-          onCapture={(data, mime) => {
-            onTireScan(data, mime);
-            setShowCamera(false);
-          }}
+          onCapture={(data, mime) => { onTireScan(data, mime); setShowCamera(false); }}
           onClose={() => setShowCamera(false)}
         />
       )}
@@ -272,36 +227,24 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <button 
-            type="button"
-            aria-label="Scan tire tread"
-            onClick={() => setShowCamera(true)}
-            className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group"
-          >
+          <button type="button" aria-label="Scan tire tread" onClick={() => setShowCamera(true)}
+            className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group">
             <div className="bg-slate-900 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform">
               <svg className="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div className="font-black text-xs text-slate-100 uppercase tracking-widest">Tire Tread Scan</div>
           </button>
 
-          <button 
-            type="button"
-            aria-label="Find local mechanic"
-            onClick={() => onFindServices('mechanic')}
-            className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group"
-          >
+          <button type="button" aria-label="Find local mechanic" onClick={() => onFindServices('mechanic')}
+            className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group">
             <div className="bg-slate-900 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform">
               <svg className="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
             </div>
             <div className="font-black text-xs text-slate-100 uppercase tracking-widest">Find Mechanic</div>
           </button>
 
-          <button 
-            type="button"
-            aria-label="Request towing service"
-            onClick={() => onFindServices('towing')}
-            className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group"
-          >
+          <button type="button" aria-label="Request towing service" onClick={() => onFindServices('towing')}
+            className="flex flex-col items-center justify-center p-8 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-center group">
             <div className="bg-slate-900 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform">
               <svg className="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             </div>
@@ -323,53 +266,61 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           </h3>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+              {/* Make */}
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Make</label>
-                <select
-                  name="make"
-                  value={vehicle.make}
-                  onChange={handleSelectChange}
-                  className={selectClass}
-                >
-                  <option value="" disabled>Select Make</option>
-                  {Object.keys(CAR_DATA).sort().map(make => (
-                    <option key={make} value={make}>{make}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select name="make" value={vehicle.make} onChange={handleSelectChange} className={selectClass}>
+                    <option value="" disabled>Select Make</option>
+                    {Object.keys(CAR_DATA).sort().map(make => (
+                      <option key={make} value={make}>{make}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                </div>
               </div>
+
+              {/* Model */}
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Model</label>
-                <select
-                  name="model"
-                  value={vehicle.model}
-                  onChange={handleSelectChange}
-                  disabled={!vehicle.make}
-                  className={`${selectClass} ${!vehicle.make ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <option value="" disabled>Select Model</option>
-                  {vehicle.make && CAR_DATA[vehicle.make]?.map(model => (
-                    <option key={model} value={model}>{model}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select name="model" value={vehicle.model} onChange={handleSelectChange} disabled={!vehicle.make}
+                    className={`${selectClass} ${!vehicle.make ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <option value="" disabled>Select Model</option>
+                    {vehicle.make && CAR_DATA[vehicle.make]?.map(model => (
+                      <option key={model} value={model}>{model}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                </div>
               </div>
+
+              {/* Year */}
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Year</label>
-                <select
-                  name="year"
-                  value={vehicle.year}
-                  onChange={handleSelectChange}
-                  className={selectClass}
-                >
-                  <option value="" disabled>Select Year</option>
-                  {YEARS.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select name="year" value={vehicle.year} onChange={handleSelectChange} className={selectClass}>
+                    <option value="" disabled>Select Year</option>
+                    {YEARS.map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                </div>
               </div>
+
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Mileage</label>
-              <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="45,000" className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-bold text-base" />
+              <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="45,000"
+                className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-bold text-base" />
             </div>
           </div>
         </section>
@@ -382,16 +333,10 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             </h3>
 
             <div className="relative">
-              {isRecording && (
-                <div className="absolute inset-0 rounded-2xl ring-4 ring-orange-500 animate-ping opacity-20"></div>
-              )}
-              <button
-                type="button"
-                aria-label="Start hands-free voice diagnosis"
-                disabled={isConnecting}
+              {isRecording && <div className="absolute inset-0 rounded-2xl ring-4 ring-orange-500 animate-ping opacity-20"></div>}
+              <button type="button" aria-label="Start hands-free voice diagnosis" disabled={isConnecting}
                 onClick={isRecording ? stopRecording : startRecording}
-                className={`relative flex items-center space-x-4 px-8 py-4 rounded-2xl font-black text-sm transition-all shadow-xl border-b-4 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isRecording ? 'bg-orange-600 border-orange-800 text-white scale-105 shadow-orange-500/20' : isConnecting ? 'bg-slate-700 border-slate-900 text-slate-300' : 'bg-slate-800 border-slate-700 text-white hover:bg-slate-700'}`}
-              >
+                className={`relative flex items-center space-x-4 px-8 py-4 rounded-2xl font-black text-sm transition-all shadow-xl border-b-4 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isRecording ? 'bg-orange-600 border-orange-800 text-white scale-105 shadow-orange-500/20' : isConnecting ? 'bg-slate-700 border-slate-900 text-slate-300' : 'bg-slate-800 border-slate-700 text-white hover:bg-slate-700'}`}>
                 <div className="relative">
                   {isRecording ? (
                     <div className="flex items-end space-x-1 h-5 w-6">
@@ -406,7 +351,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                   ) : (
-                    <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
                     </svg>
                   )}
@@ -424,12 +369,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">What's happening? (Symptoms, Noises, Leaks)</label>
               <div className="relative group/textarea">
-                <textarea 
-                  ref={textAreaRef}
-                  name="description"
+                <textarea ref={textAreaRef} name="description"
                   value={description + (interimText ? (description ? ' ' : '') + interimText : '')}
-                  onChange={handleInputChange}
-                  rows={5}
+                  onChange={handleInputChange} rows={5}
                   placeholder="Example: My car is making a loud squealing noise from the front when I start it..."
                   className={`w-full min-h-[120px] px-6 py-4 bg-slate-800 border border-slate-700 rounded-3xl focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all resize-none text-white placeholder:text-slate-500 font-medium leading-relaxed ${isRecording ? 'border-orange-400 bg-orange-900/10 shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]' : ''}`}
                 />
@@ -451,34 +393,18 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">OBD-II Codes (Optional)</label>
-                <input 
-                  name="obdCodes"
-                  value={obdCodes}
-                  onChange={handleInputChange}
-                  placeholder="P0300, P0420..."
-                  className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-mono"
-                />
+                <input name="obdCodes" value={obdCodes} onChange={handleInputChange} placeholder="P0300, P0420..."
+                  className="w-full h-12 px-6 bg-slate-800 border border-slate-700 rounded-full focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-white placeholder:text-slate-500 font-mono" />
               </div>
               
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Photos or Videos (Leaks/Wear)</label>
-                <button 
-                  type="button"
-                  aria-label="Attach photos or videos"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-12 flex items-center justify-center space-x-3 px-6 bg-slate-800 border-2 border-dashed border-slate-700 rounded-full text-slate-400 hover:bg-slate-700 hover:border-slate-600 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900"
-                >
+                <button type="button" aria-label="Attach photos or videos" onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-12 flex items-center justify-center space-x-3 px-6 bg-slate-800 border-2 border-dashed border-slate-700 rounded-full text-slate-400 hover:bg-slate-700 hover:border-slate-600 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                   <span className="font-black text-xs uppercase tracking-widest">Attach Media</span>
                 </button>
-                <input 
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  multiple
-                  accept="image/*,video/*"
-                  className="hidden"
-                />
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*,video/*" className="hidden" />
               </div>
             </div>
           </div>
@@ -498,12 +424,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                         </svg>
                       </div>
                     )}
-                    <button 
-                      type="button"
-                      aria-label="Remove attachment"
-                      onClick={() => removeFile(idx)}
-                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                    >
+                    <button type="button" aria-label="Remove attachment" onClick={() => removeFile(idx)}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                   </div>
@@ -513,11 +435,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           )}
         </section>
 
-        <button 
-          type="submit"
-          disabled={isLoading}
-          className={`w-full py-6 rounded-full font-black text-xl shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center space-x-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isLoading ? 'bg-slate-700 cursor-not-allowed text-slate-400' : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white'}`}
-        >
+        <button type="submit" disabled={isLoading}
+          className={`w-full py-6 rounded-full font-black text-xl shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center space-x-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isLoading ? 'bg-slate-700 cursor-not-allowed text-slate-400' : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white'}`}>
           {isLoading ? (
             <>
               <svg className="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
@@ -542,23 +461,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <svg className="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               Recent History
             </h3>
-            <button 
-              type="button"
-              onClick={onHistoryClear}
-              className="text-[10px] font-black text-slate-500 hover:text-red-500 uppercase tracking-[0.2em] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-lg px-2 py-1"
-            >
+            <button type="button" onClick={onHistoryClear}
+              className="text-[10px] font-black text-slate-500 hover:text-red-500 uppercase tracking-[0.2em] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-lg px-2 py-1">
               Clear All
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {history.map((item) => (
-              <button
-                key={item.id}
-                type="button"
+              <button key={item.id} type="button"
                 aria-label={`View report for ${isTireReport(item) ? 'Tire Scan' : item.vehicle.make}`}
                 onClick={() => onHistorySelect(item)}
-                className="flex items-center p-6 bg-slate-800 border border-slate-700 rounded-2xl hover:bg-slate-700 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900"
-              >
+                className="flex items-center p-6 bg-slate-800 border border-slate-700 rounded-2xl hover:bg-slate-700 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900">
                 <div className="bg-slate-900 p-4 rounded-xl mr-4 border border-slate-700 shadow-inner">
                   {isTireReport(item) ? (
                     <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
