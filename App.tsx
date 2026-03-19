@@ -147,8 +147,7 @@ const App: React.FC = () => {
       {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
       <Header />
       
-      <main className="flex-grow pt-8">
-        <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
+<main id="main-content" className="flex-grow pt-8" tabIndex={-1}>        <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
           <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-8 shadow-sm">
             <div className="flex">
               <div className="flex-shrink-0">
