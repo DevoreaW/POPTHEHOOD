@@ -287,12 +287,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Model</label>
                 <div className="relative">
-                  <select name="model" value={vehicle.model} onChange={handleSelectChange} disabled={!vehicle.make}
-                    className={`${selectClass} ${!vehicle.make ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                    <option value="" disabled>Select Model</option>
-                    {vehicle.make && CAR_DATA[vehicle.make]?.map(model => (
-                      <option key={model} value={model}>{model}</option>
-                    ))}
+                  <select name="model" value={vehicle.model} onChange={handleSelectChange}
+  className={selectClass}>
+  <option value="" disabled>Select Model</option>
+  {vehicle.make && CAR_DATA[vehicle.make]?.map(model => (
+    <option key={model} value={model}>{model}</option>
+  ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                     <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
