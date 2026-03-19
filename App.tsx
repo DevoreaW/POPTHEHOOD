@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const [serviceReport, setServiceReport] = useState<ServiceSearchReport | null>(null);
   const [history, setHistory] = useState<(DiagnosticReport | TireAnalysisReport)[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState<string>('');
   const [consentGiven, setConsentGiven] = useState<boolean>(() => {
     return localStorage.getItem('popthehood_consent_accepted') === 'true';
   });
@@ -32,9 +33,15 @@ const App: React.FC = () => {
     }
   }, []);
 
+  const announce = (message: string) => {
+    setAnnouncement('');
+    setTimeout(() => setAnnouncement(message), 100);
+  };
+
   const handleServiceError = async (err: any) => {
     const errorMsg = err.message || "";
     setError(errorMsg || "An unexpected error occurred. Please try again.");
+    announce("An error occurred. Please try again.");
   };
 
   const saveToHistory = (item: DiagnosticReport | TireAnalysisReport) => {
@@ -56,11 +63,13 @@ const App: React.FC = () => {
   const handleDiagnose = async (vehicle: VehicleInfo, input: DiagnosticInput) => {
     setIsLoading(true);
     setError(null);
+    announce("Running AI diagnosis. Please wait.");
     try {
       const result = await generateDiagnosticReport(vehicle, input);
       setReport(result);
       setTireReport(null);
       setServiceReport(null);
+      announce("Diagnosis complete. Results are now available.");
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       await handleServiceError(err);
@@ -72,11 +81,13 @@ const App: React.FC = () => {
   const handleTireScan = async (imageData: string, mimeType: string) => {
     setIsLoading(true);
     setError(null);
+    announce("Scanning tire tread. Please wait.");
     try {
       const result = await analyzeTireTread(imageData, mimeType);
       setTireReport(result);
       setReport(null);
       setServiceReport(null);
+      announce("Tire scan complete. Results are now available.");
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       await handleServiceError(err);
@@ -88,6 +99,7 @@ const App: React.FC = () => {
   const handleFindServices = async (type: 'mechanic' | 'towing') => {
     setIsLoading(true);
     setError(null);
+    announce(`Searching for nearby ${type === 'mechanic' ? 'mechanics' : 'towing services'}. Please wait.`);
     
     try {
       if (!navigator.geolocation) {
@@ -103,6 +115,7 @@ const App: React.FC = () => {
             setReport(null);
             setTireReport(null);
             setIsLoading(false);
+            announce(`Found nearby ${type === 'mechanic' ? 'mechanics' : 'towing services'}. Results are now available.`);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           } catch (err: any) {
             await handleServiceError(err);
@@ -111,6 +124,7 @@ const App: React.FC = () => {
         },
         (err) => {
           setError("Location access denied. Please enable GPS to find nearby help.");
+          announce("Location access denied. Please enable GPS to find nearby help.");
           setIsLoading(false);
         },
         { timeout: 10000 }
@@ -126,10 +140,12 @@ const App: React.FC = () => {
       setTireReport(item as TireAnalysisReport);
       setReport(null);
       setServiceReport(null);
+      announce("Tire scan report loaded.");
     } else {
       setReport(item as DiagnosticReport);
       setTireReport(null);
       setServiceReport(null);
+      announce("Diagnostic report loaded.");
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -139,18 +155,33 @@ const App: React.FC = () => {
     setTireReport(null);
     setServiceReport(null);
     setError(null);
+    announce("Returned to main form.");
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
+      {/* ARIA live region for screen reader announcements */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {announcement}
+      </div>
+
       {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
       <Header />
       
-<main id="main-content" className="flex-grow pt-8" tabIndex={-1}>        <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
-          <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-8 shadow-sm">
+      <main id="main-content" className="flex-grow pt-8" tabIndex={-1}>
+        <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
+          <div 
+            role="alert"
+            className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-8 shadow-sm"
+          >
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0" aria-hidden="true">
                 <svg className="h-5 w-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                   <line x1="12" y1="9" x2="12" y2="13" />
@@ -167,17 +198,31 @@ const App: React.FC = () => {
         </div>
 
         {error && (
-          <div className="max-w-4xl mx-auto px-4 mb-8">
+          <div 
+            role="alert"
+            aria-live="assertive"
+            className="max-w-4xl mx-auto px-4 mb-8"
+          >
             <div className="bg-rose-100 border border-rose-200 text-rose-800 p-4 rounded-xl flex items-center justify-between">
               <span>{error}</span>
-              <button onClick={() => setError(null)} className="text-rose-900 font-bold ml-4 hover:underline">Dismiss</button>
+              <button 
+                onClick={() => setError(null)} 
+                className="text-rose-900 font-bold ml-4 hover:underline"
+                aria-label="Dismiss error message"
+              >
+                Dismiss
+              </button>
             </div>
           </div>
         )}
 
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 space-y-6 animate-pulse">
-            <div className="w-20 h-20 border-8 border-slate-200 border-t-red-600 rounded-full animate-spin"></div>
+          <div 
+            role="status"
+            aria-label="Loading. Please wait."
+            className="flex flex-col items-center justify-center py-20 space-y-6"
+          >
+            <div aria-hidden="true" className="w-20 h-20 border-8 border-slate-200 border-t-red-600 rounded-full animate-spin"></div>
             <div className="text-center">
               <h3 className="text-xl font-bold text-slate-900">Running Analysis...</h3>
               <p className="text-slate-500">Our AI is reviewing your vehicle information.</p>
@@ -226,12 +271,14 @@ const App: React.FC = () => {
             <p>© 2026 POPTHEHOOD. All rights reserved.</p>
             <p className="mt-1 text-xs opacity-60">Developed for educational purposes. Technician oversight required.</p>
           </div>
-          <div className="flex items-center space-x-6">
-            <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">About</a>
-            <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Support</a>
-            <a href="/privacy" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy</a>
-            <a href="/terms" className="text-gray-500 hover:text-white text-sm transition-colors">Terms</a>
-          </div>
+          <nav aria-label="Footer navigation">
+            <div className="flex items-center space-x-6">
+              <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">About</a>
+              <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Support</a>
+              <a href="/privacy" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy</a>
+              <a href="/terms" className="text-gray-500 hover:text-white text-sm transition-colors">Terms</a>
+            </div>
+          </nav>
         </div>
       </footer>
     </div>
