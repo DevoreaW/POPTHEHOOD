@@ -12,27 +12,6 @@ interface VehicleFormProps {
   onHistoryClear: () => void;
 }
 
-const CAR_DATA: Record<string, string[]> = {
-  "Acura": ["ILX", "MDX", "RDX", "RLX", "TLX"],
-  "Audi": ["A3", "A4", "A5", "A6", "A7", "A8", "Q3", "Q5", "Q7", "Q8", "TT"],
-  "BMW": ["2 Series", "3 Series", "4 Series", "5 Series", "7 Series", "8 Series", "X1", "X3", "X5", "X7", "Z4"],
-  "Chevrolet": ["Blazer", "Camaro", "Colorado", "Corvette", "Equinox", "Malibu", "Silverado", "Suburban", "Tahoe", "Traverse"],
-  "Ford": ["Bronco", "Edge", "Escape", "Expedition", "Explorer", "F-150", "Mustang", "Ranger"],
-  "Honda": ["Accord", "Civic", "CR-V", "Fit", "HR-V", "Insight", "Odyssey", "Passport", "Pilot", "Ridgeline"],
-  "Hyundai": ["Elantra", "Ioniq", "Kona", "Palisade", "Santa Fe", "Sonata", "Tucson", "Veloster"],
-  "Jeep": ["Cherokee", "Compass", "Gladiator", "Grand Cherokee", "Renegade", "Wrangler"],
-  "Kia": ["Forte", "Niro", "Optima", "Rio", "Seltos", "Sorento", "Soul", "Sportage", "Stinger", "Telluride"],
-  "Lexus": ["ES", "GS", "GX", "IS", "LS", "LX", "NX", "RX", "UX"],
-  "Mazda": ["CX-3", "CX-30", "CX-5", "CX-9", "Mazda3", "Mazda6", "MX-5 Miata"],
-  "Mercedes-Benz": ["A-Class", "C-Class", "E-Class", "S-Class", "G-Class", "GLA", "GLC", "GLE", "GLS"],
-  "Nissan": ["Altima", "Armada", "Frontier", "Maxima", "Murano", "Pathfinder", "Rogue", "Sentra", "Titan", "Versa"],
-  "Subaru": ["Ascent", "Crosstrek", "Forester", "Impreza", "Legacy", "Outback", "WRX"],
-  "Tesla": ["Model 3", "Model S", "Model X", "Model Y"],
-  "Toyota": ["4Runner", "Avalon", "Camry", "Corolla", "Highlander", "Prius", "RAV4", "Sequoia", "Sienna", "Tacoma", "Tundra"],
-  "Volkswagen": ["Arteon", "Atlas", "Golf", "Jetta", "Passat", "Tiguan"],
-  "Volvo": ["S60", "S90", "V60", "V90", "XC40", "XC60", "XC90"]
-};
-
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
 const VehicleForm: React.FC<VehicleFormProps> = ({ 
@@ -52,6 +31,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     engine: ''
   });
 
+  const [makes, setMakes] = useState<string[]>([]);
+  const [models, setModels] = useState<string[]>([]);
+  const [makesLoading, setMakesLoading] = useState(true);
+  const [modelsLoading, setModelsLoading] = useState(false);
+
   const [description, setDescription] = useState('');
   const [interimText, setInterimText] = useState('');
   const [obdCodes, setObdCodes] = useState('');
@@ -65,6 +49,51 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<any>(null);
   const timerRef = useRef<number | null>(null);
+
+  // Fetch all makes on mount
+  useEffect(() => {
+    const fetchMakes = async () => {
+      try {
+        const res = await fetch('https://vpic.nhtsa.dot.gov/api/vehicles/GetAllMakes?format=json');
+        const data = await res.json();
+        const makeNames = data.Results
+          .map((m: any) => m.Make_Name)
+          .filter((name: string) => name && name.trim().length > 0)
+          .sort();
+        setMakes(makeNames);
+      } catch (err) {
+        console.error('Failed to fetch makes:', err);
+      } finally {
+        setMakesLoading(false);
+      }
+    };
+    fetchMakes();
+  }, []);
+
+  // Fetch models when make changes
+  useEffect(() => {
+    if (!vehicle.make) {
+      setModels([]);
+      return;
+    }
+    const fetchModels = async () => {
+      setModelsLoading(true);
+      try {
+        const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${encodeURIComponent(vehicle.make)}?format=json`);
+        const data = await res.json();
+        const modelNames = data.Results
+          .map((m: any) => m.Model_Name)
+          .filter((name: string) => name && name.trim().length > 0)
+          .sort();
+        setModels(modelNames);
+      } catch (err) {
+        console.error('Failed to fetch models:', err);
+      } finally {
+        setModelsLoading(false);
+      }
+    };
+    fetchModels();
+  }, [vehicle.make]);
 
   useEffect(() => {
     if (textAreaRef.current) {
@@ -272,8 +301,10 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Make</label>
                 <div className="relative">
                   <select name="make" value={vehicle.make} onChange={handleSelectChange} className={selectClass}>
-                    <option value="" disabled>Select Make</option>
-                    {Object.keys(CAR_DATA).sort().map(make => (
+                    <option value="" disabled>
+                      {makesLoading ? 'Loading...' : 'Select Make'}
+                    </option>
+                    {makes.map(make => (
                       <option key={make} value={make}>{make}</option>
                     ))}
                   </select>
@@ -287,12 +318,13 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-500 uppercase ml-4 tracking-widest">Model</label>
                 <div className="relative">
-                  <select name="model" value={vehicle.model} onChange={handleSelectChange}
-  className={selectClass}>
-  <option value="" disabled>Select Model</option>
-  {vehicle.make && CAR_DATA[vehicle.make]?.map(model => (
-    <option key={model} value={model}>{model}</option>
-  ))}
+                  <select name="model" value={vehicle.model} onChange={handleSelectChange} className={selectClass}>
+                    <option value="" disabled>
+                      {!vehicle.make ? 'Select Make First' : modelsLoading ? 'Loading...' : 'Select Model'}
+                    </option>
+                    {models.map(model => (
+                      <option key={model} value={model}>{model}</option>
+                    ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                     <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
