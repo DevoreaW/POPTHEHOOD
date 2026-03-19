@@ -254,7 +254,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       <section className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 text-white py-12">
         <div className="mt-8 mb-6">
           <h3 className="text-xl font-bold flex items-center text-white uppercase tracking-wider whitespace-nowrap">
-            <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-6 h-6 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
             Quick Tools
@@ -301,7 +301,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <section className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 py-12">
-          <h3 className="text-xl font-bold flex items-center text-orange-500 uppercase tracking-wider whitespace-nowrap">
+          <h3 className="text-xl font-bold text-white mt-8 mb-6 flex items-center uppercase tracking-wider">
             <svg className="w-6 h-6 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
               <circle cx="7" cy="17" r="2" />
