@@ -92,7 +92,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ places });
 
   } catch (error) {
-    console.error('Places API error:', error);
-    return res.status(500).json({ error: error.message });
+    console.error('Gemini API error:', error);
+    const { sanitizeErrorMessage } = await import('./utils.js');
+    return res.status(500).json({ error: sanitizeErrorMessage(error.message) });
   }
 }

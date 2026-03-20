@@ -88,6 +88,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Gemini API error:', error);
-    return res.status(500).json({ error: error.message });
+    const { sanitizeErrorMessage } = await import('./utils.js');
+    return res.status(500).json({ error: sanitizeErrorMessage(error.message) });
   }
 }

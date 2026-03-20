@@ -5,12 +5,14 @@ import DiagnosticView from './components/DiagnosticView';
 import TireAnalysisView from './components/TireAnalysisView';
 import ServicesView from './components/ServicesView';
 import ConsentBanner from './components/ConsentBanner';
+import { useUser } from '@clerk/react';
 import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices } from './services/geminiService';
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from './types';
 
 const STORAGE_KEY = 'underthehood_history';
 
 const App: React.FC = () => {
+  const { isSignedIn } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState<DiagnosticReport | null>(null);
   const [tireReport, setTireReport] = useState<TireAnalysisReport | null>(null);
@@ -22,6 +24,7 @@ const App: React.FC = () => {
     return localStorage.getItem('popthehood_consent_accepted') === 'true';
   });
 
+  // Load history on mount
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -32,6 +35,17 @@ const App: React.FC = () => {
       }
     }
   }, []);
+
+  // Clear sensitive data when user signs out
+  useEffect(() => {
+    if (isSignedIn === false) {
+      localStorage.removeItem(STORAGE_KEY);
+      setHistory([]);
+      setReport(null);
+      setTireReport(null);
+      setServiceReport(null);
+    }
+  }, [isSignedIn]);
 
   const announce = (message: string) => {
     setAnnouncement('');
@@ -122,7 +136,7 @@ const App: React.FC = () => {
             setIsLoading(false);
           }
         },
-        (err) => {
+        () => {
           setError("Location access denied. Please enable GPS to find nearby help.");
           announce("Location access denied. Please enable GPS to find nearby help.");
           setIsLoading(false);
@@ -176,7 +190,7 @@ const App: React.FC = () => {
       
       <main id="main-content" className="flex-grow pt-8" tabIndex={-1}>
         <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
-          <div 
+          <div
             role="alert"
             className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-8 shadow-sm"
           >
@@ -198,15 +212,15 @@ const App: React.FC = () => {
         </div>
 
         {error && (
-          <div 
+          <div
             role="alert"
             aria-live="assertive"
             className="max-w-4xl mx-auto px-4 mb-8"
           >
             <div className="bg-rose-100 border border-rose-200 text-rose-800 p-4 rounded-xl flex items-center justify-between">
               <span>{error}</span>
-              <button 
-                onClick={() => setError(null)} 
+              <button
+                onClick={() => setError(null)}
                 className="text-rose-900 font-bold ml-4 hover:underline"
                 aria-label="Dismiss error message"
               >
@@ -217,7 +231,7 @@ const App: React.FC = () => {
         )}
 
         {isLoading ? (
-          <div 
+          <div
             role="status"
             aria-label="Loading. Please wait."
             className="flex flex-col items-center justify-center py-20 space-y-6"
@@ -231,31 +245,31 @@ const App: React.FC = () => {
         ) : (
           <>
             {report && (
-              <DiagnosticView 
-                report={report} 
-                onReset={resetDiagnosis} 
-                onSave={saveToHistory} 
+              <DiagnosticView
+                report={report}
+                onReset={resetDiagnosis}
+                onSave={saveToHistory}
               />
             )}
             {tireReport && (
-              <TireAnalysisView 
-                report={tireReport} 
-                onReset={resetDiagnosis} 
-                onSave={saveToHistory} 
+              <TireAnalysisView
+                report={tireReport}
+                onReset={resetDiagnosis}
+                onSave={saveToHistory}
               />
             )}
             {serviceReport && (
-              <ServicesView 
+              <ServicesView
                 report={serviceReport}
                 onReset={resetDiagnosis}
               />
             )}
             {!report && !tireReport && !serviceReport && (
-              <VehicleForm 
-                onDiagnose={handleDiagnose} 
+              <VehicleForm
+                onDiagnose={handleDiagnose}
                 onTireScan={handleTireScan}
                 onFindServices={handleFindServices}
-                isLoading={isLoading} 
+                isLoading={isLoading}
                 history={history}
                 onHistorySelect={handleHistorySelect}
                 onHistoryClear={clearHistory}
