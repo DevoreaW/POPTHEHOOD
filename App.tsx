@@ -7,12 +7,13 @@ import ServicesView from './components/ServicesView';
 import ConsentBanner from './components/ConsentBanner';
 import { useUser } from '@clerk/react';
 import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices } from './services/geminiService';
+import { saveDiagnostic, saveTireScan, getUserDiagnostics, getUserTireScans } from './services/supabaseService';
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from './types';
 
 const STORAGE_KEY = 'underthehood_history';
 
 const App: React.FC = () => {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState<DiagnosticReport | null>(null);
   const [tireReport, setTireReport] = useState<TireAnalysisReport | null>(null);
@@ -24,17 +25,36 @@ const App: React.FC = () => {
     return localStorage.getItem('popthehood_consent_accepted') === 'true';
   });
 
-  // Load history on mount
+  // Load history — from Supabase if signed in, localStorage if not
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load history", e);
+    const loadHistory = async () => {
+      if (isSignedIn && user) {
+        try {
+          const [diagnostics, tireScans] = await Promise.all([
+            getUserDiagnostics(user.id),
+            getUserTireScans(user.id)
+          ]);
+          const diagReports = (diagnostics || []).map((d: any) => ({ ...d.report, id: d.id, timestamp: new Date(d.created_at).getTime(), vehicle: { make: d.vehicle_make, model: d.vehicle_model, year: d.vehicle_year, mileage: d.vehicle_mileage } }));
+          const tireReports = (tireScans || []).map((t: any) => ({ ...t.report, id: t.id, timestamp: new Date(t.created_at).getTime() }));
+          const combined = [...diagReports, ...tireReports].sort((a, b) => b.timestamp - a.timestamp).slice(0, 10);
+          setHistory(combined);
+        } catch (err) {
+          console.error('Failed to load history from Supabase:', err);
+          // Fall back to localStorage
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            try { setHistory(JSON.parse(saved)); } catch (e) {}
+          }
+        }
+      } else {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try { setHistory(JSON.parse(saved)); } catch (e) {}
+        }
       }
-    }
-  }, []);
+    };
+    loadHistory();
+  }, [isSignedIn, user]);
 
   // Clear sensitive data when user signs out
   useEffect(() => {
@@ -58,13 +78,37 @@ const App: React.FC = () => {
     announce("An error occurred. Please try again.");
   };
 
-  const saveToHistory = (item: DiagnosticReport | TireAnalysisReport) => {
-    setHistory(prev => {
-      if (prev.find(i => i.id === item.id)) return prev;
-      const newHistory = [item, ...prev].slice(0, 10);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
-      return newHistory;
-    });
+  const saveToHistory = async (item: DiagnosticReport | TireAnalysisReport) => {
+    // Save to Supabase if signed in
+    if (isSignedIn && user) {
+      try {
+        if ('healthScore' in item) {
+          await saveTireScan(user.id, item);
+        } else {
+          const diagItem = item as DiagnosticReport;
+          await saveDiagnostic(user.id, diagItem.vehicle, diagItem);
+        }
+        // Refresh history from Supabase
+        const [diagnostics, tireScans] = await Promise.all([
+          getUserDiagnostics(user.id),
+          getUserTireScans(user.id)
+        ]);
+        const diagReports = (diagnostics || []).map((d: any) => ({ ...d.report, id: d.id, timestamp: new Date(d.created_at).getTime(), vehicle: { make: d.vehicle_make, model: d.vehicle_model, year: d.vehicle_year, mileage: d.vehicle_mileage } }));
+        const tireReports = (tireScans || []).map((t: any) => ({ ...t.report, id: t.id, timestamp: new Date(t.created_at).getTime() }));
+        const combined = [...diagReports, ...tireReports].sort((a, b) => b.timestamp - a.timestamp).slice(0, 10);
+        setHistory(combined);
+      } catch (err) {
+        console.error('Failed to save to Supabase:', err);
+      }
+    } else {
+      // Save to localStorage if not signed in
+      setHistory(prev => {
+        if (prev.find(i => i.id === item.id)) return prev;
+        const newHistory = [item, ...prev].slice(0, 10);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
+        return newHistory;
+      });
+    }
   };
 
   const clearHistory = () => {
@@ -175,7 +219,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* ARIA live region for screen reader announcements */}
       <div
         role="status"
         aria-live="polite"

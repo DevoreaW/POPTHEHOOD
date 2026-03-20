@@ -13,6 +13,7 @@
     "@clerk/react": "^6.0.2",
     "@google/genai": "^1.41.0",
     "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.99.3",
     "@types/react-router-dom": "^5.3.3",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.36.3",
