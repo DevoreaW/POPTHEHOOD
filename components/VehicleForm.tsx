@@ -95,11 +95,16 @@ const SectionHead: React.FC<{
   iconColor?: string;
   right?: React.ReactNode;
 }> = ({ icon, title, iconColor = 'text-orange-500', right }) => (
-  <div className="flex items-center gap-3 mb-7 min-w-0">
+  <div className="flex items-center gap-2 mb-7 min-w-0 overflow-hidden">
     <div className={`${S.secIcon} bg-orange-500/10 border border-orange-500/20 ${iconColor} flex-shrink-0`}>
       {icon}
     </div>
-    <span className={`${S.secTitle} whitespace-nowrap`} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' }}>{title}</span>
+    <span
+      className="font-black italic uppercase text-white flex-shrink-0"
+      style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 'clamp(14px, 4vw, 20px)', letterSpacing: '0.05em' }}
+    >
+      {title}
+    </span>
     <div className="flex-1 h-px bg-slate-800 min-w-0" />
     {right && <div className="flex-shrink-0">{right}</div>}
   </div>
