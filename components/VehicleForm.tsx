@@ -76,37 +76,37 @@ const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toStr
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:        'bg-gray-950 rounded-2xl p-8 border border-slate-800/60',
+  card:        'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
   secIcon:     'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secTitle:    'font-["Barlow_Condensed"] font-black italic text-xl uppercase tracking-wider text-white',
-  secDivider:  'flex-1 h-px bg-slate-800',
   fieldLabel:  'text-[9px] font-black text-slate-600 uppercase tracking-[0.18em] pl-4',
   selectBase:  'w-full h-12 pl-5 pr-10 bg-black/40 border border-slate-800 rounded-full text-white font-semibold text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
   inputBase:   'w-full h-12 px-5 bg-black/40 border border-slate-800 rounded-full text-white font-semibold text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-700',
-  toolBtn:     'flex flex-col items-center justify-center gap-3 p-6 bg-black/40 border border-slate-800 rounded-2xl transition-all hover:bg-slate-900 hover:border-orange-500/30 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950',
-  toolLabel:   'font-["Barlow_Condensed"] font-bold italic text-xs uppercase tracking-widest text-slate-400',
-  historyItem: 'flex items-center gap-4 p-4 bg-black/40 border border-slate-800 rounded-xl hover:bg-slate-900 hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950',
+  toolBtn:     'flex flex-col items-center justify-center gap-3 p-5 sm:p-6 bg-black/40 border border-slate-800 rounded-2xl transition-all hover:bg-slate-900 hover:border-orange-500/30 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950',
+  toolLabel:   'font-black italic text-xs uppercase tracking-widest text-slate-400',
+  historyItem: 'flex items-center gap-4 p-4 bg-black/40 border border-slate-800 rounded-xl hover:bg-slate-900 hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 w-full',
 };
 
-/* ─── Section header ──────────────────────────────────────────────────────── */
+const condensed: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif" };
+
+/* ─── Section header — always one line on mobile ──────────────────────────── */
 const SectionHead: React.FC<{
   icon: React.ReactNode;
   title: string;
   iconColor?: string;
   right?: React.ReactNode;
 }> = ({ icon, title, iconColor = 'text-orange-500', right }) => (
-  <div className="flex items-center gap-2 mb-7 min-w-0 overflow-hidden">
+  <div className="flex items-center gap-2 mb-6 overflow-hidden">
     <div className={`${S.secIcon} bg-orange-500/10 border border-orange-500/20 ${iconColor} flex-shrink-0`}>
       {icon}
     </div>
     <span
       className="font-black italic uppercase text-white flex-shrink-0"
-      style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 'clamp(14px, 4vw, 20px)', letterSpacing: '0.05em' }}
+      style={{ ...condensed, fontSize: 'clamp(13px, 3.8vw, 20px)', letterSpacing: '0.05em' }}
     >
       {title}
     </span>
     <div className="flex-1 h-px bg-slate-800 min-w-0" />
-    {right && <div className="flex-shrink-0">{right}</div>}
+    {right && <div className="flex-shrink-0 ml-1">{right}</div>}
   </div>
 );
 
@@ -148,7 +148,7 @@ const ChevronDown = () => (
 );
 
 const ChevronRight = () => (
-  <svg className="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-4 h-4 text-slate-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
   </svg>
 );
@@ -163,7 +163,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   onHistorySelect,
   onHistoryClear,
 }) => {
-  const [vehicle, setVehicle] = useState<VehicleInfo>({ make: '', model: '', year: '', mileage: '', engine: '' });
+  const [vehicle, setVehicle]           = useState<VehicleInfo>({ make: '', model: '', year: '', mileage: '', engine: '' });
   const [description, setDescription]   = useState('');
   const [interimText, setInterimText]   = useState('');
   const [obdCodes, setObdCodes]         = useState('');
@@ -172,11 +172,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [showCamera, setShowCamera]     = useState(false);
+  const [manualEntry, setManualEntry]   = useState(false);
 
-  const fileInputRef    = useRef<HTMLInputElement>(null);
-  const textAreaRef     = useRef<HTMLTextAreaElement>(null);
-  const recognitionRef  = useRef<any>(null);
-  const timerRef        = useRef<number | null>(null);
+  const fileInputRef   = useRef<HTMLInputElement>(null);
+  const textAreaRef    = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const timerRef       = useRef<number | null>(null);
 
   useEffect(() => {
     if (textAreaRef.current) textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
@@ -247,6 +248,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     if (name === 'description') setDescription(value);
     else if (name === 'obdCodes') setObdCodes(value);
     else if (name === 'mileage') setVehicle(p => ({ ...p, mileage: value }));
+    else if (name === 'make' || name === 'model' || name === 'year') setVehicle(p => ({ ...p, [name]: value }));
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -276,13 +278,18 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     onDiagnose(vehicle, { description: (description + ' ' + interimText).trim(), obdCodes, files });
   };
 
+  const handleToggleManual = () => {
+    setManualEntry(p => !p);
+    setVehicle({ make: '', model: '', year: '', mileage: vehicle.mileage, engine: '' });
+  };
+
   const isTireReport = (item: any): item is TireAnalysisReport => 'healthScore' in item;
-  const models      = CAR_MODELS[vehicle.make] || [];
-  const otherMakes  = ALL_MAKES.filter(m => !POPULAR_MAKES.includes(m));
-  const charCount   = (description + interimText).length;
+  const models       = CAR_MODELS[vehicle.make] || [];
+  const otherMakes   = ALL_MAKES.filter(m => !POPULAR_MAKES.includes(m));
+  const charCount    = (description + interimText).length;
 
   return (
-    <div className="max-w-lg md:max-w-4xl mx-auto px-4 pb-20 space-y-5">
+    <div className="max-w-lg md:max-w-4xl mx-auto px-3 sm:px-4 pb-20 space-y-4 sm:space-y-5">
 
       {showCamera && (
         <CameraCapture
@@ -293,103 +300,160 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
       {/* ── Quick Tools ───────────────────────────────────────────────────── */}
       <section className={S.card}>
-        <SectionHead
-          icon={<ToolboxIcon />}
-          title="Quick Tools"
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <SectionHead icon={<ToolboxIcon />} title="Quick Tools" />
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           <button type="button" aria-label="Scan tire tread" onClick={() => setShowCamera(true)} className={S.toolBtn}>
-            <div className="w-11 h-11 rounded-xl bg-orange-500/8 border border-orange-500/15 flex items-center justify-center text-orange-500">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-500/10 border border-orange-500/15 flex items-center justify-center text-orange-500">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" />
                 <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" />
                 <line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" />
               </svg>
             </div>
-            <span className={S.toolLabel}>Tire Tread Scan</span>
+            <span className={S.toolLabel} style={condensed}>Tire Scan</span>
           </button>
 
           <button type="button" aria-label="Find local mechanic" onClick={() => onFindServices('mechanic')} className={S.toolBtn}>
-            <div className="w-11 h-11 rounded-xl bg-blue-500/8 border border-blue-500/15 flex items-center justify-center text-blue-500">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-500/10 border border-blue-500/15 flex items-center justify-center text-blue-500">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <circle cx="12" cy="11" r="3" />
               </svg>
             </div>
-            <span className={S.toolLabel}>Find Mechanic</span>
+            <span className={S.toolLabel} style={condensed}>Mechanic</span>
           </button>
 
           <button type="button" aria-label="Request towing service" onClick={() => onFindServices('towing')} className={S.toolBtn}>
-            <div className="w-11 h-11 rounded-xl bg-red-500/8 border border-red-500/15 flex items-center justify-center text-red-500">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-500/10 border border-red-500/15 flex items-center justify-center text-red-500">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <span className={S.toolLabel}>Request Tow</span>
+            <span className={S.toolLabel} style={condensed}>Request Tow</span>
           </button>
         </div>
       </section>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
 
         {/* ── Vehicle Details ──────────────────────────────────────────────── */}
         <section className={S.card}>
-          <SectionHead icon={<CarIcon />} title="Vehicle Details" />
+          <SectionHead
+            icon={<CarIcon />}
+            title="Vehicle Details"
+            right={
+              <button
+                type="button"
+                onClick={handleToggleManual}
+                className="text-[9px] font-black uppercase tracking-widest transition-colors px-2 py-1 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
+                style={{
+                  ...condensed,
+                  color: manualEntry ? '#f97316' : '#475569',
+                  borderColor: manualEntry ? 'rgba(249,115,22,0.3)' : 'rgba(71,85,105,0.3)',
+                  background: manualEntry ? 'rgba(249,115,22,0.08)' : 'transparent',
+                }}
+              >
+                {manualEntry ? '← Use List' : 'Type Manually'}
+              </button>
+            }
+          />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {/* Make */}
-            <div className="space-y-1.5">
-              <label className={S.fieldLabel}>Make</label>
-              <div className="relative">
-                <select name="make" value={vehicle.make} onChange={handleSelectChange} className={S.selectBase}>
-                  <option value="" disabled>Select Make</option>
-                  <optgroup label="── Popular Makes ──">
-                    {POPULAR_MAKES.map(m => <option key={m} value={m}>{m}</option>)}
-                  </optgroup>
-                  <optgroup label="── All Makes ──">
-                    {otherMakes.map(m => <option key={m} value={m}>{m}</option>)}
-                  </optgroup>
-                </select>
-                <ChevronDown />
+          {manualEntry ? (
+            /* ── Manual entry mode ── */
+            <div className="space-y-3">
+              <div className="bg-orange-500/5 border border-orange-500/15 rounded-xl px-4 py-3">
+                <p className="text-[10px] font-bold text-orange-400/70 leading-relaxed">
+                  Can't find your vehicle in the list? Enter the details below and we'll still run a full diagnosis.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="space-y-1.5">
+                  <label className={S.fieldLabel}>Make</label>
+                  <input name="make" value={vehicle.make} onChange={handleInputChange} placeholder="e.g. Honda" className={S.inputBase} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className={S.fieldLabel}>Model</label>
+                  <input name="model" value={vehicle.model} onChange={handleInputChange} placeholder="e.g. Civic" className={S.inputBase} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className={S.fieldLabel}>Year</label>
+                  <input name="year" value={vehicle.year} onChange={handleInputChange} placeholder="e.g. 2019" className={S.inputBase} maxLength={4} />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className={S.fieldLabel}>Mileage</label>
+                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} />
               </div>
             </div>
+          ) : (
+            /* ── Dropdown mode ── */
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Make */}
+                <div className="space-y-1.5">
+                  <label className={S.fieldLabel}>Make</label>
+                  <div className="relative">
+                    <select name="make" value={vehicle.make} onChange={handleSelectChange} className={S.selectBase}>
+                      <option value="" disabled>Select make</option>
+                      <optgroup label="── Popular ──">
+                        {POPULAR_MAKES.map(m => <option key={m} value={m}>{m}</option>)}
+                      </optgroup>
+                      <optgroup label="── All Makes ──">
+                        {otherMakes.map(m => <option key={m} value={m}>{m}</option>)}
+                      </optgroup>
+                    </select>
+                    <ChevronDown />
+                  </div>
+                </div>
 
-            {/* Model */}
-            <div className="space-y-1.5">
-              <label className={S.fieldLabel}>Model</label>
-              <div className="relative">
-                <select name="model" value={vehicle.model} onChange={handleSelectChange} className={S.selectBase}>
-                  <option value="" disabled>{!vehicle.make ? 'Select Make First' : 'Select Model'}</option>
-                  {models.map(m => <option key={m} value={m}>{m}</option>)}
-                </select>
-                <ChevronDown />
+                {/* Model */}
+                <div className="space-y-1.5">
+                  <label className={S.fieldLabel}>Model</label>
+                  <div className="relative">
+                    <select
+                      name="model"
+                      value={vehicle.model}
+                      onChange={handleSelectChange}
+                      disabled={!vehicle.make}
+                      className={`${S.selectBase} ${!vehicle.make ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      <option value="" disabled>
+                        {vehicle.make ? 'Select model' : 'Pick a make first'}
+                      </option>
+                      {models.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                    <ChevronDown />
+                  </div>
+                </div>
+
+                {/* Year */}
+                <div className="space-y-1.5">
+                  <label className={S.fieldLabel}>Year</label>
+                  <div className="relative">
+                    <select name="year" value={vehicle.year} onChange={handleSelectChange} className={S.selectBase}>
+                      <option value="" disabled>Select year</option>
+                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                    </select>
+                    <ChevronDown />
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {/* Year */}
-            <div className="space-y-1.5">
-              <label className={S.fieldLabel}>Year</label>
-              <div className="relative">
-                <select name="year" value={vehicle.year} onChange={handleSelectChange} className={S.selectBase}>
-                  <option value="" disabled>Select Year</option>
-                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
-                <ChevronDown />
+              {/* Mileage */}
+              <div className="space-y-1.5">
+                <label className={S.fieldLabel}>Mileage</label>
+                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} />
               </div>
-            </div>
-          </div>
 
-          {/* Mileage */}
-          <div className="space-y-1.5">
-            <label className={S.fieldLabel}>Mileage</label>
-            <input
-              name="mileage"
-              value={vehicle.mileage}
-              onChange={handleInputChange}
-              placeholder="45,000"
-              className={S.inputBase}
-            />
-          </div>
+              {/* Not listed hint */}
+              <p className="text-[9px] text-slate-700 font-bold uppercase tracking-widest pl-1">
+                Vehicle not listed?{' '}
+                <button type="button" onClick={handleToggleManual} className="text-orange-500/60 hover:text-orange-400 transition-colors underline underline-offset-2 focus:outline-none">
+                  Enter it manually
+                </button>
+              </p>
+            </div>
+          )}
         </section>
 
         {/* ── Diagnostic Information ───────────────────────────────────────── */}
@@ -398,7 +462,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             icon={<WarningIcon />}
             title="Diagnostic Info"
             right={
-              <div className="relative flex-shrink-0 ml-2">
+              <div className="relative">
                 {isRecording && (
                   <div className="absolute inset-0 rounded-xl ring-2 ring-orange-500 animate-ping opacity-20" />
                 )}
@@ -407,28 +471,29 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   aria-label="Toggle voice input"
                   disabled={isConnecting}
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`relative flex items-center gap-2 px-3 sm:px-5 py-2.5 rounded-xl border-b-2 font-black text-xs uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 whitespace-nowrap
+                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl border-b-2 font-black text-[10px] uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 whitespace-nowrap
                     ${isRecording
                       ? 'bg-orange-600 border-orange-800 text-white'
                       : isConnecting
                       ? 'bg-slate-800 border-slate-900 text-slate-400'
                       : 'bg-black/40 border-slate-800 text-white hover:border-orange-500/40'
                     }`}
+                  style={condensed}
                 >
                   {isRecording ? (
-                    <div className="flex items-end gap-0.5 h-4 flex-shrink-0">
-                      <div className="w-1 bg-white rounded-full animate-[bounce_0.8s_infinite] h-2" />
-                      <div className="w-1 bg-white rounded-full animate-[bounce_1s_infinite] h-4" />
-                      <div className="w-1 bg-white rounded-full animate-[bounce_0.6s_infinite] h-3" />
-                      <div className="w-1 bg-white rounded-full animate-[bounce_0.9s_infinite] h-4" />
+                    <div className="flex items-end gap-0.5 h-3.5 flex-shrink-0">
+                      <div className="w-0.5 bg-white rounded-full animate-[bounce_0.8s_infinite] h-2" />
+                      <div className="w-0.5 bg-white rounded-full animate-[bounce_1s_infinite] h-3.5" />
+                      <div className="w-0.5 bg-white rounded-full animate-[bounce_0.6s_infinite] h-2.5" />
+                      <div className="w-0.5 bg-white rounded-full animate-[bounce_0.9s_infinite] h-3.5" />
                     </div>
                   ) : isConnecting ? (
-                    <svg className="w-4 h-4 animate-spin flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5 animate-spin flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <svg className="w-4 h-4 text-orange-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
                     </svg>
                   )}
@@ -443,7 +508,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             }
           />
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Symptoms textarea */}
             <div className="space-y-1.5">
               <label className={S.fieldLabel}>What's happening? — Symptoms, Noises, Leaks</label>
@@ -454,18 +519,15 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   value={description + (interimText ? (description ? ' ' : '') + interimText : '')}
                   onChange={handleInputChange}
                   rows={5}
-                  placeholder="Example: My car makes a loud squealing noise from the front when I brake…"
+                  placeholder="Example: My car makes a loud squealing noise when I brake…"
                   className={`w-full min-h-[120px] px-5 py-4 bg-black/40 border rounded-2xl outline-none resize-none text-white placeholder:text-slate-700 font-medium text-sm leading-relaxed transition-colors
-                    ${isRecording
-                      ? 'border-orange-500/40 bg-orange-900/5'
-                      : 'border-slate-800 focus:border-orange-500/50'
-                    }`}
+                    ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-slate-800 focus:border-orange-500/50'}`}
                 />
                 {isRecording && (
-                  <div className="absolute top-3 right-4 flex items-center gap-2">
-                    <span className="relative flex h-2.5 w-2.5">
+                  <div className="absolute top-3 right-4 flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
                     </span>
                     <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">Live</span>
                   </div>
@@ -477,7 +539,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             </div>
 
             {/* OBD + Attach */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <label className={S.fieldLabel}>OBD-II Codes (Optional)</label>
                 <input
@@ -496,10 +558,10 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   onClick={() => fileInputRef.current?.click()}
                   className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/40 border-2 border-dashed border-slate-800 rounded-full text-slate-600 hover:border-orange-500/30 hover:text-slate-400 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
-                  <span className="font-black text-xs uppercase tracking-widest">Attach Media</span>
+                  <span className="font-black text-xs uppercase tracking-widest" style={condensed}>Attach Media</span>
                 </button>
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*,video/*" className="hidden" />
               </div>
@@ -508,18 +570,18 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
           {/* Attachments preview */}
           {files.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-slate-800/60">
-              <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.18em] mb-4">
+            <div className="mt-5 pt-5 border-t border-slate-800/60">
+              <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.18em] mb-3">
                 Attachments ({files.length})
               </p>
               <div className="flex flex-wrap gap-3">
                 {files.map((file, idx) => (
-                  <div key={idx} className="relative group w-18 h-18 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex items-center justify-center">
+                  <div key={idx} className="relative group w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex items-center justify-center">
                     {file.type === 'image' ? (
                       <img src={file.data} className="w-full h-full object-cover" alt={file.name} />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-slate-800">
-                        <svg className="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                       </div>
@@ -530,7 +592,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                       onClick={() => removeFile(idx)}
                       className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
@@ -550,11 +612,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
             }`}
-          style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic', fontSize: 22 }}
+          style={{ ...condensed, fontStyle: 'italic', fontSize: 'clamp(18px, 5vw, 22px)' }}
         >
           {isLoading ? (
             <>
-              <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -562,7 +624,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             </>
           ) : (
             <>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
               </svg>
               Find My Problem
@@ -582,7 +644,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <button
                 type="button"
                 onClick={onHistoryClear}
-                className="ml-3 text-[9px] font-black text-slate-600 hover:text-red-500 uppercase tracking-[0.18em] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-1"
+                className="text-[9px] font-black text-slate-600 hover:text-red-500 uppercase tracking-[0.18em] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-1"
+                style={condensed}
               >
                 Clear All
               </button>
@@ -597,7 +660,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 onClick={() => onHistorySelect(item)}
                 className={S.historyItem}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isTireReport(item) ? 'bg-blue-500/8 border border-blue-500/15 text-blue-500' : 'bg-orange-500/8 border border-orange-500/15 text-orange-500'}`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border ${isTireReport(item) ? 'bg-blue-500/10 border-blue-500/15 text-blue-500' : 'bg-orange-500/10 border-orange-500/15 text-orange-500'}`}>
                   {isTireReport(item) ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -609,7 +672,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-black text-white text-sm uppercase tracking-tight truncate" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' }}>
+                  <div className="font-black text-white text-sm uppercase tracking-tight truncate" style={{ ...condensed, fontStyle: 'italic' }}>
                     {isTireReport(item) ? 'Tire Scan Report' : `${(item as DiagnosticReport).vehicle.year} ${(item as DiagnosticReport).vehicle.make} ${(item as DiagnosticReport).vehicle.model}`}
                   </div>
                   <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest mt-1">
@@ -625,11 +688,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
       {/* ── Privacy badge ─────────────────────────────────────────────────── */}
       <div className="flex justify-center py-4">
-        <div className="inline-flex items-center gap-2 bg-orange-500/5 border border-slate-800 rounded-full px-5 py-2.5">
-          <svg className="w-3.5 h-3.5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+        <div className="inline-flex items-center gap-2 bg-orange-500/5 border border-slate-800 rounded-full px-4 py-2.5">
+          <svg className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
-          <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.18em]">
+          <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.18em]" style={condensed}>
             Privacy Secured · Encrypted Diagnostic Stream
           </span>
         </div>
