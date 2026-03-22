@@ -5,15 +5,17 @@ import DiagnosticView from './components/DiagnosticView';
 import TireAnalysisView from './components/TireAnalysisView';
 import ServicesView from './components/ServicesView';
 import ConsentBanner from './components/ConsentBanner';
+import LandingPage from './components/LandingPage';
 import { useUser } from '@clerk/react';
 import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices } from './services/geminiService';
 import { saveDiagnostic, saveTireScan, getUserDiagnostics, getUserTireScans } from './services/supabaseService';
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from './types';
 
-const STORAGE_KEY = 'underthehood_history';
+const STORAGE_KEY = 'popthehood_history';
 
 const App: React.FC = () => {
   const { isSignedIn, user } = useUser();
+  const [showLanding, setShowLanding] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState<DiagnosticReport | null>(null);
   const [tireReport, setTireReport] = useState<TireAnalysisReport | null>(null);
@@ -40,7 +42,6 @@ const App: React.FC = () => {
           setHistory(combined);
         } catch (err) {
           console.error('Failed to load history from Supabase:', err);
-          // Fall back to localStorage
           const saved = localStorage.getItem(STORAGE_KEY);
           if (saved) {
             try { setHistory(JSON.parse(saved)); } catch (e) {}
@@ -79,7 +80,6 @@ const App: React.FC = () => {
   };
 
   const saveToHistory = async (item: DiagnosticReport | TireAnalysisReport) => {
-    // Save to Supabase if signed in
     if (isSignedIn && user) {
       try {
         if ('healthScore' in item) {
@@ -88,7 +88,6 @@ const App: React.FC = () => {
           const diagItem = item as DiagnosticReport;
           await saveDiagnostic(user.id, diagItem.vehicle, diagItem);
         }
-        // Refresh history from Supabase
         const [diagnostics, tireScans] = await Promise.all([
           getUserDiagnostics(user.id),
           getUserTireScans(user.id)
@@ -101,7 +100,6 @@ const App: React.FC = () => {
         console.error('Failed to save to Supabase:', err);
       }
     } else {
-      // Save to localStorage if not signed in
       setHistory(prev => {
         if (prev.find(i => i.id === item.id)) return prev;
         const newHistory = [item, ...prev].slice(0, 10);
@@ -158,7 +156,7 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     announce(`Searching for nearby ${type === 'mechanic' ? 'mechanics' : 'towing services'}. Please wait.`);
-    
+
     try {
       if (!navigator.geolocation) {
         throw new Error("Geolocation is not supported by your browser.");
@@ -217,6 +215,25 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // ── Show landing page until user clicks CTA ──────────────────────────────
+  if (showLanding) {
+    return (
+      <>
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+        >
+          {announcement}
+        </div>
+        {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
+        <LandingPage onEnterApp={() => setShowLanding(false)} />
+      </>
+    );
+  }
+
+  // ── Main app ─────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <div
@@ -230,7 +247,7 @@ const App: React.FC = () => {
 
       {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
       <Header />
-      
+
       <main id="main-content" className="flex-grow pt-8" tabIndex={-1}>
         <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
           <div
