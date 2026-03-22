@@ -95,13 +95,13 @@ const SectionHead: React.FC<{
   iconColor?: string;
   right?: React.ReactNode;
 }> = ({ icon, title, iconColor = 'text-orange-500', right }) => (
-  <div className="flex items-center gap-3 mb-7">
-    <div className={`${S.secIcon} bg-orange-500/10 border border-orange-500/20 ${iconColor}`}>
+  <div className="flex items-center gap-3 mb-7 min-w-0">
+    <div className={`${S.secIcon} bg-orange-500/10 border border-orange-500/20 ${iconColor} flex-shrink-0`}>
       {icon}
     </div>
-    <span className={S.secTitle}>{title}</span>
-    <div className={S.secDivider} />
-    {right}
+    <span className={`${S.secTitle} whitespace-nowrap`} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' }}>{title}</span>
+    <div className="flex-1 h-px bg-slate-800 min-w-0" />
+    {right && <div className="flex-shrink-0">{right}</div>}
   </div>
 );
 
@@ -402,7 +402,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   aria-label="Toggle voice input"
                   disabled={isConnecting}
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`relative flex items-center gap-3 px-5 py-2.5 rounded-xl border-b-2 font-black text-xs uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950
+                  className={`relative flex items-center gap-2 px-3 sm:px-5 py-2.5 rounded-xl border-b-2 font-black text-xs uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 whitespace-nowrap
                     ${isRecording
                       ? 'bg-orange-600 border-orange-800 text-white'
                       : isConnecting
@@ -411,24 +411,27 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                     }`}
                 >
                   {isRecording ? (
-                    <div className="flex items-end gap-0.5 h-4">
+                    <div className="flex items-end gap-0.5 h-4 flex-shrink-0">
                       <div className="w-1 bg-white rounded-full animate-[bounce_0.8s_infinite] h-2" />
                       <div className="w-1 bg-white rounded-full animate-[bounce_1s_infinite] h-4" />
                       <div className="w-1 bg-white rounded-full animate-[bounce_0.6s_infinite] h-3" />
                       <div className="w-1 bg-white rounded-full animate-[bounce_0.9s_infinite] h-4" />
                     </div>
                   ) : isConnecting ? (
-                    <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 animate-spin flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 text-orange-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
                     </svg>
                   )}
-                  <span>
+                  <span className="hidden sm:inline">
                     {isRecording ? `Listening… ${formatTime(recordingTime)}` : isConnecting ? 'Connecting…' : 'Tap to Speak'}
+                  </span>
+                  <span className="sm:hidden">
+                    {isRecording ? formatTime(recordingTime) : isConnecting ? '…' : 'Speak'}
                   </span>
                 </button>
               </div>
