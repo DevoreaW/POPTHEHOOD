@@ -177,15 +177,14 @@ const FEATURES = [
 const TRUST_ITEMS = ['End-to-end encrypted', 'OWASP compliant', 'No data sold — ever', 'ADA accessible'];
 
 const DIAG_CAUSES = [
-  { rank: '#1', name: 'Spark plug misfire',  prob: '88%', pct: '88%' },
-  { rank: '#2', name: 'Dirty fuel injector', prob: '55%', pct: '55%' },
-  { rank: '#3', name: 'O2 sensor failure',   prob: '30%', pct: '30%' },
+  { rank: '#1', name: 'Worn or glazed serpentine belt',   prob: 'HIGH'        },
+  { rank: '#2', name: 'Failing belt tensioner or pulley', prob: 'MEDIUM-HIGH' },
+  { rank: '#3', name: 'Accessory component bearing',      prob: 'MEDIUM'      },
 ];
 
 const NAV_LINKS = [
-  { label: 'Privacy', href: '/privacy'                                },
-  { label: 'Terms',   href: '/terms'                                  },
-
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms',   href: '/terms'   },
 ];
 
 /* ─── Shared logo ─────────────────────────────────────────────────────────── */
@@ -349,21 +348,22 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             Top causes ranked by likelihood
           </div>
 
-          {DIAG_CAUSES.map(({ rank, name, prob, pct }) => (
+          {DIAG_CAUSES.map(({ rank, name, prob }) => (
             <div key={rank} style={{ display: 'flex', alignItems: 'center', gap: 10, background: C.base, border: `1px solid ${C.borderInner}`, borderRadius: 8, padding: '10px 14px', marginBottom: 6 }}>
-              <span style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 16, color: C.orange, minWidth: 24 }}>{rank}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: C.text }}>{name}</div>
-                <div style={{ height: 3, background: C.borderInner, borderRadius: 2, marginTop: 4 }}>
-                  <div style={{ height: 3, width: pct, borderRadius: 2, background: 'linear-gradient(90deg, #f97316, #dc2626)' }} />
-                </div>
-              </div>
-              <span style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.textFaint, background: C.card, border: `1px solid ${C.borderInner}`, borderRadius: 4, padding: '2px 8px' }}>{prob}</span>
+              <span style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 16, color: C.orange, minWidth: 24, flexShrink: 0 }}>{rank}</span>
+              <div style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: C.text, flex: 1, minWidth: 0 }}>{name}</div>
+              <span style={{
+                fontFamily: F.body, fontSize: 10, fontWeight: 700,
+                color: prob === 'HIGH' ? '#f97316' : prob === 'MEDIUM-HIGH' ? '#f59e0b' : '#94a3b8',
+                background: prob === 'HIGH' ? 'rgba(249,115,22,0.1)' : prob === 'MEDIUM-HIGH' ? 'rgba(245,158,11,0.1)' : 'rgba(148,163,184,0.1)',
+                border: `1px solid ${prob === 'HIGH' ? 'rgba(249,115,22,0.25)' : prob === 'MEDIUM-HIGH' ? 'rgba(245,158,11,0.25)' : 'rgba(148,163,184,0.2)'}`,
+                borderRadius: 4, padding: '2px 8px', whiteSpace: 'nowrap', flexShrink: 0,
+              }}>{prob}</span>
             </div>
           ))}
 
           <div style={{ marginTop: 12, padding: '10px 14px', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, fontFamily: F.body, fontSize: 12, fontWeight: 600, color: C.orange, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            💡 Estimated repair: $80–$180 · DIY-safe
+            Estimated repair: $150–$400 · Consult a mechanic
           </div>
         </div>
       </div>
