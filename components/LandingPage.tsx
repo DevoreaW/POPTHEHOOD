@@ -332,7 +332,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
         <div style={{ background: C.card, border: `1px solid ${C.borderInner}`, borderRadius: 20, padding: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'nowrap', marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.borderInner}` }}>
             <div style={{ background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 6, padding: '5px 12px', fontFamily: F.body, fontSize: 12, fontWeight: 700, color: C.orange, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
-              2019 HONDA CIVIC LX
+              2012 ACURA TLX
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto', fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.green, whiteSpace: 'nowrap' }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.green, display: 'inline-block', flexShrink: 0 }} />
@@ -363,7 +363,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
           ))}
 
           <div style={{ marginTop: 12, padding: '10px 14px', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, fontFamily: F.body, fontSize: 12, fontWeight: 600, color: C.orange, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            Estimated repair: $150–$400 · Consult a mechanic
+            Estimated repair: $150–$900+ · Consult a mechanic
           </div>
         </div>
       </div>
