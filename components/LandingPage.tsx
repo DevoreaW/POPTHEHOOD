@@ -185,7 +185,7 @@ const DIAG_CAUSES = [
 const NAV_LINKS = [
   { label: 'Privacy', href: '/privacy'                                },
   { label: 'Terms',   href: '/terms'                                  },
-  { label: 'GitHub',  href: 'https://github.com/DevoreaW/POPTHEHOOD' },
+
 ];
 
 /* ─── Shared logo ─────────────────────────────────────────────────────────── */
