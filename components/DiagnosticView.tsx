@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { DiagnosticReport, Severity } from '../types';
 
 interface DiagnosticViewProps {
   report: DiagnosticReport;
   onReset: () => void;
-  onSave?: (report: DiagnosticReport) => void;
+  onSave?: (report: DiagnosticReport) => Promise<void> | void;
 }
 
 const SeverityBadge: React.FC<{ severity: Severity }> = ({ severity }) => {
@@ -42,14 +41,33 @@ const SeverityBadge: React.FC<{ severity: Severity }> = ({ severity }) => {
 };
 
 const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave }) => {
-  const [isSaved, setIsSaved] = useState(false);
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
-  const handleSave = () => {
-    if (onSave) {
-      onSave(report);
-      setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 2000);
+  const handleSave = async () => {
+    if (!onSave || saveState === 'saving' || saveState === 'saved') return;
+    setSaveState('saving');
+    try {
+      await onSave(report);
+      setSaveState('saved');
+      setTimeout(() => setSaveState('idle'), 3000);
+    } catch (err) {
+      setSaveState('error');
+      setTimeout(() => setSaveState('idle'), 3000);
     }
+  };
+
+  const saveButtonLabel = {
+    idle: 'Save Report',
+    saving: 'Saving...',
+    saved: 'Saved!',
+    error: 'Save Failed'
+  };
+
+  const saveButtonClass = {
+    idle: 'bg-slate-800 text-slate-300 hover:bg-orange-500 hover:text-white border border-slate-700',
+    saving: 'bg-slate-700 text-slate-400 border border-slate-600 cursor-not-allowed',
+    saved: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+    error: 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
   };
 
   return (
@@ -59,19 +77,30 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <div className="p-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 mt-8">
             <div className="flex items-center space-x-4">
-               <h2 className="text-2xl font-black text-white uppercase tracking-tight">Diagnostic Assessment</h2>
-               <button 
-                  aria-label="Save report to history"
-                  onClick={handleSave}
-                  className={`p-3 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isSaved ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-                  title="Save to History"
-               >
-                 {isSaved ? (
-                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                 ) : (
-                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                 )}
-               </button>
+              <h2 className="text-2xl font-black text-white uppercase tracking-tight">Diagnostic Assessment</h2>
+              <button
+                aria-label={saveButtonLabel[saveState]}
+                onClick={handleSave}
+                disabled={saveState === 'saving' || saveState === 'saved'}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900 text-xs font-black uppercase tracking-widest ${saveButtonClass[saveState]}`}
+              >
+                {saveState === 'saving' && (
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                )}
+                {saveState === 'saved' && (
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                )}
+                {saveState === 'idle' && (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                )}
+                {saveState === 'error' && (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span>{saveButtonLabel[saveState]}</span>
+              </button>
             </div>
             <SeverityBadge severity={report.severity} />
           </div>
@@ -81,7 +110,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         </div>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Likely Causes */}
         <section className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800 py-12">
           <h3 className="text-xl font-bold text-white mt-8 mb-6 flex items-center uppercase tracking-wider">
@@ -161,8 +190,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             {report.diyVsPro.canDiy ? 'DIY FRIENDLY' : 'PROFESSIONAL NEEDED'}
           </span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">          <div>
             <p className="text-slate-300 leading-relaxed mb-6 font-medium">{report.diyVsPro.explanation}</p>
             <div className="bg-amber-500/5 border border-amber-500/20 p-6 rounded-2xl">
               <h4 className="text-amber-500 text-xs font-black flex items-center mb-3 uppercase tracking-widest">
@@ -216,7 +244,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
       </section>
 
       <div className="flex flex-col items-center justify-center space-y-6 pt-12">
-        <button 
+        <button
           aria-label="Start a new diagnostic session"
           onClick={onReset}
           className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black uppercase tracking-widest transition-all shadow-2xl hover:shadow-orange-500/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900"
