@@ -179,9 +179,9 @@ const FEATURES = [
 const TRUST_ITEMS = ['End-to-end encrypted', 'OWASP compliant', 'No data sold — ever', 'ADA accessible'];
 
 const DIAG_CAUSES = [
-  { rank: '01', name: 'Worn Spark Plugs or Failing Ignition Coils',   prob: 'HIGH',        probColor: '#f97316', probBg: 'rgba(249,115,22,0.1)',   probBorder: 'rgba(249,115,22,0.25)'  },
-  { rank: '02', name: 'Vacuum Leak', prob: 'MEDIUM-HIGH', probColor: '#f59e0b', probBg: 'rgba(245,158,11,0.1)',   probBorder: 'rgba(245,158,11,0.25)'  },
-  { rank: '03', name: 'Dirty/Clogged Fuel Injectors',      prob: 'MEDIUM',      probColor: '#94a3b8', probBg: 'rgba(148,163,184,0.08)', probBorder: 'rgba(148,163,184,0.2)'  },
+  { rank: '01', name: 'Worn Spark Plugs or Failing Ignition Coils', prob: 'HIGH',        probColor: '#f97316', probBg: 'rgba(249,115,22,0.1)',   probBorder: 'rgba(249,115,22,0.25)'  },
+  { rank: '02', name: 'Vacuum Leak',                                 prob: 'MEDIUM-HIGH', probColor: '#f59e0b', probBg: 'rgba(245,158,11,0.1)',   probBorder: 'rgba(245,158,11,0.25)'  },
+  { rank: '03', name: 'Dirty/Clogged Fuel Injectors',               prob: 'MEDIUM',      probColor: '#94a3b8', probBg: 'rgba(148,163,184,0.08)', probBorder: 'rgba(148,163,184,0.2)'  },
 ];
 
 const NAV_LINKS = [
@@ -221,6 +221,7 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: scrolled ? 'rgba(3,7,18,0.95)' : 'rgba(3,7,18,0.7)', backdropFilter: 'blur(16px)', borderBottom: `1px solid ${scrolled ? C.border : 'transparent'}`, transition: 'background 0.3s, border-color 0.3s' }}>
       <nav className="pth-nav-inner" aria-label="Main navigation">
         <LogoMark compact />
+        <button onClick={onCTAClick} type="button" style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '8px 16px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', whiteSpace: 'nowrap', marginRight: 12 }} aria-label="Open the app">Open app</button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap', flexShrink: 0 }}>
           <div className="pth-nav-status" style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 16, background: C.greenBg, border: `1px solid rgba(16,185,129,0.2)`, borderRadius: 9999, padding: '5px 12px' }}>
             <span style={{ position: 'relative', width: 8, height: 8, display: 'inline-block' }}>
@@ -335,90 +336,88 @@ const HowItWorksSection: React.FC = () => (
         </div>
         <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>A diagnosis in three steps.</h2>
       </div>
-            <div className="pth-steps-grid">
-              {HOW_IT_WORKS.map(({ step, title, body }) => (
-                <div key={step} className="pth-step-card">
-                  <div style={{ fontFamily: F, fontWeight: 800, fontSize: 32, color: C.orange, marginBottom: 12, letterSpacing: '-0.02em' }}>{step}</div>
-                  <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 18, color: C.text, marginBottom: 10 }}>{title}</h3>
-                  <p style={{ fontFamily: F, fontSize: 14, color: C.textMuted, lineHeight: 1.6 }}>{body}</p>
-                </div>
-              ))}
-            </div>
+      <div className="pth-steps-grid">
+        {HOW_IT_WORKS.map(({ step, title, body }) => (
+          <div key={step} className="pth-step-card">
+            <div style={{ fontFamily: F, fontWeight: 800, fontSize: 32, color: C.orange, marginBottom: 12, letterSpacing: '-0.02em' }}>{step}</div>
+            <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 18, color: C.text, marginBottom: 10 }}>{title}</h3>
+            <p style={{ fontFamily: F, fontSize: 14, color: C.textMuted, lineHeight: 1.6 }}>{body}</p>
           </div>
-        </section>
-      );
-      
-      /* ─── Features ────────────────────────────────────────────────────────────── */
-      const FeaturesSection: React.FC = () => (
-        <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
-          <div className="pth-sec-inner">
-            <div style={{ marginBottom: 48 }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '4px 12px', borderRadius: 9999, marginBottom: 16 }}>
-                <span style={{ fontFamily: F, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>Features</span>
-              </div>
-              <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>Everything you need.</h2>
-            </div>
-            <div className="pth-feat-grid">
-              {FEATURES.map(({ icon, title, desc }, i) => (
-                <div key={i} className="pth-feat-card">
-                  <div style={{ color: C.orange, marginBottom: 16 }}>{icon}</div>
-                  <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 16, color: C.text, marginBottom: 8 }}>{title}</h3>
-                  <p style={{ fontFamily: F, fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>{desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-      
-      /* ─── Trust strip ─────────────────────────────────────────────────────────── */
-      const TrustStrip: React.FC = () => (
-        <div style={{ background: C.base, borderBottom: `1px solid ${C.border}`, padding: '32px 40px' }}>
-          <div className="pth-sec-inner">
-            <div className="pth-trust-row">
-              {TRUST_ITEMS.map((item) => (
-                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <ShieldIcon />
-                  <span style={{ fontFamily: F, fontSize: 14, fontWeight: 500, color: C.textMuted }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── Features ────────────────────────────────────────────────────────────── */
+const FeaturesSection: React.FC = () => (
+  <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
+    <div className="pth-sec-inner">
+      <div style={{ marginBottom: 48 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '4px 12px', borderRadius: 9999, marginBottom: 16 }}>
+          <span style={{ fontFamily: F, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>Features</span>
         </div>
-      );
-      
-      /* ─── Footer ──────────────────────────────────────────────────────────────── */
-      const Footer: React.FC = () => (
-        <footer style={{ background: C.base, borderTop: `1px solid ${C.border}`, padding: '40px' }}>
-          <div className="pth-sec-inner">
-            <div className="pth-footer-row">
-              <LogoMark compact />
-              <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-                {NAV_LINKS.map(({ label, href }) => (
-                  <a key={label} href={href} style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}>{label}</a>
-                ))}
-              </div>
-              <div style={{ fontFamily: F, fontSize: 12, color: C.textDim }}>© 2025 PopTheHood. All rights reserved.</div>
-            </div>
+        <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>Everything you need.</h2>
+      </div>
+      <div className="pth-feat-grid">
+        {FEATURES.map(({ icon, title, desc }, i) => (
+          <div key={i} className="pth-feat-card">
+            <div style={{ color: C.orange, marginBottom: 16 }}>{icon}</div>
+            <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 16, color: C.text, marginBottom: 8 }}>{title}</h3>
+            <p style={{ fontFamily: F, fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>{desc}</p>
           </div>
-        </footer>
-      );
-      
-      /* ─── Main component ──────────────────────────────────────────────────────── */
-      export const LandingPage: React.FC = () => {
-        const [showDialog, setShowDialog] = useState(false);
-      
-        return (
-          <div className="pth-landing" style={{ background: C.base, color: C.text, fontFamily: F, minHeight: '100vh' }}>
-            <FontLoader />
-            <GlobalStyles />
-            <NavBar onCTAClick={() => setShowDialog(true)} />
-            <HeroSection onCTAClick={() => setShowDialog(true)} />
-            <StatsStrip />
-            <HowItWorksSection />
-            <FeaturesSection />
-            <TrustStrip />
-            <Footer />
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── Trust strip ─────────────────────────────────────────────────────────── */
+const TrustStrip: React.FC = () => (
+  <div style={{ background: C.base, borderBottom: `1px solid ${C.border}`, padding: '32px 40px' }}>
+    <div className="pth-sec-inner">
+      <div className="pth-trust-row">
+        {TRUST_ITEMS.map((item) => (
+          <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ShieldIcon />
+            <span style={{ fontFamily: F, fontSize: 14, fontWeight: 500, color: C.textMuted }}>{item}</span>
           </div>
-        );
-      };
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+/* ─── Footer ──────────────────────────────────────────────────────────────── */
+const Footer: React.FC = () => (
+  <footer style={{ background: C.base, borderTop: `1px solid ${C.border}`, padding: '40px' }}>
+    <div className="pth-sec-inner">
+      <div className="pth-footer-row">
+        <LogoMark compact />
+        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+          {NAV_LINKS.map(({ label, href }) => (
+            <a key={label} href={href} style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}>{label}</a>
+          ))}
+        </div>
+        <div style={{ fontFamily: F, fontSize: 12, color: C.textDim }}>© 2025 PopTheHood. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+);
+
+/* ─── Main component ──────────────────────────────────────────────────────── */
+export const LandingPage: React.FC<{ onEnterApp: () => void }> = ({ onEnterApp }) => {
+  return (
+    <div className="pth-landing" style={{ background: C.base, color: C.text, fontFamily: F, minHeight: '100vh' }}>
+      <FontLoader />
+      <GlobalStyles />
+      <NavBar onCTAClick={onEnterApp} />
+      <HeroSection onCTAClick={onEnterApp} />
+      <StatsStrip />
+      <HowItWorksSection />
+      <FeaturesSection />
+      <TrustStrip />
+      <Footer />
+    </div>
+  );
+};

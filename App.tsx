@@ -62,6 +62,12 @@ const App: React.FC = () => {
     }
   }, [isSignedIn]);
 
+  useEffect(() => {
+    if (isSignedIn && showLanding) {
+      setShowLanding(false);
+    }
+  }, [isSignedIn, showLanding]);
+
   const announce = (message: string) => {
     setAnnouncement('');
     setTimeout(() => setAnnouncement(message), 100);
@@ -222,7 +228,7 @@ const App: React.FC = () => {
           {announcement}
         </div>
         {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
-        <LandingPage />
+        <LandingPage onEnterApp={() => setShowLanding(false)} />
       </>
     );
   }
