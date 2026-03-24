@@ -74,34 +74,38 @@ const CAR_MODELS: Record<string, string[]> = {
 
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+// Condensed italic: CTAs and hero moments only
+const display: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' };
+// Regular Barlow: all UI text — readable at any size
+const body: React.CSSProperties = { fontFamily: "'Barlow', sans-serif" };
+
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
   card:        'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
   secIcon:     'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  fieldLabel:  'text-[9px] font-black text-slate-600 uppercase tracking-[0.18em] pl-4',
-  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/40 border border-slate-800 rounded-full text-white font-semibold text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
-  inputBase:   'w-full h-12 px-5 bg-black/40 border border-slate-800 rounded-full text-white font-semibold text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-700',
+  fieldLabel:  'text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1',
+  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/40 border border-slate-800 rounded-full text-white font-medium text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
+  inputBase:   'w-full h-12 px-5 bg-black/40 border border-slate-800 rounded-full text-white font-medium text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-600',
   toolBtn:     'flex flex-col items-center justify-center gap-3 p-5 sm:p-6 bg-black/40 border border-slate-800 rounded-2xl transition-all hover:bg-slate-900 hover:border-orange-500/30 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950',
-  toolLabel:   'font-black italic text-xs uppercase tracking-widest text-slate-400',
   historyItem: 'flex items-center gap-4 p-4 bg-black/40 border border-slate-800 rounded-xl hover:bg-slate-900 hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 w-full',
 };
 
-const condensed: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif" };
-
-/* ─── Section header — always one line on mobile ──────────────────────────── */
+/* ─── Section header ──────────────────────────────────────────────────────── */
 const SectionHead: React.FC<{
   icon: React.ReactNode;
   title: string;
   iconColor?: string;
   right?: React.ReactNode;
 }> = ({ icon, title, iconColor = 'text-orange-500', right }) => (
-  <div className="flex items-center gap-2 mb-6 overflow-hidden">
+  <div className="flex items-center gap-3 mb-6 overflow-hidden">
     <div className={`${S.secIcon} bg-orange-500/10 border border-orange-500/20 ${iconColor} flex-shrink-0`}>
       {icon}
     </div>
+    {/* Regular Barlow bold — no italic, no condensed — much easier to read */}
     <span
-      className="font-black italic uppercase text-white flex-shrink-0"
-      style={{ ...condensed, fontSize: 'clamp(13px, 3.8vw, 20px)', letterSpacing: '0.05em' }}
+      className="font-bold text-white flex-shrink-0 tracking-wide"
+      style={{ ...body, fontSize: 'clamp(14px, 3.5vw, 16px)', textTransform: 'uppercase' }}
     >
       {title}
     </span>
@@ -163,16 +167,16 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   onHistorySelect,
   onHistoryClear,
 }) => {
-  const [vehicle, setVehicle]           = useState<VehicleInfo>({ make: '', model: '', year: '', mileage: '', engine: '' });
-  const [description, setDescription]   = useState('');
-  const [interimText, setInterimText]   = useState('');
-  const [obdCodes, setObdCodes]         = useState('');
-  const [files, setFiles]               = useState<DiagnosticInput['files']>([]);
-  const [isRecording, setIsRecording]   = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [vehicle, setVehicle]             = useState<VehicleInfo>({ make: '', model: '', year: '', mileage: '', engine: '' });
+  const [description, setDescription]     = useState('');
+  const [interimText, setInterimText]     = useState('');
+  const [obdCodes, setObdCodes]           = useState('');
+  const [files, setFiles]                 = useState<DiagnosticInput['files']>([]);
+  const [isRecording, setIsRecording]     = useState(false);
+  const [isConnecting, setIsConnecting]   = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [showCamera, setShowCamera]     = useState(false);
-  const [manualEntry, setManualEntry]   = useState(false);
+  const [showCamera, setShowCamera]       = useState(false);
+  const [manualEntry, setManualEntry]     = useState(false);
 
   const fileInputRef   = useRef<HTMLInputElement>(null);
   const textAreaRef    = useRef<HTMLTextAreaElement>(null);
@@ -284,9 +288,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   };
 
   const isTireReport = (item: any): item is TireAnalysisReport => 'healthScore' in item;
-  const models       = CAR_MODELS[vehicle.make] || [];
-  const otherMakes   = ALL_MAKES.filter(m => !POPULAR_MAKES.includes(m));
-  const charCount    = (description + interimText).length;
+  const models     = CAR_MODELS[vehicle.make] || [];
+  const otherMakes = ALL_MAKES.filter(m => !POPULAR_MAKES.includes(m));
+  const charCount  = (description + interimText).length;
 
   return (
     <div className="max-w-lg md:max-w-4xl mx-auto px-3 sm:px-4 pb-20 space-y-4 sm:space-y-5">
@@ -310,7 +314,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" />
               </svg>
             </div>
-            <span className={S.toolLabel} style={condensed}>Tire Scan</span>
+            <span className="text-xs font-semibold text-slate-400" style={body}>Tire Scan</span>
           </button>
 
           <button type="button" aria-label="Find local mechanic" onClick={() => onFindServices('mechanic')} className={S.toolBtn}>
@@ -320,7 +324,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <circle cx="12" cy="11" r="3" />
               </svg>
             </div>
-            <span className={S.toolLabel} style={condensed}>Mechanic</span>
+            <span className="text-xs font-semibold text-slate-400" style={body}>Find Mechanic</span>
           </button>
 
           <button type="button" aria-label="Request towing service" onClick={() => onFindServices('towing')} className={S.toolBtn}>
@@ -329,7 +333,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <span className={S.toolLabel} style={condensed}>Request Tow</span>
+            <span className="text-xs font-semibold text-slate-400" style={body}>Request Tow</span>
           </button>
         </div>
       </section>
@@ -345,55 +349,52 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <button
                 type="button"
                 onClick={handleToggleManual}
-                className="text-[9px] font-black uppercase tracking-widest transition-colors px-2 py-1 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="text-xs font-semibold transition-colors px-3 py-1.5 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
                 style={{
-                  ...condensed,
-                  color: manualEntry ? '#f97316' : '#475569',
-                  borderColor: manualEntry ? 'rgba(249,115,22,0.3)' : 'rgba(71,85,105,0.3)',
+                  ...body,
+                  color: manualEntry ? '#f97316' : '#64748b',
+                  borderColor: manualEntry ? 'rgba(249,115,22,0.3)' : 'rgba(100,116,139,0.25)',
                   background: manualEntry ? 'rgba(249,115,22,0.08)' : 'transparent',
                 }}
               >
-                {manualEntry ? '← Use List' : 'Type Manually'}
+                {manualEntry ? '← Use list' : 'Type manually'}
               </button>
             }
           />
 
           {manualEntry ? (
-            /* ── Manual entry mode ── */
             <div className="space-y-3">
               <div className="bg-orange-500/5 border border-orange-500/15 rounded-xl px-4 py-3">
-                <p className="text-[10px] font-bold text-orange-400/70 leading-relaxed">
-                  Can't find your vehicle in the list? Enter the details below and we'll still run a full diagnosis.
+                <p className="text-sm text-orange-400/70 leading-relaxed" style={body}>
+                  Can't find your vehicle? Enter the details below and we'll still run a full diagnosis.
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="space-y-1.5">
-                  <label className={S.fieldLabel}>Make</label>
-                  <input name="make" value={vehicle.make} onChange={handleInputChange} placeholder="e.g. Honda" className={S.inputBase} />
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Make</label>
+                  <input name="make" value={vehicle.make} onChange={handleInputChange} placeholder="e.g. Honda" className={S.inputBase} style={body} />
                 </div>
-                <div className="space-y-1.5">
-                  <label className={S.fieldLabel}>Model</label>
-                  <input name="model" value={vehicle.model} onChange={handleInputChange} placeholder="e.g. Civic" className={S.inputBase} />
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Model</label>
+                  <input name="model" value={vehicle.model} onChange={handleInputChange} placeholder="e.g. Civic" className={S.inputBase} style={body} />
                 </div>
-                <div className="space-y-1.5">
-                  <label className={S.fieldLabel}>Year</label>
-                  <input name="year" value={vehicle.year} onChange={handleInputChange} placeholder="e.g. 2019" className={S.inputBase} maxLength={4} />
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Year</label>
+                  <input name="year" value={vehicle.year} onChange={handleInputChange} placeholder="e.g. 2019" className={S.inputBase} style={body} maxLength={4} />
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <label className={S.fieldLabel}>Mileage</label>
-                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} />
+              <div className="space-y-2">
+                <label className={S.fieldLabel} style={body}>Mileage</label>
+                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
               </div>
             </div>
           ) : (
-            /* ── Dropdown mode ── */
             <div className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* Make */}
-                <div className="space-y-1.5">
-                  <label className={S.fieldLabel}>Make</label>
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Make</label>
                   <div className="relative">
-                    <select name="make" value={vehicle.make} onChange={handleSelectChange} className={S.selectBase}>
+                    <select name="make" value={vehicle.make} onChange={handleSelectChange} className={S.selectBase} style={body}>
                       <option value="" disabled>Select make</option>
                       <optgroup label="── Popular ──">
                         {POPULAR_MAKES.map(m => <option key={m} value={m}>{m}</option>)}
@@ -406,16 +407,16 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   </div>
                 </div>
 
-                {/* Model */}
-                <div className="space-y-1.5">
-                  <label className={S.fieldLabel}>Model</label>
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Model</label>
                   <div className="relative">
                     <select
                       name="model"
                       value={vehicle.model}
                       onChange={handleSelectChange}
                       disabled={!vehicle.make}
-                      className={`${S.selectBase} ${!vehicle.make ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      className={`${S.selectBase} ${!vehicle.make ? 'opacity-40 cursor-not-allowed' : ''}`}
+                      style={body}
                     >
                       <option value="" disabled>
                         {vehicle.make ? 'Select model' : 'Pick a make first'}
@@ -426,11 +427,10 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   </div>
                 </div>
 
-                {/* Year */}
-                <div className="space-y-1.5">
-                  <label className={S.fieldLabel}>Year</label>
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Year</label>
                   <div className="relative">
-                    <select name="year" value={vehicle.year} onChange={handleSelectChange} className={S.selectBase}>
+                    <select name="year" value={vehicle.year} onChange={handleSelectChange} className={S.selectBase} style={body}>
                       <option value="" disabled>Select year</option>
                       {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                     </select>
@@ -439,14 +439,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 </div>
               </div>
 
-              {/* Mileage */}
-              <div className="space-y-1.5">
-                <label className={S.fieldLabel}>Mileage</label>
-                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} />
+              <div className="space-y-2">
+                <label className={S.fieldLabel} style={body}>Mileage</label>
+                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
               </div>
 
-              {/* Not listed hint */}
-              <p className="text-[9px] text-slate-700 font-bold uppercase tracking-widest pl-1">
+              <p className="text-xs text-slate-600 pl-1" style={body}>
                 Vehicle not listed?{' '}
                 <button type="button" onClick={handleToggleManual} className="text-orange-500/60 hover:text-orange-400 transition-colors underline underline-offset-2 focus:outline-none">
                   Enter it manually
@@ -471,14 +469,14 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   aria-label="Toggle voice input"
                   disabled={isConnecting}
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl border-b-2 font-black text-[10px] uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 whitespace-nowrap
+                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl border-b-2 font-semibold text-xs transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 whitespace-nowrap
                     ${isRecording
                       ? 'bg-orange-600 border-orange-800 text-white'
                       : isConnecting
                       ? 'bg-slate-800 border-slate-900 text-slate-400'
-                      : 'bg-black/40 border-slate-800 text-white hover:border-orange-500/40'
+                      : 'bg-black/40 border-slate-800 text-slate-300 hover:border-orange-500/40 hover:text-white'
                     }`}
-                  style={condensed}
+                  style={body}
                 >
                   {isRecording ? (
                     <div className="flex items-end gap-0.5 h-3.5 flex-shrink-0">
@@ -498,7 +496,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                     </svg>
                   )}
                   <span className="hidden sm:inline">
-                    {isRecording ? `Listening… ${formatTime(recordingTime)}` : isConnecting ? 'Connecting…' : 'Tap to Speak'}
+                    {isRecording ? `Listening… ${formatTime(recordingTime)}` : isConnecting ? 'Connecting…' : 'Tap to speak'}
                   </span>
                   <span className="sm:hidden">
                     {isRecording ? formatTime(recordingTime) : isConnecting ? '…' : 'Speak'}
@@ -509,9 +507,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           />
 
           <div className="space-y-3 sm:space-y-4">
-            {/* Symptoms textarea */}
-            <div className="space-y-1.5">
-              <label className={S.fieldLabel}>What's happening? — Symptoms, Noises, Leaks</label>
+            <div className="space-y-2">
+              <label className={S.fieldLabel} style={body}>What's happening? — symptoms, noises, leaks</label>
               <div className="relative">
                 <textarea
                   ref={textAreaRef}
@@ -520,8 +517,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   onChange={handleInputChange}
                   rows={5}
                   placeholder="Example: My car makes a loud squealing noise when I brake…"
-                  className={`w-full min-h-[120px] px-5 py-4 bg-black/40 border rounded-2xl outline-none resize-none text-white placeholder:text-slate-700 font-medium text-sm leading-relaxed transition-colors
+                  className={`w-full min-h-[120px] px-5 py-4 bg-black/40 border rounded-2xl outline-none resize-none text-white text-sm leading-relaxed transition-colors font-medium
                     ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-slate-800 focus:border-orange-500/50'}`}
+                  style={{ ...body, color: '#f1f5f9', caretColor: '#f97316' }}
                 />
                 {isRecording && (
                   <div className="absolute top-3 right-4 flex items-center gap-1.5">
@@ -529,19 +527,18 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
                     </span>
-                    <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">Live</span>
+                    <span className="text-[10px] font-semibold text-orange-500" style={body}>Live</span>
                   </div>
                 )}
-                <div className="absolute bottom-3 right-4 text-[9px] font-black text-slate-700 uppercase tracking-widest">
+                <div className="absolute bottom-3 right-4 text-[10px] text-slate-600" style={body}>
                   {charCount} chars
                 </div>
               </div>
             </div>
 
-            {/* OBD + Attach */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className={S.fieldLabel}>OBD-II Codes (Optional)</label>
+              <div className="space-y-2">
+                <label className={S.fieldLabel} style={body}>OBD-II Codes (optional)</label>
                 <input
                   name="obdCodes"
                   value={obdCodes}
@@ -550,33 +547,33 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   className={`${S.inputBase} font-mono`}
                 />
               </div>
-              <div className="space-y-1.5">
-                <label className={S.fieldLabel}>Photos or Videos</label>
+              <div className="space-y-2">
+                <label className={S.fieldLabel} style={body}>Photos or videos</label>
                 <button
                   type="button"
                   aria-label="Attach photos or videos"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/40 border-2 border-dashed border-slate-800 rounded-full text-slate-600 hover:border-orange-500/30 hover:text-slate-400 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/40 border-2 border-dashed border-slate-800 rounded-full text-slate-500 hover:border-orange-500/30 hover:text-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 text-sm font-medium"
+                  style={body}
                 >
                   <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
-                  <span className="font-black text-xs uppercase tracking-widest" style={condensed}>Attach Media</span>
+                  Attach media
                 </button>
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*,video/*" className="hidden" />
               </div>
             </div>
           </div>
 
-          {/* Attachments preview */}
           {files.length > 0 && (
             <div className="mt-5 pt-5 border-t border-slate-800/60">
-              <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.18em] mb-3">
+              <p className="text-xs font-semibold text-slate-600 mb-3" style={body}>
                 Attachments ({files.length})
               </p>
               <div className="flex flex-wrap gap-3">
                 {files.map((file, idx) => (
-                  <div key={idx} className="relative group w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex items-center justify-center">
+                  <div key={idx} className="relative group w-16 h-16 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex items-center justify-center">
                     {file.type === 'image' ? (
                       <img src={file.data} className="w-full h-full object-cover" alt={file.name} />
                     ) : (
@@ -603,16 +600,16 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           )}
         </section>
 
-        {/* ── Submit ───────────────────────────────────────────────────────── */}
+        {/* ── Submit — keep condensed italic here, it's the CTA ────────────── */}
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full py-5 rounded-full flex items-center justify-center gap-3 font-black uppercase tracking-wider transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950
+          className={`w-full py-5 rounded-full flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950
             ${isLoading
               ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
             }`}
-          style={{ ...condensed, fontStyle: 'italic', fontSize: 'clamp(18px, 5vw, 22px)' }}
+          style={{ ...display, fontWeight: 900, fontSize: 'clamp(18px, 5vw, 22px)', letterSpacing: '0.04em' }}
         >
           {isLoading ? (
             <>
@@ -620,7 +617,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              Running Expert Diagnosis…
+              Running diagnosis…
             </>
           ) : (
             <>
@@ -644,10 +641,10 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <button
                 type="button"
                 onClick={onHistoryClear}
-                className="text-[9px] font-black text-slate-600 hover:text-red-500 uppercase tracking-[0.18em] transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-1"
-                style={condensed}
+                className="text-xs font-medium text-slate-500 hover:text-red-400 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-1"
+                style={body}
               >
-                Clear All
+                Clear all
               </button>
             }
           />
@@ -672,10 +669,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-black text-white text-sm uppercase tracking-tight truncate" style={{ ...condensed, fontStyle: 'italic' }}>
+                  {/* History title: regular bold, not condensed italic */}
+                  <div className="font-semibold text-white text-sm truncate" style={body}>
                     {isTireReport(item) ? 'Tire Scan Report' : `${(item as DiagnosticReport).vehicle.year} ${(item as DiagnosticReport).vehicle.make} ${(item as DiagnosticReport).vehicle.model}`}
                   </div>
-                  <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest mt-1">
+                  <div className="text-xs text-slate-600 mt-0.5" style={body}>
                     {new Date(item.timestamp).toLocaleDateString()} · {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
@@ -692,8 +690,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           <svg className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
-          <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.18em]" style={condensed}>
-            Privacy Secured · Encrypted Diagnostic Stream
+          <span className="text-xs text-slate-600" style={body}>
+            Privacy secured · Encrypted diagnostic stream
           </span>
         </div>
       </div>
