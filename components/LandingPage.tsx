@@ -4,81 +4,73 @@ import { SignInButton, SignUpButton } from '@clerk/react';
 /* ─── Font loader ─────────────────────────────────────────────────────────── */
 const FontLoader = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,700;1,900&family=Barlow:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
   `}</style>
 );
 
-/* ─── Responsive + global styles ─────────────────────────────────────────── */
+/* ─── Global styles ───────────────────────────────────────────────────────── */
 const GlobalStyles = () => (
   <style>{`
     .pth-landing * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .pth-hero-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-    .pth-steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; }
-    .pth-feat-grid  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; }
+    .pth-hero-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .pth-steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pth-feat-grid  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
     .pth-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .pth-trust-row  { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 24px; }
+    .pth-trust-row  { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 32px; }
     .pth-footer-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .pth-cta-row    { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    .pth-nav-inner  { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 32px; }
-    .pth-nav-right  { display: flex; align-items: center; gap: 12px; }
+    .pth-nav-inner  { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 40px; max-width: 1120px; margin: 0 auto; }
 
-    .pth-hero-pad { padding: 96px 32px 64px; }
-    .pth-sec-pad  { padding: 72px 32px; }
+    .pth-hero-pad { padding: 100px 40px 72px; max-width: 1120px; margin: 0 auto; }
+    .pth-sec-inner { max-width: 1120px; margin: 0 auto; }
+    .pth-sec-pad  { padding: 80px 40px; }
 
-    /* Gradient text — hero H1 accent word only */
-    .pth-grad-text {
-      background: linear-gradient(135deg, #f97316, #dc2626);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .pth-step-card {
+      background: #0d1829;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .pth-step-card:hover {
+      border-color: rgba(249,115,22,0.35);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.12), 0 8px 32px rgba(0,0,0,0.4);
     }
 
-    /* CTA buttons — condensed italic is appropriate here */
-    .pth-btn-cta {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(135deg, #f97316, #dc2626);
-      color: #fff; border: none; cursor: pointer;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900; font-style: italic;
-      font-size: 20px; letter-spacing: 0.04em; text-transform: uppercase;
-      padding: 16px 32px; border-radius: 9999px;
-      box-shadow: 0 4px 20px rgba(249,115,22,0.3);
-      transition: opacity 0.2s, transform 0.15s;
+    .pth-feat-card {
+      background: #0a0f1e;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 28px 24px;
+      transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
     }
-    .pth-btn-cta:hover  { opacity: 0.9; transform: translateY(-1px); }
-    .pth-btn-cta:active { transform: translateY(0); }
-
-    /* Ghost outline button — regular Barlow */
-    .pth-btn-ghost {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: transparent; color: #64748b;
-      border: 1px solid #1f2937; cursor: pointer;
-      font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px;
-      padding: 14px 24px; border-radius: 9999px; text-decoration: none;
-      transition: color 0.2s, border-color 0.2s;
+    .pth-feat-card:hover {
+      border-color: rgba(249,115,22,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     }
-    .pth-btn-ghost:hover { color: #f1f5f9; border-color: #374151; }
-
-    .pth-step-card:hover { background: #0f172a !important; }
-    .pth-feat-card:hover { background: #0a0f1e !important; }
 
     @keyframes pth-ping {
       0%        { transform: scale(1); opacity: 0.75; }
-      75%, 100% { transform: scale(2); opacity: 0; }
+      75%, 100% { transform: scale(2.2); opacity: 0; }
     }
-    .pth-ping { animation: pth-ping 1.2s cubic-bezier(0,0,0.2,1) infinite; }
+    .pth-ping { animation: pth-ping 1.4s cubic-bezier(0,0,0.2,1) infinite; }
+
+    @media (max-width: 900px) {
+      .pth-hero-grid  { grid-template-columns: 1fr; gap: 40px; }
+      .pth-hero-pad   { padding: 80px 24px 56px; }
+    }
 
     @media (max-width: 768px) {
-      .pth-hero-grid  { grid-template-columns: 1fr; gap: 40px; }
-      .pth-steps-grid { grid-template-columns: 1fr; }
-      .pth-feat-grid  { grid-template-columns: repeat(2, 1fr); }
+      .pth-steps-grid { grid-template-columns: 1fr; gap: 16px; }
+      .pth-feat-grid  { grid-template-columns: repeat(2, 1fr); gap: 16px; }
       .pth-stats-grid { grid-template-columns: 1fr; }
-      .pth-hero-pad   { padding: 72px 20px 48px; }
-      .pth-sec-pad    { padding: 56px 20px; }
+      .pth-sec-pad    { padding: 56px 24px; }
       .pth-nav-inner  { padding: 0 20px; }
       .pth-cta-row    { flex-direction: column; align-items: flex-start; }
       .pth-nav-status { display: none !important; }
+      .pth-footer-row { flex-direction: column; text-align: center; gap: 20px; }
     }
 
     @media (max-width: 480px) {
@@ -90,48 +82,48 @@ const GlobalStyles = () => (
 /* ─── Design tokens ───────────────────────────────────────────────────────── */
 const C = {
   base:         '#030712',
-  surface:      '#0a0f1e',
-  card:         '#0f172a',
-  border:       '#1f2937',
-  borderInner:  '#1e293b',
+  surface:      '#080e1c',
+  card:         '#0d1829',
+  border:       '#1e293b',
+  borderFaint:  '#131e30',
   orange:       '#f97316',
+  orangeRed:    '#dc2626',
   orangeBg:     'rgba(249,115,22,0.08)',
-  orangeBorder: 'rgba(249,115,22,0.2)',
+  orangeBorder: 'rgba(249,115,22,0.22)',
   text:         '#f1f5f9',
+  textSub:      '#cbd5e1',
   textMuted:    '#94a3b8',
   textDim:      '#64748b',
   textFaint:    '#475569',
-  textDeep:     '#334155',
   green:        '#10b981',
+  greenBg:      'rgba(16,185,129,0.1)',
 };
 
-/* Typography helpers */
-const Fd = "'Barlow Condensed', sans-serif"; // display — CTAs and H1 only
-const Fb = "'Barlow', sans-serif";           // body — everything else
+const F = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
 
 /* ─── Icons ───────────────────────────────────────────────────────────────── */
-const WrenchIcon = ({ size = 20 }: { size?: number }) => (
+const WrenchIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
   </svg>
 );
 
-const ArrowRightIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+const ArrowRightIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const DiagnoseIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+  <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
     <circle cx="14" cy="14" r="10" stroke="currentColor" strokeWidth="1.8" />
     <path d="M14 9v6l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const TireIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+  <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
     <circle cx="14" cy="14" r="10" stroke="currentColor" strokeWidth="1.8" />
     <circle cx="14" cy="14" r="4"  stroke="currentColor" strokeWidth="1.8" />
     <path d="M14 4v3M14 21v3M4 14h3M21 14h3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -139,7 +131,7 @@ const TireIcon = () => (
 );
 
 const MapPinIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+  <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
     <path d="M14 3C10.13 3 7 6.13 7 10c0 6.25 7 15 7 15s7-8.75 7-15c0-3.87-3.13-7-7-7z"
       stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
     <circle cx="14" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.8" />
@@ -147,7 +139,7 @@ const MapPinIcon = () => (
 );
 
 const TowIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+  <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
     <rect x="3" y="10" width="14" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
     <path d="M17 14h5l2 4H17" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
     <circle cx="8"  cy="20" r="2" stroke="currentColor" strokeWidth="1.8" />
@@ -155,17 +147,24 @@ const TowIcon = () => (
   </svg>
 );
 
+const ShieldIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M8 2L3 4v4c0 3.31 2.24 5.96 5 7 2.76-1.04 5-3.69 5-7V4L8 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M6 8l1.5 1.5L10 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 /* ─── Data ────────────────────────────────────────────────────────────────── */
 const STATS = [
-  { value: 'No OBD Scanner', label: 'Needed'          },
-  { value: 'Any Device',     label: 'Works everywhere' },
-  { value: 'Free',           label: 'To get started'   },
+  { value: 'No OBD Scanner', label: 'Needed'           },
+  { value: 'Any Device',     label: 'Works everywhere'  },
+  { value: 'Free',           label: 'To get started'    },
 ];
 
 const HOW_IT_WORKS = [
-  { step: '1', title: 'Describe the issue',      body: 'Type your symptoms or use voice input. Select your make, model, and year — no scanner required.'                          },
-  { step: '2', title: 'AI analyzes your car',    body: 'Our model cross-references known issues specific to your vehicle and mileage to rank the most likely causes.'              },
-  { step: '3', title: 'Get a clear action plan', body: "See ranked causes, estimated repair costs, and whether it's DIY-safe or needs a professional."                             },
+  { step: '01', title: 'Describe the issue',      body: 'Type your symptoms or use voice input. Select your make, model, and year — no scanner required.' },
+  { step: '02', title: 'AI analyzes your car',    body: 'Our model cross-references known issues specific to your vehicle and mileage to rank the most likely causes.' },
+  { step: '03', title: 'Get a clear action plan', body: "See ranked causes, estimated repair costs, and whether it's DIY-safe or needs a professional." },
 ];
 
 const FEATURES = [
@@ -178,9 +177,9 @@ const FEATURES = [
 const TRUST_ITEMS = ['End-to-end encrypted', 'OWASP compliant', 'No data sold — ever', 'ADA accessible'];
 
 const DIAG_CAUSES = [
-  { rank: '#1', name: 'Worn or glazed serpentine belt',   prob: 'HIGH'        },
-  { rank: '#2', name: 'Failing belt tensioner or pulley', prob: 'MEDIUM-HIGH' },
-  { rank: '#3', name: 'Accessory component bearing',      prob: 'MEDIUM'      },
+  { rank: '01', name: 'Worn or glazed serpentine belt',   prob: 'HIGH',        probColor: '#f97316', probBg: 'rgba(249,115,22,0.1)',   probBorder: 'rgba(249,115,22,0.25)'  },
+  { rank: '02', name: 'Failing belt tensioner or pulley', prob: 'MEDIUM-HIGH', probColor: '#f59e0b', probBg: 'rgba(245,158,11,0.1)',   probBorder: 'rgba(245,158,11,0.25)'  },
+  { rank: '03', name: 'Accessory component bearing',      prob: 'MEDIUM',      probColor: '#94a3b8', probBg: 'rgba(148,163,184,0.08)', probBorder: 'rgba(148,163,184,0.2)'  },
 ];
 
 const NAV_LINKS = [
@@ -188,26 +187,15 @@ const NAV_LINKS = [
   { label: 'Terms',   href: '/terms'   },
 ];
 
-/* ─── Logo mark ───────────────────────────────────────────────────────────── */
-const LogoMark: React.FC<{ iconSize?: number; fontSize?: number }> = ({ iconSize = 20, fontSize = 20 }) => (
+/* ─── Logo ────────────────────────────────────────────────────────────────── */
+const LogoMark: React.FC<{ compact?: boolean }> = ({ compact }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-    <div style={{
-      width: iconSize + 20, height: iconSize + 20, borderRadius: 12,
-      background: 'linear-gradient(135deg, #f97316, #dc2626)',
-      boxShadow: '0 4px 14px rgba(249,115,22,0.25)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: '#fff', flexShrink: 0,
-    }}>
-      <WrenchIcon size={iconSize} />
+    <div style={{ width: compact ? 36 : 40, height: compact ? 36 : 40, borderRadius: 10, background: 'linear-gradient(135deg, #f97316, #dc2626)', boxShadow: '0 4px 16px rgba(249,115,22,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+      <WrenchIcon size={compact ? 16 : 18} />
     </div>
     <div>
-      {/* Wordmark: condensed italic — brand identity, not body text */}
-      <div style={{ fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize, letterSpacing: '0.05em', textTransform: 'uppercase', color: C.text, lineHeight: 1 }}>
-        POPTHEHOOD
-      </div>
-      <div style={{ fontFamily: Fb, fontWeight: 600, fontSize: 9, color: C.orange, letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: 3 }}>
-        Diagnose Before You Dial
-      </div>
+      <div style={{ fontFamily: F, fontWeight: 800, fontSize: compact ? 14 : 16, letterSpacing: '0.04em', textTransform: 'uppercase', color: C.text, lineHeight: 1 }}>PopTheHood</div>
+      <div style={{ fontFamily: F, fontWeight: 500, fontSize: 9, color: C.orange, letterSpacing: '0.16em', textTransform: 'uppercase', marginTop: 3, opacity: 0.8 }}>Diagnose Before You Dial</div>
     </div>
   </div>
 );
@@ -215,7 +203,6 @@ const LogoMark: React.FC<{ iconSize?: number; fontSize?: number }> = ({ iconSize
 /* ─── NavBar ──────────────────────────────────────────────────────────────── */
 const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handler, { passive: true });
@@ -223,158 +210,98 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
   }, []);
 
   return (
-    <nav
-      className="pth-nav-inner"
-      style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-        background: scrolled ? 'rgba(3,7,18,0.97)' : C.base,
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: `1px solid ${C.border}`,
-        transition: 'background 0.3s',
-      }}
-      aria-label="Main navigation"
-    >
-      <LogoMark />
-
-      <div className="pth-nav-right">
-        {/* Status indicator */}
-        <div className="pth-nav-status" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginRight: 4 }}>
-          <span style={{ fontFamily: Fb, fontSize: 9, fontWeight: 600, color: C.textDeep, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-            System Status
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: scrolled ? 'rgba(3,7,18,0.95)' : 'rgba(3,7,18,0.7)', backdropFilter: 'blur(16px)', borderBottom: `1px solid ${scrolled ? C.border : 'transparent'}`, transition: 'background 0.3s, border-color 0.3s' }}>
+      <nav className="pth-nav-inner" aria-label="Main navigation">
+        <LogoMark compact />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="pth-nav-status" style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 16, background: C.greenBg, border: `1px solid rgba(16,185,129,0.2)`, borderRadius: 9999, padding: '5px 12px' }}>
             <span style={{ position: 'relative', width: 8, height: 8, display: 'inline-block' }}>
-              <span className="pth-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: '#34d399', opacity: 0.75 }} />
+              <span className="pth-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: C.green }} />
               <span style={{ position: 'absolute', inset: 1, borderRadius: '50%', background: C.green }} />
             </span>
-            <span style={{ fontFamily: Fb, fontSize: 11, fontWeight: 700, color: C.green }}>
-              Online
-            </span>
+            <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: C.green, letterSpacing: '0.04em' }}>All systems online</span>
           </div>
+          <SignInButton mode="modal">
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, transition: 'color 0.2s', padding: '8px 14px', borderRadius: 8 }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)} aria-label="Sign in to your account">Sign in</button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <button style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '9px 20px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', transition: 'opacity 0.2s, transform 0.15s' }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Create a new account">Get started</button>
+          </SignUpButton>
         </div>
-
-        <SignInButton mode="modal">
-          <button
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: Fb, fontSize: 13, fontWeight: 600, color: C.textDim, transition: 'color 0.2s', padding: '8px 12px' }}
-            onMouseEnter={e => (e.currentTarget.style.color = C.text)}
-            onMouseLeave={e => (e.currentTarget.style.color = C.textDim)}
-            aria-label="Sign in to your account"
-          >
-            Sign in
-          </button>
-        </SignInButton>
-
-        <SignUpButton mode="modal">
-          <button
-            style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: Fb, fontSize: 13, fontWeight: 700, padding: '8px 18px', borderRadius: 9999, transition: 'opacity 0.2s' }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-            aria-label="Create a new account"
-          >
-            Sign up
-          </button>
-        </SignUpButton>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 };
 
 /* ─── Hero ────────────────────────────────────────────────────────────────── */
 const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    const t = setTimeout(() => {
-      el.style.transition = 'opacity 0.65s ease, transform 0.65s ease';
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    }, 80);
+    const el = ref.current; if (!el) return;
+    el.style.opacity = '0'; el.style.transform = 'translateY(24px)';
+    const t = setTimeout(() => { el.style.transition = 'opacity 0.7s ease, transform 0.7s ease'; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 80);
     return () => clearTimeout(t);
   }, []);
 
   return (
-    <section className="pth-hero-pad" style={{ background: C.base, borderBottom: `1px solid ${C.border}`, marginTop: 68, position: 'relative', overflow: 'hidden' }}>
-      <div aria-hidden="true" style={{ position: 'absolute', top: '-10%', right: '-5%', width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.025, backgroundImage: `radial-gradient(${C.textMuted} 1px, transparent 1px)`, backgroundSize: '28px 28px' }} />
+    <section style={{ background: C.base, marginTop: 68, position: 'relative', overflow: 'hidden', borderBottom: `1px solid ${C.border}` }}>
+      <div aria-hidden="true" style={{ position: 'absolute', top: '-15%', right: '-8%', width: 640, height: 640, borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 65%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', top: '30%', left: '-10%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(220,38,38,0.04) 0%, transparent 65%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.018, backgroundImage: `radial-gradient(${C.textMuted} 1px, transparent 1px)`, backgroundSize: '24px 24px' }} />
 
-      <div ref={ref} className="pth-hero-grid" style={{ maxWidth: 1040, margin: '0 auto', position: 'relative' }}>
-
-        {/* Left: copy */}
-        <div>
-          {/* Badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '5px 14px', borderRadius: 9999, marginBottom: 20 }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, display: 'inline-block' }} />
-            <span style={{ fontFamily: Fb, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>AI-powered car diagnostics</span>
+      <div ref={ref} className="pth-hero-pad" style={{ paddingTop: 100, paddingBottom: 80 }}>
+        <div className="pth-hero-grid">
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '6px 14px', borderRadius: 9999, marginBottom: 24 }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, display: 'inline-block', flexShrink: 0 }} />
+              <span style={{ fontFamily: F, fontWeight: 600, fontSize: 12, color: C.orange, letterSpacing: '0.06em' }}>AI-powered vehicle diagnostics</span>
+            </div>
+            <h1 style={{ fontFamily: F, fontWeight: 900, fontSize: 'clamp(38px, 5.5vw, 68px)', lineHeight: 1.0, letterSpacing: '-0.03em', color: C.text, marginBottom: 22 }}>
+              Know what's wrong{' '}
+              <span style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>before</span>
+              {' '}the shop does.
+            </h1>
+            <p style={{ fontFamily: F, fontSize: 17, lineHeight: 1.75, color: C.textMuted, maxWidth: 420, marginBottom: 36 }}>
+              Describe your symptoms, snap a photo, and get an instant AI diagnosis — with repair costs and nearby mechanic options.
+            </p>
+            <div className="pth-cta-row">
+              <button onClick={onCTAClick} style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontWeight: 700, fontSize: 15, letterSpacing: '0.01em', padding: '14px 28px', borderRadius: 9999, boxShadow: '0 4px 24px rgba(249,115,22,0.35)', transition: 'opacity 0.2s, transform 0.15s' }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Diagnose my car for free">
+                Diagnose my car <ArrowRightIcon />
+              </button>
+              <a href="#how-it-works" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'transparent', color: C.textMuted, border: `1px solid ${C.border}`, fontFamily: F, fontWeight: 500, fontSize: 14, padding: '13px 22px', borderRadius: 9999, textDecoration: 'none', transition: 'color 0.2s, border-color 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.text; e.currentTarget.style.borderColor = '#334155'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.borderColor = C.border; }}>
+                How it works
+              </a>
+            </div>
           </div>
 
-          {/* H1 — condensed italic is earned here, it's the marquee headline */}
-          <h1 style={{ fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(44px, 6vw, 72px)', lineHeight: 0.92, letterSpacing: '-0.01em', textTransform: 'uppercase', color: C.text, marginBottom: 20 }}>
-            Know what's<br />wrong{' '}
-            <span className="pth-grad-text">before</span>
-            <br />the shop does.
-          </h1>
-
-          {/* Subheadline — regular Barlow */}
-          <p style={{ fontFamily: Fb, fontSize: 16, lineHeight: 1.7, color: C.textMuted, maxWidth: 440, marginBottom: 36 }}>
-            Describe your symptoms, snap a photo, and get an instant AI diagnosis — with repair costs and nearby mechanic options.
-          </p>
-
-          <div className="pth-cta-row">
-            <button className="pth-btn-cta" onClick={onCTAClick} aria-label="Diagnose my car for free">
-              Diagnose my car <ArrowRightIcon />
-            </button>
-            <a href="#how-it-works" className="pth-btn-ghost">How it works</a>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, boxShadow: '0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18, paddingBottom: 16, borderBottom: `1px solid ${C.borderFaint}` }}>
+              <div style={{ background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, padding: '5px 12px', fontFamily: F, fontSize: 11, fontWeight: 700, color: C.orange, letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>2012 Acura TLX</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto', fontFamily: F, fontSize: 11, fontWeight: 600, color: C.green, background: C.greenBg, border: '1px solid rgba(16,185,129,0.2)', borderRadius: 9999, padding: '3px 10px', whiteSpace: 'nowrap' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.green, display: 'inline-block', flexShrink: 0 }} />Analysis complete
+              </div>
+            </div>
+            <div style={{ background: C.surface, border: `1px solid ${C.borderFaint}`, borderRadius: 10, padding: '10px 14px', marginBottom: 18 }}>
+              <div style={{ fontFamily: F, fontSize: 10, fontWeight: 600, color: C.textDim, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>Reported symptom</div>
+              <p style={{ fontFamily: F, fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>Engine light on, rough idle at stops, slight vibration. Worse in the morning.</p>
+            </div>
+            <div style={{ fontFamily: F, fontSize: 10, fontWeight: 600, color: C.textDim, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 10 }}>Top causes — ranked by likelihood</div>
+            {DIAG_CAUSES.map(({ rank, name, prob, probColor, probBg, probBorder }) => (
+              <div key={rank} style={{ display: 'flex', alignItems: 'center', gap: 10, background: C.surface, border: `1px solid ${C.borderFaint}`, borderRadius: 10, padding: '10px 14px', marginBottom: 6 }}>
+                <span style={{ fontFamily: F, fontWeight: 800, fontSize: 12, color: C.textDim, minWidth: 22, flexShrink: 0 }}>{rank}</span>
+                <div style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textSub, flex: 1, minWidth: 0 }}>{name}</div>
+                <span style={{ fontFamily: F, fontSize: 10, fontWeight: 700, color: probColor, background: probBg, border: `1px solid ${probBorder}`, borderRadius: 6, padding: '2px 8px', whiteSpace: 'nowrap', flexShrink: 0, letterSpacing: '0.04em' }}>{prob}</span>
+              </div>
+            ))}
+            <div style={{ marginTop: 14, padding: '12px 16px', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontFamily: F, fontSize: 10, fontWeight: 600, color: C.textDim, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 3 }}>Estimated repair</div>
+                <div style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: C.orange }}>$150 – $900+</div>
+              </div>
+              <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: C.textMuted, textAlign: 'right' }}>Consult a<br />mechanic</div>
+            </div>
           </div>
         </div>
-
-        {/* Right: mock diagnostic card */}
-        <div style={{ background: C.card, border: `1px solid ${C.borderInner}`, borderRadius: 20, padding: 24 }}>
-          {/* Card header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'nowrap', marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.borderInner}` }}>
-            <div style={{ background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 6, padding: '5px 12px', fontFamily: Fb, fontSize: 12, fontWeight: 700, color: C.orange, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
-              2012 ACURA TLX
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto', fontFamily: Fb, fontSize: 11, fontWeight: 600, color: C.green, whiteSpace: 'nowrap' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.green, display: 'inline-block', flexShrink: 0 }} />
-              Analysis complete
-            </div>
-          </div>
-
-          {/* Symptom */}
-          <p style={{ fontFamily: Fb, fontSize: 13, color: C.textDim, marginBottom: 16, lineHeight: 1.6 }}>
-            <strong style={{ color: C.text, fontWeight: 600 }}>Reported:</strong>{' '}Engine light on, rough idle at stops, slight vibration. Worse in the morning.
-          </p>
-
-          {/* Causes label */}
-          <div style={{ fontFamily: Fb, fontSize: 10, fontWeight: 600, color: C.textDeep, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
-            Top causes ranked by likelihood
-          </div>
-
-          {/* Cause rows */}
-          {DIAG_CAUSES.map(({ rank, name, prob }) => (
-            <div key={rank} style={{ display: 'flex', alignItems: 'center', gap: 10, background: C.base, border: `1px solid ${C.borderInner}`, borderRadius: 8, padding: '10px 14px', marginBottom: 6 }}>
-              <span style={{ fontFamily: Fb, fontWeight: 700, fontSize: 14, color: C.orange, minWidth: 24, flexShrink: 0 }}>{rank}</span>
-              <div style={{ fontFamily: Fb, fontSize: 13, fontWeight: 500, color: C.text, flex: 1, minWidth: 0 }}>{name}</div>
-              <span style={{
-                fontFamily: Fb, fontSize: 10, fontWeight: 700,
-                color: prob === 'HIGH' ? '#f97316' : prob === 'MEDIUM-HIGH' ? '#f59e0b' : '#94a3b8',
-                background: prob === 'HIGH' ? 'rgba(249,115,22,0.1)' : prob === 'MEDIUM-HIGH' ? 'rgba(245,158,11,0.1)' : 'rgba(148,163,184,0.1)',
-                border: `1px solid ${prob === 'HIGH' ? 'rgba(249,115,22,0.25)' : prob === 'MEDIUM-HIGH' ? 'rgba(245,158,11,0.25)' : 'rgba(148,163,184,0.2)'}`,
-                borderRadius: 4, padding: '2px 8px', whiteSpace: 'nowrap', flexShrink: 0,
-              }}>{prob}</span>
-            </div>
-          ))}
-
-          {/* Tip */}
-          <div style={{ marginTop: 12, padding: '10px 14px', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, fontFamily: Fb, fontSize: 12, fontWeight: 600, color: C.orange, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            Estimated repair: $150–$900+ · Consult a mechanic
-          </div>
-        </div>
-
       </div>
     </section>
   );
@@ -382,12 +309,11 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
 
 /* ─── Stats strip ─────────────────────────────────────────────────────────── */
 const StatsStrip: React.FC = () => (
-  <div className="pth-stats-grid" style={{ background: C.base, borderBottom: `1px solid ${C.border}` }}>
+  <div className="pth-stats-grid" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
     {STATS.map(({ value, label }, i) => (
-      <div key={label} style={{ textAlign: 'center', padding: '22px 12px', borderRight: i < STATS.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-        {/* Stat values: condensed italic — short punchy words, earned */}
-        <div className="pth-grad-text" style={{ fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize: 22 }}>{value}</div>
-        <div style={{ fontFamily: Fb, fontSize: 11, fontWeight: 500, color: C.textDeep, marginTop: 4 }}>{label}</div>
+      <div key={label} style={{ textAlign: 'center', padding: '24px 12px', borderRight: i < STATS.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+        <div style={{ fontFamily: F, fontWeight: 800, fontSize: 20, letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #f97316, #dc2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', marginBottom: 4 }}>{value}</div>
+        <div style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: C.textDim }}>{label}</div>
       </div>
     ))}
   </div>
@@ -396,22 +322,21 @@ const StatsStrip: React.FC = () => (
 /* ─── How It Works ────────────────────────────────────────────────────────── */
 const HowItWorksSection: React.FC = () => (
   <section id="how-it-works" className="pth-sec-pad" style={{ background: C.base, borderBottom: `1px solid ${C.border}` }}>
-    <div style={{ maxWidth: 1040, margin: '0 auto' }}>
-      <p style={{ fontFamily: Fb, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 10 }}>How it works</p>
-      {/* Section H2: regular Barlow bold — much easier to read than condensed italic */}
-      <h2 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, marginBottom: 40 }}>
-        A diagnosis in three steps.
-      </h2>
-      <div className="pth-steps-grid" style={{ background: C.border, border: `1px solid ${C.border}`, borderRadius: 16, overflow: 'hidden' }}>
+    <div className="pth-sec-inner">
+      <div style={{ marginBottom: 48 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '4px 12px', borderRadius: 9999, marginBottom: 16 }}>
+          <span style={{ fontFamily: F, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>How it works</span>
+        </div>
+        <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>A diagnosis in three steps.</h2>
+      </div>
+      <div className="pth-steps-grid">
         {HOW_IT_WORKS.map(({ step, title, body }) => (
-          <div key={step} className="pth-step-card" style={{ background: C.surface, padding: '32px 28px', transition: 'background 0.2s' }}>
-            {/* Step badge: condensed italic — a single number, fine here */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #f97316, #dc2626)', boxShadow: '0 3px 12px rgba(249,115,22,0.3)', color: '#fff', fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize: 22, marginBottom: 18 }}>
-              {step}
+          <div key={step} className="pth-step-card">
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg, rgba(249,115,22,0.15), rgba(220,38,38,0.1))', border: `1px solid rgba(249,115,22,0.25)`, marginBottom: 20 }}>
+              <span style={{ fontFamily: F, fontWeight: 900, fontSize: 18, color: C.orange, letterSpacing: '-0.02em' }}>{step}</span>
             </div>
-            {/* Step title: regular Barlow bold */}
-            <h3 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 16, color: C.text, marginBottom: 10 }}>{title}</h3>
-            <p style={{ fontFamily: Fb, fontSize: 13, color: C.textDim, lineHeight: 1.7 }}>{body}</p>
+            <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 16, color: C.text, marginBottom: 10, letterSpacing: '-0.01em' }}>{title}</h3>
+            <p style={{ fontFamily: F, fontSize: 14, color: C.textDim, lineHeight: 1.75 }}>{body}</p>
           </div>
         ))}
       </div>
@@ -421,21 +346,23 @@ const HowItWorksSection: React.FC = () => (
 
 /* ─── Features ────────────────────────────────────────────────────────────── */
 const FeaturesSection: React.FC = () => (
-  <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
-    <div style={{ maxWidth: 1040, margin: '0 auto' }}>
-      <p style={{ fontFamily: Fb, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 10 }}>Features</p>
-      <h2 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, marginBottom: 40 }}>
-        Everything in one place.
-      </h2>
-      <div className="pth-feat-grid" style={{ background: C.border, border: `1px solid ${C.border}`, borderRadius: 16, overflow: 'hidden' }}>
+  <section id="features" className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
+    <div className="pth-sec-inner">
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 48 }}>
+        <div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '4px 12px', borderRadius: 9999, marginBottom: 16 }}>
+            <span style={{ fontFamily: F, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>Features</span>
+          </div>
+          <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>Everything in one place.</h2>
+        </div>
+        <p style={{ fontFamily: F, fontSize: 14, color: C.textDim, lineHeight: 1.7, maxWidth: 280 }}>Not just a code reader — a full diagnostic partner that tells you what to do next.</p>
+      </div>
+      <div className="pth-feat-grid">
         {FEATURES.map(({ icon, title, desc }) => (
-          <div key={title} className="pth-feat-card" style={{ background: C.surface, padding: '28px 24px', transition: 'background 0.2s' }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.orange, marginBottom: 16 }}>
-              {icon}
-            </div>
-            {/* Feature title: regular Barlow bold */}
-            <h3 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 8 }}>{title}</h3>
-            <p style={{ fontFamily: Fb, fontSize: 13, color: C.textFaint, lineHeight: 1.7 }}>{desc}</p>
+          <div key={title} className="pth-feat-card">
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.orange, marginBottom: 18 }}>{icon}</div>
+            <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 8, letterSpacing: '-0.01em' }}>{title}</h3>
+            <p style={{ fontFamily: F, fontSize: 13, color: C.textDim, lineHeight: 1.75 }}>{desc}</p>
           </div>
         ))}
       </div>
@@ -445,14 +372,11 @@ const FeaturesSection: React.FC = () => (
 
 /* ─── Trust strip ─────────────────────────────────────────────────────────── */
 const TrustStrip: React.FC = () => (
-  <div className="pth-trust-row" style={{ background: C.base, borderBottom: `1px solid ${C.border}`, padding: '14px 32px' }}>
+  <div className="pth-trust-row" style={{ background: C.base, borderBottom: `1px solid ${C.border}`, padding: '18px 40px' }}>
     {TRUST_ITEMS.map(item => (
-      <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{ color: C.green, flexShrink: 0 }}>
-          <path d="M8 2L3 4v4c0 3.31 2.24 5.96 5 7 2.76-1.04 5-3.69 5-7V4L8 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-          <path d="M6 8l1.5 1.5L10 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span style={{ fontFamily: Fb, fontSize: 12, fontWeight: 500, color: C.textDeep }}>{item}</span>
+      <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ color: C.green, flexShrink: 0 }}><ShieldIcon /></span>
+        <span style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted }}>{item}</span>
       </div>
     ))}
   </div>
@@ -461,21 +385,23 @@ const TrustStrip: React.FC = () => (
 /* ─── CTA section ─────────────────────────────────────────────────────────── */
 const CTASection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
   <section className="pth-sec-pad" style={{ background: C.base }}>
-    <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-      <div style={{ background: C.card, border: `1px solid ${C.borderInner}`, borderRadius: 24, padding: '60px 40px', position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, transparent, #f97316, #dc2626, transparent)' }} />
-        <div aria-hidden="true" style={{ position: 'absolute', bottom: '-30%', left: '50%', transform: 'translateX(-50%)', width: 400, height: 200, background: 'radial-gradient(ellipse, rgba(249,115,22,0.08), transparent 70%)', pointerEvents: 'none' }} />
+    <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 24, padding: '64px 40px', position: 'relative', overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.4)' }}>
+        <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent 0%, #f97316 40%, #dc2626 60%, transparent 100%)' }} />
+        <div aria-hidden="true" style={{ position: 'absolute', bottom: '-20%', left: '50%', transform: 'translateX(-50%)', width: 500, height: 220, background: 'radial-gradient(ellipse, rgba(249,115,22,0.1), transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* CTA H2: regular Barlow bold */}
-          <h2 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 'clamp(26px, 5vw, 42px)', color: C.text, lineHeight: 1.15, marginBottom: 14 }}>
-            Ready to find out what's going on?
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: C.greenBg, border: '1px solid rgba(16,185,129,0.2)', borderRadius: 9999, padding: '5px 14px', marginBottom: 24 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, flexShrink: 0, display: 'inline-block' }} />
+            <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: C.green, letterSpacing: '0.04em' }}>Free to use — no account required</span>
+          </div>
+          <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(28px, 5vw, 44px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: 16 }}>
+            Ready to find out<br />what's going on?
           </h2>
-          <p style={{ fontFamily: Fb, fontSize: 15, color: C.textFaint, marginBottom: 32 }}>
-            Free to use. No account required to get started.
+          <p style={{ fontFamily: F, fontSize: 15, color: C.textMuted, marginBottom: 36, lineHeight: 1.7 }}>
+            Join thousands of drivers who use PopTheHood<br />before they ever set foot in a shop.
           </p>
-          {/* CTA button: condensed italic — the action moment */}
-          <button className="pth-btn-cta" onClick={onCTAClick} style={{ fontSize: 22, padding: '18px 40px' }} aria-label="Diagnose my car for free">
-            Diagnose my car — it's free <ArrowRightIcon />
+          <button onClick={onCTAClick} style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontWeight: 700, fontSize: 16, letterSpacing: '0.01em', padding: '16px 36px', borderRadius: 9999, boxShadow: '0 4px 28px rgba(249,115,22,0.4)', transition: 'opacity 0.2s, transform 0.15s' }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Diagnose my car for free">
+            Diagnose my car — it's free <ArrowRightIcon size={18} />
           </button>
         </div>
       </div>
@@ -485,21 +411,14 @@ const CTASection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
 
 /* ─── Footer ──────────────────────────────────────────────────────────────── */
 const LandingFooter: React.FC = () => (
-  <footer className="pth-footer-row" style={{ background: C.base, borderTop: '1px solid #111827', padding: '28px 32px' }}>
-    <LogoMark iconSize={16} fontSize={14} />
-    <nav aria-label="Footer navigation" style={{ display: 'flex', gap: 24 }}>
+  <footer className="pth-footer-row" style={{ background: C.base, borderTop: `1px solid ${C.border}`, padding: '28px 40px' }}>
+    <LogoMark compact />
+    <nav aria-label="Footer navigation" style={{ display: 'flex', gap: 28 }}>
       {NAV_LINKS.map(({ label, href }) => (
-        <a key={label} href={href}
-          style={{ fontFamily: Fb, fontSize: 13, fontWeight: 500, color: C.textDeep, textDecoration: 'none', transition: 'color 0.2s' }}
-          onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textMuted)}
-          onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textDeep)}
-          {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        >
-          {label}
-        </a>
+        <a key={label} href={href} style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textDim, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textMuted)} onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textDim)} {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{label}</a>
       ))}
     </nav>
-    <p style={{ fontFamily: Fb, fontSize: 12, color: '#1e293b' }}>© {new Date().getFullYear()} PopTheHood. All rights reserved.</p>
+    <p style={{ fontFamily: F, fontSize: 12, color: C.textFaint }}>© {new Date().getFullYear()} PopTheHood. All rights reserved.</p>
   </footer>
 );
 
