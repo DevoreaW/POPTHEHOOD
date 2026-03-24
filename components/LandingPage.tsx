@@ -404,7 +404,6 @@ const CTASection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
             Ready to find out<br />what's going on?
           </h2>
           <p style={{ fontFamily: F, fontSize: 15, color: C.textMuted, marginBottom: 36, lineHeight: 1.7 }}>
-            Join thousands of drivers who use PopTheHood<br />before they ever set foot in a shop.
           </p>
           <button onClick={onCTAClick} style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontWeight: 700, fontSize: 16, letterSpacing: '0.01em', padding: '16px 36px', borderRadius: 9999, boxShadow: '0 4px 28px rgba(249,115,22,0.4)', transition: 'opacity 0.2s, transform 0.15s' }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Diagnose my car for free">
             Diagnose my car — it's free <ArrowRightIcon size={18} />
