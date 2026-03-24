@@ -1,7 +1,11 @@
 import React from 'react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/react';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onLogoClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
   const { isSignedIn, isLoaded } = useUser();
 
   return (
@@ -11,10 +15,14 @@ const Header: React.FC = () => {
     >
       <div className="max-w-lg md:max-w-4xl mx-auto flex items-center justify-between">
 
-        {/* ── Logo ── */}
-        <div className="flex items-center gap-3">
+        {/* ── Logo — clickable, goes back to landing ── */}
+        <button
+          onClick={onLogoClick}
+          className="flex items-center gap-3 bg-transparent border-none cursor-pointer p-0 text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 rounded-xl group"
+          aria-label="Go to home screen"
+        >
           <div
-            className="bg-gradient-to-br from-orange-500 to-red-600 p-2.5 rounded-xl shadow-lg shadow-orange-500/20 flex-shrink-0"
+            className="bg-gradient-to-br from-orange-500 to-red-600 p-2.5 rounded-xl shadow-lg shadow-orange-500/20 flex-shrink-0 transition-opacity group-hover:opacity-85"
             aria-hidden="true"
           >
             <svg
@@ -27,7 +35,7 @@ const Header: React.FC = () => {
           </div>
           <div className="min-w-0">
             <h1
-              className="text-xl font-black uppercase italic leading-none tracking-wide text-white"
+              className="text-xl font-black uppercase italic leading-none tracking-wide text-white group-hover:text-orange-400 transition-colors"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               POPTHEHOOD
@@ -36,7 +44,7 @@ const Header: React.FC = () => {
               Diagnose Before You Dial
             </p>
           </div>
-        </div>
+        </button>
 
         {/* ── Right side ── */}
         <div className="flex items-center gap-3 flex-shrink-0">
