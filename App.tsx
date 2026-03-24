@@ -62,12 +62,6 @@ const App: React.FC = () => {
     }
   }, [isSignedIn]);
 
-  useEffect(() => {
-    if (isSignedIn && showLanding) {
-      setShowLanding(false);
-    }
-  }, [isSignedIn, showLanding]);
-
   const announce = (message: string) => {
     setAnnouncement('');
     setTimeout(() => setAnnouncement(message), 100);
