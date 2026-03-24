@@ -27,7 +27,6 @@ const App: React.FC = () => {
     return localStorage.getItem('popthehood_consent_accepted') === 'true';
   });
 
-  // Load history — from Supabase if signed in, localStorage if not
   useEffect(() => {
     const loadHistory = async () => {
       if (isSignedIn && user) {
@@ -43,21 +42,16 @@ const App: React.FC = () => {
         } catch (err) {
           console.error('Failed to load history from Supabase:', err);
           const saved = localStorage.getItem(STORAGE_KEY);
-          if (saved) {
-            try { setHistory(JSON.parse(saved)); } catch (e) {}
-          }
+          if (saved) { try { setHistory(JSON.parse(saved)); } catch (e) {} }
         }
       } else {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          try { setHistory(JSON.parse(saved)); } catch (e) {}
-        }
+        if (saved) { try { setHistory(JSON.parse(saved)); } catch (e) {} }
       }
     };
     loadHistory();
   }, [isSignedIn, user]);
 
-  // Clear sensitive data when user signs out
   useEffect(() => {
     if (isSignedIn === false) {
       localStorage.removeItem(STORAGE_KEY);
@@ -74,9 +68,9 @@ const App: React.FC = () => {
   };
 
   const handleServiceError = async (err: any) => {
-    const errorMsg = err.message || "";
-    setError(errorMsg || "An unexpected error occurred. Please try again.");
-    announce("An error occurred. Please try again.");
+    const errorMsg = err.message || '';
+    setError(errorMsg || 'An unexpected error occurred. Please try again.');
+    announce('An error occurred. Please try again.');
   };
 
   const saveToHistory = async (item: DiagnosticReport | TireAnalysisReport) => {
@@ -110,7 +104,7 @@ const App: React.FC = () => {
   };
 
   const clearHistory = () => {
-    if (confirm("Clear your diagnostic history?")) {
+    if (confirm('Clear your diagnostic history?')) {
       setHistory([]);
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -119,13 +113,13 @@ const App: React.FC = () => {
   const handleDiagnose = async (vehicle: VehicleInfo, input: DiagnosticInput) => {
     setIsLoading(true);
     setError(null);
-    announce("Running AI diagnosis. Please wait.");
+    announce('Running AI diagnosis. Please wait.');
     try {
       const result = await generateDiagnosticReport(vehicle, input);
       setReport(result);
       setTireReport(null);
       setServiceReport(null);
-      announce("Diagnosis complete. Results are now available.");
+      announce('Diagnosis complete. Results are now available.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       await handleServiceError(err);
@@ -137,13 +131,13 @@ const App: React.FC = () => {
   const handleTireScan = async (imageData: string, mimeType: string) => {
     setIsLoading(true);
     setError(null);
-    announce("Scanning tire tread. Please wait.");
+    announce('Scanning tire tread. Please wait.');
     try {
       const result = await analyzeTireTread(imageData, mimeType);
       setTireReport(result);
       setReport(null);
       setServiceReport(null);
-      announce("Tire scan complete. Results are now available.");
+      announce('Tire scan complete. Results are now available.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       await handleServiceError(err);
@@ -156,12 +150,8 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     announce(`Searching for nearby ${type === 'mechanic' ? 'mechanics' : 'towing services'}. Please wait.`);
-
     try {
-      if (!navigator.geolocation) {
-        throw new Error("Geolocation is not supported by your browser.");
-      }
-
+      if (!navigator.geolocation) throw new Error('Geolocation is not supported by your browser.');
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
@@ -179,8 +169,8 @@ const App: React.FC = () => {
           }
         },
         () => {
-          setError("Location access denied. Please enable GPS to find nearby help.");
-          announce("Location access denied. Please enable GPS to find nearby help.");
+          setError('Location access denied. Please enable GPS to find nearby help.');
+          announce('Location access denied. Please enable GPS to find nearby help.');
           setIsLoading(false);
         },
         { timeout: 10000 }
@@ -196,12 +186,12 @@ const App: React.FC = () => {
       setTireReport(item as TireAnalysisReport);
       setReport(null);
       setServiceReport(null);
-      announce("Tire scan report loaded.");
+      announce('Tire scan report loaded.');
     } else {
       setReport(item as DiagnosticReport);
       setTireReport(null);
       setServiceReport(null);
-      announce("Diagnostic report loaded.");
+      announce('Diagnostic report loaded.');
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -211,20 +201,24 @@ const App: React.FC = () => {
     setTireReport(null);
     setServiceReport(null);
     setError(null);
-    announce("Returned to main form.");
+    announce('Returned to main form.');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ── Show landing page until user clicks CTA ──────────────────────────────
+  const handleLogoClick = () => {
+    setReport(null);
+    setTireReport(null);
+    setServiceReport(null);
+    setError(null);
+    setShowLanding(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ── Landing page ──────────────────────────────────────────────────────────
   if (showLanding) {
     return (
       <>
-        <div
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          className="sr-only"
-        >
+        <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
           {announcement}
         </div>
         {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
@@ -233,56 +227,51 @@ const App: React.FC = () => {
     );
   }
 
-  // ── Main app ─────────────────────────────────────────────────────────────
+  // ── Main app ──────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+    <div className="min-h-screen flex flex-col" style={{ background: '#030712' }}>
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
       </div>
 
       {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
-      <Header onLogoClick={() => { resetDiagnosis(); setShowLanding(true); }} />
+
+      <Header onLogoClick={handleLogoClick} />
 
       <main id="main-content" className="flex-grow pt-8" tabIndex={-1}>
+
+        {/* Diagnostic warning banner */}
         <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
           <div
             role="alert"
-            className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-8 shadow-sm"
+            className="border-l-4 border-amber-500/60 p-4 rounded-r-xl"
+            style={{ background: 'rgba(245,158,11,0.06)' }}
           >
-            <div className="flex">
-              <div className="flex-shrink-0" aria-hidden="true">
-                <svg className="h-5 w-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                  <line x1="12" y1="9" x2="12" y2="13" />
-                  <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-amber-800">
-                  <span className="font-bold">Virtual Diagnostic Warning:</span> This tool provides mechanical advice based on AI analysis. It is not a replacement for an in-person safety inspection. If your car is smoking, losing brakes, or shaking violently, <span className="underline">do not drive it.</span>
-                </p>
-              </div>
+            <div className="flex gap-3">
+              <svg className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <p className="text-sm text-amber-200/70" style={{ fontFamily: "'Barlow', sans-serif" }}>
+                <span className="font-semibold text-amber-400">Virtual Diagnostic Warning:</span>{' '}
+                This tool provides mechanical advice based on AI analysis. It is not a replacement for an in-person safety inspection. If your car is smoking, losing brakes, or shaking violently,{' '}
+                <span className="underline">do not drive it.</span>
+              </p>
             </div>
           </div>
         </div>
 
+        {/* Error banner */}
         {error && (
-          <div
-            role="alert"
-            aria-live="assertive"
-            className="max-w-4xl mx-auto px-4 mb-8"
-          >
-            <div className="bg-rose-100 border border-rose-200 text-rose-800 p-4 rounded-xl flex items-center justify-between">
-              <span>{error}</span>
+          <div role="alert" aria-live="assertive" className="max-w-4xl mx-auto px-4 mb-8">
+            <div className="bg-rose-500/10 border border-rose-500/25 text-rose-400 p-4 rounded-xl flex items-center justify-between">
+              <span className="text-sm" style={{ fontFamily: "'Barlow', sans-serif" }}>{error}</span>
               <button
                 onClick={() => setError(null)}
-                className="text-rose-900 font-bold ml-4 hover:underline"
+                className="text-rose-400 font-semibold ml-4 hover:text-rose-300 transition-colors text-sm"
                 aria-label="Dismiss error message"
+                style={{ fontFamily: "'Barlow', sans-serif" }}
               >
                 Dismiss
               </button>
@@ -290,39 +279,36 @@ const App: React.FC = () => {
           </div>
         )}
 
+        {/* Loading */}
         {isLoading ? (
           <div
             role="status"
             aria-label="Loading. Please wait."
-            className="flex flex-col items-center justify-center py-20 space-y-6"
+            className="flex flex-col items-center justify-center py-20 gap-6"
           >
-            <div aria-hidden="true" className="w-20 h-20 border-8 border-slate-200 border-t-red-600 rounded-full animate-spin"></div>
+            <div
+              aria-hidden="true"
+              className="w-16 h-16 rounded-full border-4 border-slate-800 border-t-orange-500 animate-spin"
+            />
             <div className="text-center">
-              <h3 className="text-xl font-bold text-slate-900">Running Analysis...</h3>
-              <p className="text-slate-500">Our AI is reviewing your vehicle information.</p>
+              <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "'Barlow', sans-serif" }}>
+                Running analysis…
+              </h3>
+              <p className="text-slate-500 text-sm" style={{ fontFamily: "'Barlow', sans-serif" }}>
+                Our AI is reviewing your vehicle information.
+              </p>
             </div>
           </div>
         ) : (
           <>
             {report && (
-              <DiagnosticView
-                report={report}
-                onReset={resetDiagnosis}
-                onSave={saveToHistory}
-              />
+              <DiagnosticView report={report} onReset={resetDiagnosis} onSave={saveToHistory} />
             )}
             {tireReport && (
-              <TireAnalysisView
-                report={tireReport}
-                onReset={resetDiagnosis}
-                onSave={saveToHistory}
-              />
+              <TireAnalysisView report={tireReport} onReset={resetDiagnosis} onSave={saveToHistory} />
             )}
             {serviceReport && (
-              <ServicesView
-                report={serviceReport}
-                onReset={resetDiagnosis}
-              />
+              <ServicesView report={serviceReport} onReset={resetDiagnosis} />
             )}
             {!report && !tireReport && !serviceReport && (
               <VehicleForm
@@ -339,18 +325,21 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="bg-gray-950 border-t border-gray-800 py-8 px-4 mt-20">
+      {/* Footer */}
+      <footer className="border-t border-slate-800/60 py-8 px-4 mt-20" style={{ background: '#030712' }}>
         <div className="max-w-lg md:max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-gray-500 text-sm text-center md:text-left">
-            <p>© 2026 POPTHEHOOD. All rights reserved.</p>
-            <p className="mt-1 text-xs opacity-60">Developed for educational purposes. Technician oversight required.</p>
+          <div className="text-center md:text-left">
+            <p className="text-slate-600 text-sm" style={{ fontFamily: "'Barlow', sans-serif" }}>
+              © 2026 POPTHEHOOD. All rights reserved.
+            </p>
+            <p className="text-slate-700 text-xs mt-1" style={{ fontFamily: "'Barlow', sans-serif" }}>
+              Developed for educational purposes. Technician oversight required.
+            </p>
           </div>
           <nav aria-label="Footer navigation">
-            <div className="flex items-center space-x-6">
-              <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">About</a>
-              <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Support</a>
-              <a href="/privacy" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy</a>
-              <a href="/terms" className="text-gray-500 hover:text-white text-sm transition-colors">Terms</a>
+            <div className="flex items-center gap-6">
+              <a href="/privacy" className="text-slate-600 hover:text-slate-300 text-sm transition-colors" style={{ fontFamily: "'Barlow', sans-serif" }}>Privacy</a>
+              <a href="/terms"   className="text-slate-600 hover:text-slate-300 text-sm transition-colors" style={{ fontFamily: "'Barlow', sans-serif" }}>Terms</a>
             </div>
           </nav>
         </div>
