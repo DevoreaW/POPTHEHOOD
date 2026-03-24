@@ -302,7 +302,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             <div style={{ marginTop: 14, padding: '12px 16px', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontFamily: F, fontSize: 10, fontWeight: 600, color: C.textDim, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 3 }}>Estimated repair</div>
-                <div style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: C.orange }}>$150 – $900+</div>
+                <div style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: C.orange }}>$250 – $1300+</div>
               </div>
               <div style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: C.textMuted, textAlign: 'right' }}>Consult a<br />mechanic</div>
             </div>
