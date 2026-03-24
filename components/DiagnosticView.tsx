@@ -7,17 +7,18 @@ interface DiagnosticViewProps {
   onSave?: (report: DiagnosticReport) => Promise<void> | void;
 }
 
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+const display: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' };
+const body: React.CSSProperties    = { fontFamily: "'Barlow', sans-serif" };
+
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:      'bg-gray-950 rounded-2xl p-8 border border-slate-800/60',
+  card:      'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
   secIcon:   'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secTitle:  'font-black italic uppercase tracking-wider text-white text-xl',
   secDiv:    'flex-1 h-px bg-slate-800/80',
-  fieldLabel:'text-[9px] font-black text-slate-600 uppercase tracking-[0.18em]',
   subCard:   'bg-black/40 border border-slate-800/60 rounded-xl p-5',
+  fieldLabel:'text-[10px] font-bold text-slate-500 uppercase tracking-widest',
 };
-
-const condensed: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif" };
 
 /* ─── Section header ──────────────────────────────────────────────────────── */
 const SectionHead: React.FC<{
@@ -26,41 +27,45 @@ const SectionHead: React.FC<{
   accent?: string;
   right?: React.ReactNode;
 }> = ({ icon, title, accent = 'text-orange-500 bg-orange-500/10 border-orange-500/20', right }) => (
-  <div className="flex items-center gap-3 mb-7">
-    <div className={`${S.secIcon} border ${accent}`}>{icon}</div>
-    <span className={S.secTitle} style={condensed}>{title}</span>
+  <div className="flex items-center gap-3 mb-6 overflow-hidden">
+    <div className={`${S.secIcon} border ${accent} flex-shrink-0`}>{icon}</div>
+    <span
+      className="font-bold text-white flex-shrink-0 tracking-wide uppercase"
+      style={{ ...body, fontSize: 'clamp(13px, 3.5vw, 16px)' }}
+    >
+      {title}
+    </span>
     <div className={S.secDiv} />
-    {right}
+    {right && <div className="flex-shrink-0 ml-1">{right}</div>}
   </div>
 );
 
 /* ─── Severity badge ──────────────────────────────────────────────────────── */
 const SeverityBadge: React.FC<{ severity: Severity }> = ({ severity }) => {
   const map = {
-    [Severity.GREEN]:  { cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25', label: 'Safe to Drive',       icon: '✓' },
-    [Severity.YELLOW]: { cls: 'bg-amber-500/10  text-amber-400  border-amber-500/25',  label: 'Drive with Caution', icon: '⚠' },
-    [Severity.RED]:    { cls: 'bg-rose-500/10   text-rose-400   border-rose-500/25',    label: 'Do Not Drive',       icon: '✕' },
+    [Severity.GREEN]:  { cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25', label: 'Safe to Drive'      },
+    [Severity.YELLOW]: { cls: 'bg-amber-500/10  text-amber-400  border-amber-500/25',     label: 'Drive with Caution' },
+    [Severity.RED]:    { cls: 'bg-rose-500/10   text-rose-400   border-rose-500/25',       label: 'Do Not Drive'       },
   };
-  const { cls, label, icon } = map[severity];
+  const { cls, label } = map[severity];
   return (
     <span
-      className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest border ${cls}`}
-      style={condensed}
+      className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold border ${cls}`}
+      style={body}
     >
-      <span>{icon}</span>
       {label}
     </span>
   );
 };
 
-/* ─── Save button ─────────────────────────────────────────────────────────── */
+/* ─── Save button states ──────────────────────────────────────────────────── */
 const saveStyles = {
   idle:   'bg-black/40 text-slate-400 hover:border-orange-500/40 hover:text-orange-400 border border-slate-800',
   saving: 'bg-black/40 text-slate-600 border border-slate-800 cursor-not-allowed',
   saved:  'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25',
   error:  'bg-rose-500/10   text-rose-400   border border-rose-500/25',
 };
-const saveLabels = { idle: 'Save Report', saving: 'Saving…', saved: 'Saved!', error: 'Save Failed' };
+const saveLabels = { idle: 'Save report', saving: 'Saving…', saved: 'Saved!', error: 'Save failed' };
 
 /* ─── Component ───────────────────────────────────────────────────────────── */
 const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave }) => {
@@ -80,13 +85,14 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
   };
 
   return (
-    <div className="space-y-5 max-w-lg md:max-w-4xl mx-auto px-4 pb-20">
+    <div className="space-y-4 sm:space-y-5 max-w-lg md:max-w-4xl mx-auto px-3 sm:px-4 pb-20">
 
       {/* ── Assessment header ────────────────────────────────────────────── */}
       <section className={S.card}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-2xl font-black text-white uppercase italic" style={condensed}>
+            {/* Title: regular Barlow bold — easy to read */}
+            <h2 className="text-xl sm:text-2xl font-bold text-white" style={body}>
               Diagnostic Assessment
             </h2>
             {/* Save button */}
@@ -94,7 +100,8 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
               aria-label={saveLabels[saveState]}
               onClick={handleSave}
               disabled={saveState === 'saving' || saveState === 'saved'}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 ${saveStyles[saveState]}`}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 ${saveStyles[saveState]}`}
+              style={body}
             >
               {saveState === 'saving' && (
                 <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -123,9 +130,9 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           <SeverityBadge severity={report.severity} />
         </div>
 
-        {/* Summary quote */}
+        {/* Summary */}
         <div className="border-l-2 border-orange-500/30 pl-5">
-          <p className="text-slate-300 leading-relaxed text-lg italic font-medium">
+          <p className="text-slate-300 leading-relaxed text-base sm:text-lg italic font-medium" style={body}>
             "{report.analysisSummary}"
           </p>
         </div>
@@ -145,17 +152,18 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           {report.mostLikelyCauses.map((cause, idx) => (
             <div key={idx} className={S.subCard}>
               <div className="flex justify-between items-start mb-3 gap-2">
-                <h4
-                  className="font-black text-white uppercase text-sm italic"
-                  style={condensed}
-                >
+                {/* Cause title: regular bold, no italic */}
+                <h4 className="font-semibold text-white text-sm leading-snug" style={body}>
                   {cause.issue}
                 </h4>
-                <span className="text-[9px] font-black px-2 py-1 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 uppercase tracking-widest shrink-0">
+                <span
+                  className="text-[10px] font-bold px-2 py-1 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 shrink-0"
+                  style={body}
+                >
                   {cause.probability}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">{cause.reasoning}</p>
+              <p className="text-xs text-slate-500 leading-relaxed" style={body}>{cause.reasoning}</p>
             </div>
           ))}
         </div>
@@ -176,12 +184,12 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           {report.recommendedActions.map((action, idx) => (
             <div key={idx} className="flex items-start gap-4 bg-black/40 border border-slate-800/60 p-4 rounded-xl">
               <span
-                className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-white text-xs font-black flex items-center justify-center shrink-0 mt-0.5"
-                style={condensed}
+                className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5"
+                style={body}
               >
                 {idx + 1}
               </span>
-              <span className="text-slate-300 text-sm leading-relaxed font-medium">{action}</span>
+              <span className="text-slate-300 text-sm leading-relaxed font-medium" style={body}>{action}</span>
             </div>
           ))}
         </div>
@@ -200,24 +208,24 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
           <div className={S.subCard}>
-            <p className={`${S.fieldLabel} mb-2`}>Estimated Parts</p>
-            <p className="text-xl font-black text-white tracking-tight" style={condensed}>{report.costEstimate.parts}</p>
+            <p className={`${S.fieldLabel} mb-2`} style={body}>Estimated Parts</p>
+            <p className="text-xl font-bold text-white" style={body}>{report.costEstimate.parts}</p>
           </div>
           <div className={S.subCard}>
-            <p className={`${S.fieldLabel} mb-2`}>Estimated Labor</p>
-            <p className="text-xl font-black text-white tracking-tight" style={condensed}>{report.costEstimate.labor}</p>
+            <p className={`${S.fieldLabel} mb-2`} style={body}>Estimated Labor</p>
+            <p className="text-xl font-bold text-white" style={body}>{report.costEstimate.labor}</p>
           </div>
           <div className="bg-orange-500/8 border border-orange-500/20 rounded-xl p-5">
-            <p className="text-[9px] font-black text-orange-500/70 uppercase tracking-[0.18em] mb-2">Total Est. Repair</p>
+            <p className={`${S.fieldLabel} text-orange-500/70 mb-2`} style={body}>Total Est. Repair</p>
             <p
-              className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
-              style={condensed}
+              className="text-xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
+              style={body}
             >
               {report.costEstimate.total}
             </p>
           </div>
         </div>
-        <p className="mt-5 text-[9px] text-slate-700 font-bold uppercase tracking-widest">
+        <p className="mt-5 text-xs text-slate-700" style={body}>
           * Prices vary by region and vehicle year. Diagnostics usually cost 1 hour of labor.
         </p>
       </section>
@@ -234,28 +242,28 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           }
           right={
             <span
-              className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shrink-0 ${report.diyVsPro.canDiy ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25' : 'bg-rose-500/10 text-rose-400 border-rose-500/25'}`}
-              style={condensed}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold border shrink-0 ${report.diyVsPro.canDiy ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25' : 'bg-rose-500/10 text-rose-400 border-rose-500/25'}`}
+              style={body}
             >
-              {report.diyVsPro.canDiy ? 'DIY Friendly' : 'Pro Needed'}
+              {report.diyVsPro.canDiy ? 'DIY friendly' : 'Pro needed'}
             </span>
           }
         />
 
-        <p className="text-slate-300 text-sm leading-relaxed mb-5 font-medium">{report.diyVsPro.explanation}</p>
+        <p className="text-slate-300 text-sm leading-relaxed mb-5" style={body}>{report.diyVsPro.explanation}</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Safety warnings */}
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5">
-            <h4 className="text-amber-400 text-[9px] font-black flex items-center gap-2 mb-4 uppercase tracking-widest">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <h4 className="text-amber-400 text-xs font-bold flex items-center gap-2 mb-4" style={body}>
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              Safety Warnings
+              Safety warnings
             </h4>
             <ul className="space-y-2">
               {report.diyVsPro.safetyWarnings.map((w, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-amber-200/60 font-medium">
+                <li key={i} className="flex items-start gap-2 text-xs text-amber-200/60" style={body}>
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500/50 mt-1.5 shrink-0" />
                   {w}
                 </li>
@@ -265,20 +273,17 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
           {/* Mechanical breakdown */}
           <div className={S.subCard}>
-            <h4
-              className="font-black text-white text-sm italic uppercase tracking-wide mb-3"
-              style={condensed}
-            >
-              Mechanical Breakdown
+            <h4 className="font-semibold text-white text-sm mb-3" style={body}>
+              Mechanical breakdown
             </h4>
-            <p className="text-xs text-slate-500 leading-relaxed mb-4">{report.mechanicalExplanation}</p>
+            <p className="text-xs text-slate-500 leading-relaxed mb-4" style={body}>{report.mechanicalExplanation}</p>
             <div className="pt-4 border-t border-slate-800/60">
-              <p className={`${S.fieldLabel} mb-2`}>Urgency & Timeline</p>
-              <p className="text-xs text-slate-300 font-medium">
-                <span className="text-white font-black uppercase tracking-tight mr-1" style={condensed}>Next Steps:</span>
+              <p className={`${S.fieldLabel} mb-2`} style={body}>Urgency & timeline</p>
+              <p className="text-xs text-slate-300" style={body}>
+                <span className="font-semibold text-white mr-1">Next steps:</span>
                 {report.urgency.timeline}
               </p>
-              <p className="text-xs text-rose-400 mt-2 font-black uppercase tracking-tight italic" style={condensed}>
+              <p className="text-xs text-rose-400 mt-2 font-semibold" style={body}>
                 {report.urgency.risksOfDelay}
               </p>
             </div>
@@ -299,16 +304,16 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div>
-            <p className={`${S.fieldLabel} mb-2`}>Known Issues</p>
-            <p className="text-sm text-slate-300 font-medium leading-relaxed">{report.additionalContext.commonModelIssues}</p>
+            <p className={`${S.fieldLabel} mb-2`} style={body}>Known issues</p>
+            <p className="text-sm text-slate-300 leading-relaxed" style={body}>{report.additionalContext.commonModelIssues}</p>
           </div>
           <div className="sm:border-l sm:border-slate-800/60 sm:pl-6">
-            <p className={`${S.fieldLabel} mb-2`}>Recall Alert</p>
-            <p className="text-sm text-slate-300 font-medium leading-relaxed">{report.additionalContext.recallPotential}</p>
+            <p className={`${S.fieldLabel} mb-2`} style={body}>Recall alert</p>
+            <p className="text-sm text-slate-300 leading-relaxed" style={body}>{report.additionalContext.recallPotential}</p>
           </div>
           <div className="sm:border-l sm:border-slate-800/60 sm:pl-6">
-            <p className={`${S.fieldLabel} mb-2`}>Prevention</p>
-            <p className="text-sm text-slate-300 font-medium leading-relaxed">{report.additionalContext.prevention}</p>
+            <p className={`${S.fieldLabel} mb-2`} style={body}>Prevention</p>
+            <p className="text-sm text-slate-300 leading-relaxed" style={body}>{report.additionalContext.prevention}</p>
           </div>
         </div>
       </section>
@@ -317,7 +322,6 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
       <section className={S.card}>
         <SectionHead
           title="Narrow It Down"
-          accent="text-orange-500 bg-orange-500/10 border-orange-500/20"
           icon={
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -327,24 +331,24 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {report.followUpQuestions.map((q, i) => (
             <div key={i} className="flex items-start gap-3 bg-black/40 border border-slate-800/60 p-4 rounded-xl">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0 shadow-sm shadow-orange-500/30" />
-              <span className="text-slate-400 text-sm font-medium leading-relaxed">{q}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0" />
+              <span className="text-slate-400 text-sm leading-relaxed" style={body}>{q}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Reset CTA ────────────────────────────────────────────────────── */}
-      <div className="flex flex-col items-center gap-5 pt-4">
+      {/* ── Reset CTA — condensed italic is appropriate here ─────────────── */}
+      <div className="flex flex-col items-center gap-4 pt-4">
         <button
           aria-label="Start a new diagnostic session"
           onClick={onReset}
-          className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black uppercase tracking-widest transition-all shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic', fontSize: 20 }}
+          className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
+          style={{ ...display, fontWeight: 900, fontSize: 20, letterSpacing: '0.04em' }}
         >
           Start New Diagnostic
         </button>
-        <p className="text-[9px] text-slate-700 max-w-lg text-center leading-relaxed font-bold uppercase tracking-widest">
+        <p className="text-xs text-slate-700 max-w-lg text-center leading-relaxed" style={body}>
           AI-assisted preliminary diagnosis only. A physical inspection by a certified mechanic is recommended for accurate diagnosis and repair.
         </p>
       </div>
