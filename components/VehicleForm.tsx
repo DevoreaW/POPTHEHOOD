@@ -75,10 +75,10 @@ const CAR_MODELS: Record<string, string[]> = {
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-// Condensed italic: CTAs and hero moments only
-const display: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' };
-// Regular Barlow: all UI text — readable at any size
-const body: React.CSSProperties = { fontFamily: "'Barlow', sans-serif" };
+// CTA buttons: Inter, non-italic for consistency
+const display: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
+// Regular Inter: all UI text — readable at any size
+const body: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
@@ -600,7 +600,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           )}
         </section>
 
-        {/* ── Submit — keep condensed italic here, it's the CTA ────────────── */}
+        {/* ── Submit — orange CTA button ────────────────────────────────── */}
         <button
           type="submit"
           disabled={isLoading}
@@ -609,7 +609,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
             }`}
-          style={{ ...display, fontWeight: 900, fontSize: 'clamp(18px, 5vw, 22px)', letterSpacing: '0.04em' }}
+          style={{ ...display, fontWeight: 900, fontSize: 'clamp(18px, 5vw, 22px)', letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           {isLoading ? (
             <>
