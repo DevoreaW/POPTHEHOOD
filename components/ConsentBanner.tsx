@@ -6,7 +6,9 @@ interface ConsentBannerProps {
   onAccept: () => void;
 }
 
-const condensed: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif" };
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+const display: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' };
+const body: React.CSSProperties    = { fontFamily: "'Barlow', sans-serif" };
 
 const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
   const [ageConfirmed, setAgeConfirmed]   = useState(false);
@@ -31,24 +33,22 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
             </svg>
           </div>
           <div>
-            <h2
-              className="text-xl font-black text-white uppercase italic leading-none"
-              style={condensed}
-            >
-              Before You Begin
+            {/* Title: regular Barlow bold — readable at modal size */}
+            <h2 className="text-lg font-bold text-white leading-none" style={body}>
+              Before you begin
             </h2>
-            <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.18em] mt-1">
-              Important Information
+            <p className="text-xs text-slate-600 mt-1" style={body}>
+              Important information
             </p>
           </div>
         </div>
 
         {/* ── Warning box ── */}
         <div className="bg-amber-500/6 border border-amber-500/20 rounded-xl p-4 mb-6">
-          <p className="text-amber-200/70 text-sm font-medium leading-relaxed">
-            <strong className="text-amber-400 font-black">AI Diagnostic Tool:</strong>{' '}
+          <p className="text-amber-200/70 text-sm leading-relaxed" style={body}>
+            <strong className="text-amber-400 font-semibold">AI Diagnostic Tool:</strong>{' '}
             PopTheHood provides AI-generated suggestions based on your description. It is{' '}
-            <strong className="text-amber-300">not a replacement</strong> for a certified mechanic.
+            <strong className="text-amber-300 font-semibold">not a replacement</strong> for a certified mechanic.
             Always consult a professional for safety-critical repairs.
           </p>
         </div>
@@ -64,11 +64,7 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
                 onChange={e => setAgeConfirmed(e.target.checked)}
                 className="sr-only"
               />
-              <div
-                className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                  ageConfirmed ? 'bg-orange-500 border-orange-500' : 'border-slate-700 bg-black/40'
-                }`}
-              >
+              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${ageConfirmed ? 'bg-orange-500 border-orange-500' : 'border-slate-700 bg-black/40'}`}>
                 {ageConfirmed && (
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
@@ -76,9 +72,9 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
                 )}
               </div>
             </div>
-            <span className="text-slate-400 text-sm font-medium leading-snug">
+            <span className="text-slate-400 text-sm leading-snug" style={body}>
               I confirm that I am{' '}
-              <strong className="text-white font-black">13 years of age or older</strong>
+              <strong className="text-white font-semibold">13 years of age or older</strong>
             </span>
           </label>
 
@@ -91,11 +87,7 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
                 onChange={e => setTermsAccepted(e.target.checked)}
                 className="sr-only"
               />
-              <div
-                className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                  termsAccepted ? 'bg-orange-500 border-orange-500' : 'border-slate-700 bg-black/40'
-                }`}
-              >
+              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${termsAccepted ? 'bg-orange-500 border-orange-500' : 'border-slate-700 bg-black/40'}`}>
                 {termsAccepted && (
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
@@ -103,7 +95,7 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
                 )}
               </div>
             </div>
-            <span className="text-slate-400 text-sm font-medium leading-snug">
+            <span className="text-slate-400 text-sm leading-snug" style={body}>
               I agree to the{' '}
               <a href="/terms" className="text-orange-400 hover:text-orange-300 underline underline-offset-2 transition-colors">
                 Terms of Service
@@ -116,18 +108,18 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
           </label>
         </div>
 
-        {/* ── Accept button ── */}
+        {/* ── Accept button — condensed italic appropriate for the CTA ── */}
         <button
           onClick={handleAccept}
           disabled={!canAccept}
-          className={`w-full py-4 rounded-full font-black uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950
+          className={`w-full py-4 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950
             ${canAccept
               ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
               : 'bg-black/40 border border-slate-800 text-slate-700 cursor-not-allowed'
             }`}
-          style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic', fontSize: 18 }}
+          style={{ ...display, fontWeight: 900, fontSize: 18, letterSpacing: '0.04em' }}
         >
-          I Understand — Let's Go
+          I understand — let's go
         </button>
 
       </div>
