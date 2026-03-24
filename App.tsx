@@ -54,7 +54,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (isSignedIn === false) {
-      localStorage.removeItem(STORAGE_KEY);
       setHistory([]);
       setReport(null);
       setTireReport(null);

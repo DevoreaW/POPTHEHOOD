@@ -221,7 +221,6 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: scrolled ? 'rgba(3,7,18,0.95)' : 'rgba(3,7,18,0.7)', backdropFilter: 'blur(16px)', borderBottom: `1px solid ${scrolled ? C.border : 'transparent'}`, transition: 'background 0.3s, border-color 0.3s' }}>
       <nav className="pth-nav-inner" aria-label="Main navigation">
         <LogoMark compact />
-        <button onClick={onCTAClick} type="button" style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '8px 16px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', whiteSpace: 'nowrap', marginRight: 12 }} aria-label="Open the app">Open app</button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap', flexShrink: 0 }}>
           <div className="pth-nav-status" style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 16, background: C.greenBg, border: `1px solid rgba(16,185,129,0.2)`, borderRadius: 9999, padding: '5px 12px' }}>
             <span style={{ position: 'relative', width: 8, height: 8, display: 'inline-block' }}>
