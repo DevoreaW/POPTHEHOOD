@@ -148,7 +148,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             </svg>
           }
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
+        <div className="flex flex-col gap-3">
           {report.mostLikelyCauses.map((cause, idx) => (
             <div key={idx} className={S.subCard}>
               <div className="flex justify-between items-start mb-3 gap-2">
@@ -328,7 +328,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             </svg>
           }
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="flex flex-col gap-3">
           {report.followUpQuestions.map((q, i) => (
             <div key={i} className="flex items-start gap-3 bg-black/40 border border-slate-800/60 p-4 rounded-xl">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0" />
