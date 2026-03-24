@@ -231,10 +231,10 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: C.green, letterSpacing: '0.04em' }}>All systems online</span>
           </div>
           <SignInButton mode="modal">
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, transition: 'color 0.2s', padding: '8px 14px', borderRadius: 8 }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)} aria-label="Sign in to your account">Sign in</button>
+            <button onClick={onCTAClick} type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, transition: 'color 0.2s', padding: '8px 14px', borderRadius: 8 }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)} aria-label="Sign in to your account">Sign in</button>
           </SignInButton>
           <SignUpButton mode="modal">
-            <button style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '9px 20px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', transition: 'opacity 0.2s, transform 0.15s', whiteSpace: 'nowrap', flexShrink: 0 }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Create a new account">Get started</button>
+            <button onClick={onCTAClick} type="button" style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '9px 20px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', transition: 'opacity 0.2s, transform 0.15s', whiteSpace: 'nowrap', flexShrink: 0 }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Create a new account">Get started</button>
           </SignUpButton>
         </div>
       </nav>
