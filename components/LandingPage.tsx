@@ -179,9 +179,9 @@ const FEATURES = [
 const TRUST_ITEMS = ['End-to-end encrypted', 'OWASP compliant', 'No data sold — ever', 'ADA accessible'];
 
 const DIAG_CAUSES = [
-  { rank: '01', name: 'Worn or glazed serpentine belt',   prob: 'HIGH',        probColor: '#f97316', probBg: 'rgba(249,115,22,0.1)',   probBorder: 'rgba(249,115,22,0.25)'  },
-  { rank: '02', name: 'Failing belt tensioner or pulley', prob: 'MEDIUM-HIGH', probColor: '#f59e0b', probBg: 'rgba(245,158,11,0.1)',   probBorder: 'rgba(245,158,11,0.25)'  },
-  { rank: '03', name: 'Accessory component bearing',      prob: 'MEDIUM',      probColor: '#94a3b8', probBg: 'rgba(148,163,184,0.08)', probBorder: 'rgba(148,163,184,0.2)'  },
+  { rank: '01', name: 'Worn Spark Plugs or Failing Ignition Coils',   prob: 'HIGH',        probColor: '#f97316', probBg: 'rgba(249,115,22,0.1)',   probBorder: 'rgba(249,115,22,0.25)'  },
+  { rank: '02', name: 'Vacuum Leak', prob: 'MEDIUM-HIGH', probColor: '#f59e0b', probBg: 'rgba(245,158,11,0.1)',   probBorder: 'rgba(245,158,11,0.25)'  },
+  { rank: '03', name: 'Dirty/Clogged Fuel Injectors',      prob: 'MEDIUM',      probColor: '#94a3b8', probBg: 'rgba(148,163,184,0.08)', probBorder: 'rgba(148,163,184,0.2)'  },
 ];
 
 const NAV_LINKS = [
