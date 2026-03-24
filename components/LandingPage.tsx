@@ -26,6 +26,7 @@ const GlobalStyles = () => (
     .pth-hero-pad { padding: 96px 32px 64px; }
     .pth-sec-pad  { padding: 72px 32px; }
 
+    /* Gradient text — hero H1 accent word only */
     .pth-grad-text {
       background: linear-gradient(135deg, #f97316, #dc2626);
       -webkit-background-clip: text;
@@ -33,6 +34,7 @@ const GlobalStyles = () => (
       background-clip: text;
     }
 
+    /* CTA buttons — condensed italic is appropriate here */
     .pth-btn-cta {
       display: inline-flex; align-items: center; gap: 10px;
       background: linear-gradient(135deg, #f97316, #dc2626);
@@ -47,11 +49,12 @@ const GlobalStyles = () => (
     .pth-btn-cta:hover  { opacity: 0.9; transform: translateY(-1px); }
     .pth-btn-cta:active { transform: translateY(0); }
 
+    /* Ghost outline button — regular Barlow */
     .pth-btn-ghost {
       display: inline-flex; align-items: center; gap: 8px;
       background: transparent; color: #64748b;
       border: 1px solid #1f2937; cursor: pointer;
-      font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px;
+      font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px;
       padding: 14px 24px; border-radius: 9999px; text-decoration: none;
       transition: color 0.2s, border-color 0.2s;
     }
@@ -92,7 +95,6 @@ const C = {
   border:       '#1f2937',
   borderInner:  '#1e293b',
   orange:       '#f97316',
-  red:          '#dc2626',
   orangeBg:     'rgba(249,115,22,0.08)',
   orangeBorder: 'rgba(249,115,22,0.2)',
   text:         '#f1f5f9',
@@ -103,10 +105,9 @@ const C = {
   green:        '#10b981',
 };
 
-const F = {
-  display: "'Barlow Condensed', sans-serif",
-  body:    "'Barlow', sans-serif",
-};
+/* Typography helpers */
+const Fd = "'Barlow Condensed', sans-serif"; // display — CTAs and H1 only
+const Fb = "'Barlow', sans-serif";           // body — everything else
 
 /* ─── Icons ───────────────────────────────────────────────────────────────── */
 const WrenchIcon = ({ size = 20 }: { size?: number }) => (
@@ -162,16 +163,16 @@ const STATS = [
 ];
 
 const HOW_IT_WORKS = [
-  { step: '1', title: 'Describe the issue',      body: 'Type your symptoms or use voice input. Select your make, model, and year — no scanner required.'                                                      },
-  { step: '2', title: 'AI analyzes your car',    body: 'Our model cross-references known issues specific to your vehicle and mileage to rank the most likely causes.'                                          },
-  { step: '3', title: 'Get a clear action plan', body: "See ranked causes, estimated repair costs, and whether it's DIY-safe or needs a professional."                                                         },
+  { step: '1', title: 'Describe the issue',      body: 'Type your symptoms or use voice input. Select your make, model, and year — no scanner required.'                          },
+  { step: '2', title: 'AI analyzes your car',    body: 'Our model cross-references known issues specific to your vehicle and mileage to rank the most likely causes.'              },
+  { step: '3', title: 'Get a clear action plan', body: "See ranked causes, estimated repair costs, and whether it's DIY-safe or needs a professional."                             },
 ];
 
 const FEATURES = [
-  { icon: <DiagnoseIcon />, title: 'AI Diagnosis',    desc: 'Describe your symptoms and get ranked causes with repair cost estimates in seconds.'   },
-  { icon: <TireIcon />,     title: 'Tire Tread Scan', desc: 'Upload a photo of your tire and get a wear analysis before it becomes a problem.'      },
-  { icon: <MapPinIcon />,   title: 'Find a Mechanic', desc: 'See nearby shops rated by real customers — filtered to what matters most.'             },
-  { icon: <TowIcon />,      title: 'Request a Tow',   desc: 'Get towing services dispatched to your location when you need it most.'               },
+  { icon: <DiagnoseIcon />, title: 'AI Diagnosis',    desc: 'Describe your symptoms and get ranked causes with repair cost estimates in seconds.'  },
+  { icon: <TireIcon />,     title: 'Tire Tread Scan', desc: 'Upload a photo of your tire and get a wear analysis before it becomes a problem.'     },
+  { icon: <MapPinIcon />,   title: 'Find a Mechanic', desc: 'See nearby shops rated by real customers — filtered to what matters most.'            },
+  { icon: <TowIcon />,      title: 'Request a Tow',   desc: 'Get towing services dispatched to your location when you need it most.'              },
 ];
 
 const TRUST_ITEMS = ['End-to-end encrypted', 'OWASP compliant', 'No data sold — ever', 'ADA accessible'];
@@ -187,7 +188,7 @@ const NAV_LINKS = [
   { label: 'Terms',   href: '/terms'   },
 ];
 
-/* ─── Shared logo ─────────────────────────────────────────────────────────── */
+/* ─── Logo mark ───────────────────────────────────────────────────────────── */
 const LogoMark: React.FC<{ iconSize?: number; fontSize?: number }> = ({ iconSize = 20, fontSize = 20 }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
     <div style={{
@@ -200,10 +201,11 @@ const LogoMark: React.FC<{ iconSize?: number; fontSize?: number }> = ({ iconSize
       <WrenchIcon size={iconSize} />
     </div>
     <div>
-      <div style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize, letterSpacing: '0.05em', textTransform: 'uppercase', color: C.text, lineHeight: 1 }}>
+      {/* Wordmark: condensed italic — brand identity, not body text */}
+      <div style={{ fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize, letterSpacing: '0.05em', textTransform: 'uppercase', color: C.text, lineHeight: 1 }}>
         POPTHEHOOD
       </div>
-      <div style={{ fontFamily: F.body, fontWeight: 800, fontSize: 9, color: C.orange, letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 3 }}>
+      <div style={{ fontFamily: Fb, fontWeight: 600, fontSize: 9, color: C.orange, letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: 3 }}>
         Diagnose Before You Dial
       </div>
     </div>
@@ -235,9 +237,9 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
       <LogoMark />
 
       <div className="pth-nav-right">
-        {/* Pinging status indicator */}
+        {/* Status indicator */}
         <div className="pth-nav-status" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginRight: 4 }}>
-          <span style={{ fontFamily: F.body, fontSize: 9, fontWeight: 800, color: C.textDeep, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+          <span style={{ fontFamily: Fb, fontSize: 9, fontWeight: 600, color: C.textDeep, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             System Status
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
@@ -245,7 +247,7 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
               <span className="pth-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: '#34d399', opacity: 0.75 }} />
               <span style={{ position: 'absolute', inset: 1, borderRadius: '50%', background: C.green }} />
             </span>
-            <span style={{ fontFamily: F.body, fontSize: 11, fontWeight: 800, color: C.green, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span style={{ fontFamily: Fb, fontSize: 11, fontWeight: 700, color: C.green }}>
               Online
             </span>
           </div>
@@ -253,23 +255,23 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
 
         <SignInButton mode="modal">
           <button
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.textDim, textTransform: 'uppercase', letterSpacing: '0.1em', transition: 'color 0.2s', padding: '8px 12px' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: Fb, fontSize: 13, fontWeight: 600, color: C.textDim, transition: 'color 0.2s', padding: '8px 12px' }}
             onMouseEnter={e => (e.currentTarget.style.color = C.text)}
             onMouseLeave={e => (e.currentTarget.style.color = C.textDim)}
             aria-label="Sign in to your account"
           >
-            Sign In
+            Sign in
           </button>
         </SignInButton>
 
         <SignUpButton mode="modal">
           <button
-            style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F.body, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', padding: '8px 16px', borderRadius: 9999, transition: 'opacity 0.2s' }}
+            style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: Fb, fontSize: 13, fontWeight: 700, padding: '8px 18px', borderRadius: 9999, transition: 'opacity 0.2s' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
             aria-label="Create a new account"
           >
-            Sign Up
+            Sign up
           </button>
         </SignUpButton>
       </div>
@@ -296,27 +298,28 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
 
   return (
     <section className="pth-hero-pad" style={{ background: C.base, borderBottom: `1px solid ${C.border}`, marginTop: 68, position: 'relative', overflow: 'hidden' }}>
-      {/* Ambient glow */}
       <div aria-hidden="true" style={{ position: 'absolute', top: '-10%', right: '-5%', width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
-      {/* Dot grid */}
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.025, backgroundImage: `radial-gradient(${C.textMuted} 1px, transparent 1px)`, backgroundSize: '28px 28px' }} />
 
       <div ref={ref} className="pth-hero-grid" style={{ maxWidth: 1040, margin: '0 auto', position: 'relative' }}>
 
         {/* Left: copy */}
         <div>
+          {/* Badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '5px 14px', borderRadius: 9999, marginBottom: 20 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, display: 'inline-block' }} />
-            <span style={{ fontFamily: F.body, fontWeight: 700, fontSize: 11, color: C.orange, letterSpacing: '0.1em' }}>AI-POWERED CAR DIAGNOSTICS</span>
+            <span style={{ fontFamily: Fb, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>AI-powered car diagnostics</span>
           </div>
 
-          <h1 style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(44px, 6vw, 72px)', lineHeight: 0.92, letterSpacing: '-0.01em', textTransform: 'uppercase', color: C.text, marginBottom: 20 }}>
+          {/* H1 — condensed italic is earned here, it's the marquee headline */}
+          <h1 style={{ fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(44px, 6vw, 72px)', lineHeight: 0.92, letterSpacing: '-0.01em', textTransform: 'uppercase', color: C.text, marginBottom: 20 }}>
             Know what's<br />wrong{' '}
             <span className="pth-grad-text">before</span>
             <br />the shop does.
           </h1>
 
-          <p style={{ fontFamily: F.body, fontSize: 16, lineHeight: 1.65, color: C.textMuted, maxWidth: 440, marginBottom: 36 }}>
+          {/* Subheadline — regular Barlow */}
+          <p style={{ fontFamily: Fb, fontSize: 16, lineHeight: 1.7, color: C.textMuted, maxWidth: 440, marginBottom: 36 }}>
             Describe your symptoms, snap a photo, and get an instant AI diagnosis — with repair costs and nearby mechanic options.
           </p>
 
@@ -330,30 +333,34 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
 
         {/* Right: mock diagnostic card */}
         <div style={{ background: C.card, border: `1px solid ${C.borderInner}`, borderRadius: 20, padding: 24 }}>
+          {/* Card header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'nowrap', marginBottom: 18, paddingBottom: 14, borderBottom: `1px solid ${C.borderInner}` }}>
-            <div style={{ background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 6, padding: '5px 12px', fontFamily: F.body, fontSize: 12, fontWeight: 700, color: C.orange, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+            <div style={{ background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 6, padding: '5px 12px', fontFamily: Fb, fontSize: 12, fontWeight: 700, color: C.orange, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
               2012 ACURA TLX
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto', fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.green, whiteSpace: 'nowrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto', fontFamily: Fb, fontSize: 11, fontWeight: 600, color: C.green, whiteSpace: 'nowrap' }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.green, display: 'inline-block', flexShrink: 0 }} />
               Analysis complete
             </div>
           </div>
 
-          <p style={{ fontFamily: F.body, fontSize: 13, color: C.textDim, marginBottom: 16, lineHeight: 1.55 }}>
+          {/* Symptom */}
+          <p style={{ fontFamily: Fb, fontSize: 13, color: C.textDim, marginBottom: 16, lineHeight: 1.6 }}>
             <strong style={{ color: C.text, fontWeight: 600 }}>Reported:</strong>{' '}Engine light on, rough idle at stops, slight vibration. Worse in the morning.
           </p>
 
-          <div style={{ fontFamily: F.body, fontSize: 10, fontWeight: 700, color: C.textDeep, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+          {/* Causes label */}
+          <div style={{ fontFamily: Fb, fontSize: 10, fontWeight: 600, color: C.textDeep, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
             Top causes ranked by likelihood
           </div>
 
+          {/* Cause rows */}
           {DIAG_CAUSES.map(({ rank, name, prob }) => (
             <div key={rank} style={{ display: 'flex', alignItems: 'center', gap: 10, background: C.base, border: `1px solid ${C.borderInner}`, borderRadius: 8, padding: '10px 14px', marginBottom: 6 }}>
-              <span style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 16, color: C.orange, minWidth: 24, flexShrink: 0 }}>{rank}</span>
-              <div style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: C.text, flex: 1, minWidth: 0 }}>{name}</div>
+              <span style={{ fontFamily: Fb, fontWeight: 700, fontSize: 14, color: C.orange, minWidth: 24, flexShrink: 0 }}>{rank}</span>
+              <div style={{ fontFamily: Fb, fontSize: 13, fontWeight: 500, color: C.text, flex: 1, minWidth: 0 }}>{name}</div>
               <span style={{
-                fontFamily: F.body, fontSize: 10, fontWeight: 700,
+                fontFamily: Fb, fontSize: 10, fontWeight: 700,
                 color: prob === 'HIGH' ? '#f97316' : prob === 'MEDIUM-HIGH' ? '#f59e0b' : '#94a3b8',
                 background: prob === 'HIGH' ? 'rgba(249,115,22,0.1)' : prob === 'MEDIUM-HIGH' ? 'rgba(245,158,11,0.1)' : 'rgba(148,163,184,0.1)',
                 border: `1px solid ${prob === 'HIGH' ? 'rgba(249,115,22,0.25)' : prob === 'MEDIUM-HIGH' ? 'rgba(245,158,11,0.25)' : 'rgba(148,163,184,0.2)'}`,
@@ -362,10 +369,12 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             </div>
           ))}
 
-          <div style={{ marginTop: 12, padding: '10px 14px', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, fontFamily: F.body, fontSize: 12, fontWeight: 600, color: C.orange, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {/* Tip */}
+          <div style={{ marginTop: 12, padding: '10px 14px', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, fontFamily: Fb, fontSize: 12, fontWeight: 600, color: C.orange, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             Estimated repair: $150–$900+ · Consult a mechanic
           </div>
         </div>
+
       </div>
     </section>
   );
@@ -376,8 +385,9 @@ const StatsStrip: React.FC = () => (
   <div className="pth-stats-grid" style={{ background: C.base, borderBottom: `1px solid ${C.border}` }}>
     {STATS.map(({ value, label }, i) => (
       <div key={label} style={{ textAlign: 'center', padding: '22px 12px', borderRight: i < STATS.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-        <div className="pth-grad-text" style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 22 }}>{value}</div>
-        <div style={{ fontFamily: F.body, fontSize: 10, fontWeight: 700, color: C.textDeep, letterSpacing: '0.1em', marginTop: 2, textTransform: 'uppercase' }}>{label}</div>
+        {/* Stat values: condensed italic — short punchy words, earned */}
+        <div className="pth-grad-text" style={{ fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize: 22 }}>{value}</div>
+        <div style={{ fontFamily: Fb, fontSize: 11, fontWeight: 500, color: C.textDeep, marginTop: 4 }}>{label}</div>
       </div>
     ))}
   </div>
@@ -387,18 +397,21 @@ const StatsStrip: React.FC = () => (
 const HowItWorksSection: React.FC = () => (
   <section id="how-it-works" className="pth-sec-pad" style={{ background: C.base, borderBottom: `1px solid ${C.border}` }}>
     <div style={{ maxWidth: 1040, margin: '0 auto' }}>
-      <p style={{ fontFamily: F.body, fontWeight: 800, fontSize: 10, color: C.orange, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 10 }}>How it works</p>
-      <h2 style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(30px, 4vw, 48px)', color: C.text, textTransform: 'uppercase', lineHeight: 1, marginBottom: 40 }}>
+      <p style={{ fontFamily: Fb, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 10 }}>How it works</p>
+      {/* Section H2: regular Barlow bold — much easier to read than condensed italic */}
+      <h2 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, marginBottom: 40 }}>
         A diagnosis in three steps.
       </h2>
       <div className="pth-steps-grid" style={{ background: C.border, border: `1px solid ${C.border}`, borderRadius: 16, overflow: 'hidden' }}>
         {HOW_IT_WORKS.map(({ step, title, body }) => (
           <div key={step} className="pth-step-card" style={{ background: C.surface, padding: '32px 28px', transition: 'background 0.2s' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #f97316, #dc2626)', boxShadow: '0 3px 12px rgba(249,115,22,0.3)', color: '#fff', fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 22, marginBottom: 18 }}>
+            {/* Step badge: condensed italic — a single number, fine here */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #f97316, #dc2626)', boxShadow: '0 3px 12px rgba(249,115,22,0.3)', color: '#fff', fontFamily: Fd, fontWeight: 900, fontStyle: 'italic', fontSize: 22, marginBottom: 18 }}>
               {step}
             </div>
-            <h3 style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 20, color: C.text, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>{title}</h3>
-            <p style={{ fontFamily: F.body, fontSize: 13, color: C.textDim, lineHeight: 1.7 }}>{body}</p>
+            {/* Step title: regular Barlow bold */}
+            <h3 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 16, color: C.text, marginBottom: 10 }}>{title}</h3>
+            <p style={{ fontFamily: Fb, fontSize: 13, color: C.textDim, lineHeight: 1.7 }}>{body}</p>
           </div>
         ))}
       </div>
@@ -410,8 +423,8 @@ const HowItWorksSection: React.FC = () => (
 const FeaturesSection: React.FC = () => (
   <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
     <div style={{ maxWidth: 1040, margin: '0 auto' }}>
-      <p style={{ fontFamily: F.body, fontWeight: 800, fontSize: 10, color: C.orange, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 10 }}>Features</p>
-      <h2 style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(30px, 4vw, 48px)', color: C.text, textTransform: 'uppercase', lineHeight: 1, marginBottom: 40 }}>
+      <p style={{ fontFamily: Fb, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 10 }}>Features</p>
+      <h2 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, marginBottom: 40 }}>
         Everything in one place.
       </h2>
       <div className="pth-feat-grid" style={{ background: C.border, border: `1px solid ${C.border}`, borderRadius: 16, overflow: 'hidden' }}>
@@ -420,8 +433,9 @@ const FeaturesSection: React.FC = () => (
             <div style={{ width: 48, height: 48, borderRadius: 12, background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.orange, marginBottom: 16 }}>
               {icon}
             </div>
-            <h3 style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 17, color: C.text, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 8 }}>{title}</h3>
-            <p style={{ fontFamily: F.body, fontSize: 12, color: C.textFaint, lineHeight: 1.7 }}>{desc}</p>
+            {/* Feature title: regular Barlow bold */}
+            <h3 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 8 }}>{title}</h3>
+            <p style={{ fontFamily: Fb, fontSize: 13, color: C.textFaint, lineHeight: 1.7 }}>{desc}</p>
           </div>
         ))}
       </div>
@@ -438,7 +452,7 @@ const TrustStrip: React.FC = () => (
           <path d="M8 2L3 4v4c0 3.31 2.24 5.96 5 7 2.76-1.04 5-3.69 5-7V4L8 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
           <path d="M6 8l1.5 1.5L10 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.textDeep, letterSpacing: '0.06em' }}>{item}</span>
+        <span style={{ fontFamily: Fb, fontSize: 12, fontWeight: 500, color: C.textDeep }}>{item}</span>
       </div>
     ))}
   </div>
@@ -452,12 +466,14 @@ const CTASection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
         <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, transparent, #f97316, #dc2626, transparent)' }} />
         <div aria-hidden="true" style={{ position: 'absolute', bottom: '-30%', left: '50%', transform: 'translateX(-50%)', width: 400, height: 200, background: 'radial-gradient(ellipse, rgba(249,115,22,0.08), transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 style={{ fontFamily: F.display, fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(30px, 5vw, 48px)', color: C.text, textTransform: 'uppercase', lineHeight: 1, marginBottom: 14 }}>
-            Ready to find out<br />what's going on?
+          {/* CTA H2: regular Barlow bold */}
+          <h2 style={{ fontFamily: Fb, fontWeight: 700, fontSize: 'clamp(26px, 5vw, 42px)', color: C.text, lineHeight: 1.15, marginBottom: 14 }}>
+            Ready to find out what's going on?
           </h2>
-          <p style={{ fontFamily: F.body, fontSize: 15, color: C.textFaint, marginBottom: 32 }}>
+          <p style={{ fontFamily: Fb, fontSize: 15, color: C.textFaint, marginBottom: 32 }}>
             Free to use. No account required to get started.
           </p>
+          {/* CTA button: condensed italic — the action moment */}
           <button className="pth-btn-cta" onClick={onCTAClick} style={{ fontSize: 22, padding: '18px 40px' }} aria-label="Diagnose my car for free">
             Diagnose my car — it's free <ArrowRightIcon />
           </button>
@@ -474,7 +490,7 @@ const LandingFooter: React.FC = () => (
     <nav aria-label="Footer navigation" style={{ display: 'flex', gap: 24 }}>
       {NAV_LINKS.map(({ label, href }) => (
         <a key={label} href={href}
-          style={{ fontFamily: F.body, fontSize: 12, color: C.textDeep, textDecoration: 'none', transition: 'color 0.2s' }}
+          style={{ fontFamily: Fb, fontSize: 13, fontWeight: 500, color: C.textDeep, textDecoration: 'none', transition: 'color 0.2s' }}
           onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textMuted)}
           onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textDeep)}
           {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -483,7 +499,7 @@ const LandingFooter: React.FC = () => (
         </a>
       ))}
     </nav>
-    <p style={{ fontFamily: F.body, fontSize: 11, color: '#1e293b' }}>© {new Date().getFullYear()} PopTheHood. All rights reserved.</p>
+    <p style={{ fontFamily: Fb, fontSize: 12, color: '#1e293b' }}>© {new Date().getFullYear()} PopTheHood. All rights reserved.</p>
   </footer>
 );
 
