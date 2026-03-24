@@ -246,7 +246,7 @@ const App: React.FC = () => {
       </div>
 
       {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
-      <Header />
+      <Header onLogoClick={() => { resetDiagnosis(); setShowLanding(true); }} />
 
       <main id="main-content" className="flex-grow pt-8" tabIndex={-1}>
         <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-8">
