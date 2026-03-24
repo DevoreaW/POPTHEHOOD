@@ -7,7 +7,7 @@ interface ConsentBannerProps {
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-const display: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' };
+const display: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 const body: React.CSSProperties    = { fontFamily: "'Barlow', sans-serif" };
 
 const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
@@ -112,12 +112,12 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
         <button
           onClick={handleAccept}
           disabled={!canAccept}
-          className={`w-full py-4 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950
+          className={`not-italic w-full py-4 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950
             ${canAccept
               ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
               : 'bg-black/40 border border-slate-800 text-slate-700 cursor-not-allowed'
             }`}
-          style={{ ...display, fontWeight: 900, fontSize: 18, letterSpacing: '0.04em' }}
+          style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: 18, letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           I understand — let's go
         </button>

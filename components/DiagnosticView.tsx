@@ -8,7 +8,7 @@ interface DiagnosticViewProps {
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-const display: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", fontStyle: 'italic' };
+const display: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 const body: React.CSSProperties    = { fontFamily: "'Barlow', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
@@ -338,13 +338,13 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         </div>
       </section>
 
-      {/* ── Reset CTA — condensed italic is appropriate here ─────────────── */}
+      {/* ── Reset CTA — orange button ────────────────────────────────────── */}
       <div className="flex flex-col items-center gap-4 pt-4">
         <button
           aria-label="Start a new diagnostic session"
           onClick={onReset}
-          className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
-          style={{ ...display, fontWeight: 900, fontSize: 20, letterSpacing: '0.04em' }}
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
+          style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: 20, letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           Start New Diagnostic
         </button>
