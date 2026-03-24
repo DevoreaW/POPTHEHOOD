@@ -70,7 +70,9 @@ const GlobalStyles = () => (
       .pth-nav-inner  { padding: 0 20px; }
       .pth-cta-row    { flex-direction: column; align-items: flex-start; }
       .pth-nav-status { display: none !important; }
-      .pth-footer-row { flex-direction: column; text-align: center; gap: 20px; }
+      .pth-footer-row { flex-direction: column; text-align: center; gap: 20px; align-items: center; }
+      .pth-stat-item  { border-right: none !important; border-bottom: 1px solid #1e293b; }
+      .pth-stat-item:last-child { border-bottom: none; }
     }
 
     @media (max-width: 480px) {
@@ -156,9 +158,9 @@ const ShieldIcon = () => (
 
 /* ─── Data ────────────────────────────────────────────────────────────────── */
 const STATS = [
-  { value: 'No OBD Scanner', label: 'Needed'           },
-  { value: 'Any Device',     label: 'Works everywhere'  },
-  { value: 'Free',           label: 'To get started'    },
+  { value: 'No OBD Scanner', label: 'Needed'          },
+  { value: 'Any Device',     label: 'Works everywhere' },
+  { value: 'Free',           label: 'To get started'   },
 ];
 
 const HOW_IT_WORKS = [
@@ -190,7 +192,13 @@ const NAV_LINKS = [
 /* ─── Logo ────────────────────────────────────────────────────────────────── */
 const LogoMark: React.FC<{ compact?: boolean }> = ({ compact }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-    <div style={{ width: compact ? 36 : 40, height: compact ? 36 : 40, borderRadius: 10, background: 'linear-gradient(135deg, #f97316, #dc2626)', boxShadow: '0 4px 16px rgba(249,115,22,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+    <div style={{
+      width: compact ? 36 : 40, height: compact ? 36 : 40, borderRadius: 10,
+      background: 'linear-gradient(135deg, #f97316, #dc2626)',
+      boxShadow: '0 4px 16px rgba(249,115,22,0.3)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      color: '#fff', flexShrink: 0,
+    }}>
       <WrenchIcon size={compact ? 16 : 18} />
     </div>
     <div>
@@ -213,7 +221,7 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: scrolled ? 'rgba(3,7,18,0.95)' : 'rgba(3,7,18,0.7)', backdropFilter: 'blur(16px)', borderBottom: `1px solid ${scrolled ? C.border : 'transparent'}`, transition: 'background 0.3s, border-color 0.3s' }}>
       <nav className="pth-nav-inner" aria-label="Main navigation">
         <LogoMark compact />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap', flexShrink: 0 }}>
           <div className="pth-nav-status" style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 16, background: C.greenBg, border: `1px solid rgba(16,185,129,0.2)`, borderRadius: 9999, padding: '5px 12px' }}>
             <span style={{ position: 'relative', width: 8, height: 8, display: 'inline-block' }}>
               <span className="pth-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: C.green }} />
@@ -225,7 +233,7 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, transition: 'color 0.2s', padding: '8px 14px', borderRadius: 8 }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)} aria-label="Sign in to your account">Sign in</button>
           </SignInButton>
           <SignUpButton mode="modal">
-            <button style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '9px 20px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', transition: 'opacity 0.2s, transform 0.15s' }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Create a new account">Get started</button>
+            <button style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '9px 20px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', transition: 'opacity 0.2s, transform 0.15s', whiteSpace: 'nowrap', flexShrink: 0 }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Create a new account">Get started</button>
           </SignUpButton>
         </div>
       </nav>
@@ -248,7 +256,6 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
       <div aria-hidden="true" style={{ position: 'absolute', top: '-15%', right: '-8%', width: 640, height: 640, borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 65%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
       <div aria-hidden="true" style={{ position: 'absolute', top: '30%', left: '-10%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(220,38,38,0.04) 0%, transparent 65%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.018, backgroundImage: `radial-gradient(${C.textMuted} 1px, transparent 1px)`, backgroundSize: '24px 24px' }} />
-
       <div ref={ref} className="pth-hero-pad" style={{ paddingTop: 100, paddingBottom: 80 }}>
         <div className="pth-hero-grid">
           <div>
@@ -273,7 +280,6 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
               </a>
             </div>
           </div>
-
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, boxShadow: '0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18, paddingBottom: 16, borderBottom: `1px solid ${C.borderFaint}` }}>
               <div style={{ background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, borderRadius: 8, padding: '5px 12px', fontFamily: F, fontSize: 11, fontWeight: 700, color: C.orange, letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>2012 Acura TLX</div>
@@ -311,7 +317,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
 const StatsStrip: React.FC = () => (
   <div className="pth-stats-grid" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
     {STATS.map(({ value, label }, i) => (
-      <div key={label} style={{ textAlign: 'center', padding: '24px 12px', borderRight: i < STATS.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+      <div key={label} className="pth-stat-item" style={{ textAlign: 'center', padding: '24px 12px', borderRight: i < STATS.length - 1 ? `1px solid ${C.border}` : 'none' }}>
         <div style={{ fontFamily: F, fontWeight: 800, fontSize: 20, letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #f97316, #dc2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', marginBottom: 4 }}>{value}</div>
         <div style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: C.textDim }}>{label}</div>
       </div>
