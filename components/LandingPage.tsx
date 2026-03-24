@@ -203,7 +203,7 @@ const LogoMark: React.FC<{ compact?: boolean }> = ({ compact }) => (
     </div>
     <div>
       <div style={{ fontFamily: F, fontWeight: 800, fontSize: compact ? 14 : 16, letterSpacing: '0.04em', textTransform: 'uppercase', color: C.text, lineHeight: 1 }}>PopTheHood</div>
-      <div style={{ fontFamily: F, fontWeight: 500, fontSize: 9, color: C.orange, letterSpacing: '0.16em', textTransform: 'uppercase', marginTop: 3, opacity: 0.8 }}>Diagnose Before You Dial</div>
+      <div style={{ fontFamily: F, fontWeight: 500, fontSize: 9, color: C.orange, letterSpacing: '0.16em', textTransform: 'uppercase', marginTop: 3, opacity: 0.8, whiteSpace: 'nowrap' }}>Diagnose Before You Dial</div>
     </div>
   </div>
 );
@@ -335,112 +335,90 @@ const HowItWorksSection: React.FC = () => (
         </div>
         <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>A diagnosis in three steps.</h2>
       </div>
-      <div className="pth-steps-grid">
-        {HOW_IT_WORKS.map(({ step, title, body }) => (
-          <div key={step} className="pth-step-card">
-            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg, rgba(249,115,22,0.15), rgba(220,38,38,0.1))', border: `1px solid rgba(249,115,22,0.25)`, marginBottom: 20 }}>
-              <span style={{ fontFamily: F, fontWeight: 900, fontSize: 18, color: C.orange, letterSpacing: '-0.02em' }}>{step}</span>
+            <div className="pth-steps-grid">
+              {HOW_IT_WORKS.map(({ step, title, body }) => (
+                <div key={step} className="pth-step-card">
+                  <div style={{ fontFamily: F, fontWeight: 800, fontSize: 32, color: C.orange, marginBottom: 12, letterSpacing: '-0.02em' }}>{step}</div>
+                  <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 18, color: C.text, marginBottom: 10 }}>{title}</h3>
+                  <p style={{ fontFamily: F, fontSize: 14, color: C.textMuted, lineHeight: 1.6 }}>{body}</p>
+                </div>
+              ))}
             </div>
-            <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 16, color: C.text, marginBottom: 10, letterSpacing: '-0.01em' }}>{title}</h3>
-            <p style={{ fontFamily: F, fontSize: 14, color: C.textDim, lineHeight: 1.75 }}>{body}</p>
           </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
-/* ─── Features ────────────────────────────────────────────────────────────── */
-const FeaturesSection: React.FC = () => (
-  <section id="features" className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
-    <div className="pth-sec-inner">
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 48 }}>
-        <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '4px 12px', borderRadius: 9999, marginBottom: 16 }}>
-            <span style={{ fontFamily: F, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>Features</span>
+        </section>
+      );
+      
+      /* ─── Features ────────────────────────────────────────────────────────────── */
+      const FeaturesSection: React.FC = () => (
+        <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
+          <div className="pth-sec-inner">
+            <div style={{ marginBottom: 48 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, padding: '4px 12px', borderRadius: 9999, marginBottom: 16 }}>
+                <span style={{ fontFamily: F, fontWeight: 600, fontSize: 11, color: C.orange, letterSpacing: '0.08em' }}>Features</span>
+              </div>
+              <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>Everything you need.</h2>
+            </div>
+            <div className="pth-feat-grid">
+              {FEATURES.map(({ icon, title, desc }, i) => (
+                <div key={i} className="pth-feat-card">
+                  <div style={{ color: C.orange, marginBottom: 16 }}>{icon}</div>
+                  <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 16, color: C.text, marginBottom: 8 }}>{title}</h3>
+                  <p style={{ fontFamily: F, fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>{desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>Everything in one place.</h2>
+        </section>
+      );
+      
+      /* ─── Trust strip ─────────────────────────────────────────────────────────── */
+      const TrustStrip: React.FC = () => (
+        <div style={{ background: C.base, borderBottom: `1px solid ${C.border}`, padding: '32px 40px' }}>
+          <div className="pth-sec-inner">
+            <div className="pth-trust-row">
+              {TRUST_ITEMS.map((item) => (
+                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <ShieldIcon />
+                  <span style={{ fontFamily: F, fontSize: 14, fontWeight: 500, color: C.textMuted }}>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <p style={{ fontFamily: F, fontSize: 14, color: C.textDim, lineHeight: 1.7, maxWidth: 280 }}>Not just a code reader — a full diagnostic partner that tells you what to do next.</p>
-      </div>
-      <div className="pth-feat-grid">
-        {FEATURES.map(({ icon, title, desc }) => (
-          <div key={title} className="pth-feat-card">
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: C.orangeBg, border: `1px solid ${C.orangeBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.orange, marginBottom: 18 }}>{icon}</div>
-            <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 8, letterSpacing: '-0.01em' }}>{title}</h3>
-            <p style={{ fontFamily: F, fontSize: 13, color: C.textDim, lineHeight: 1.75 }}>{desc}</p>
+      );
+      
+      /* ─── Footer ──────────────────────────────────────────────────────────────── */
+      const Footer: React.FC = () => (
+        <footer style={{ background: C.base, borderTop: `1px solid ${C.border}`, padding: '40px' }}>
+          <div className="pth-sec-inner">
+            <div className="pth-footer-row">
+              <LogoMark compact />
+              <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+                {NAV_LINKS.map(({ label, href }) => (
+                  <a key={label} href={href} style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}>{label}</a>
+                ))}
+              </div>
+              <div style={{ fontFamily: F, fontSize: 12, color: C.textDim }}>© 2025 PopTheHood. All rights reserved.</div>
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
-/* ─── Trust strip ─────────────────────────────────────────────────────────── */
-const TrustStrip: React.FC = () => (
-  <div className="pth-trust-row" style={{ background: C.base, borderBottom: `1px solid ${C.border}`, padding: '18px 40px' }}>
-    {TRUST_ITEMS.map(item => (
-      <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span style={{ color: C.green, flexShrink: 0 }}><ShieldIcon /></span>
-        <span style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted }}>{item}</span>
-      </div>
-    ))}
-  </div>
-);
-
-/* ─── CTA section ─────────────────────────────────────────────────────────── */
-const CTASection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
-  <section className="pth-sec-pad" style={{ background: C.base }}>
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
-      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 24, padding: '64px 40px', position: 'relative', overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.4)' }}>
-        <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent 0%, #f97316 40%, #dc2626 60%, transparent 100%)' }} />
-        <div aria-hidden="true" style={{ position: 'absolute', bottom: '-20%', left: '50%', transform: 'translateX(-50%)', width: 500, height: 220, background: 'radial-gradient(ellipse, rgba(249,115,22,0.1), transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: C.greenBg, border: '1px solid rgba(16,185,129,0.2)', borderRadius: 9999, padding: '5px 14px', marginBottom: 24 }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, flexShrink: 0, display: 'inline-block' }} />
-            <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: C.green, letterSpacing: '0.04em' }}>Free to use — no account required</span>
+        </footer>
+      );
+      
+      /* ─── Main component ──────────────────────────────────────────────────────── */
+      export const LandingPage: React.FC = () => {
+        const [showDialog, setShowDialog] = useState(false);
+      
+        return (
+          <div className="pth-landing" style={{ background: C.base, color: C.text, fontFamily: F, minHeight: '100vh' }}>
+            <FontLoader />
+            <GlobalStyles />
+            <NavBar onCTAClick={() => setShowDialog(true)} />
+            <HeroSection onCTAClick={() => setShowDialog(true)} />
+            <StatsStrip />
+            <HowItWorksSection />
+            <FeaturesSection />
+            <TrustStrip />
+            <Footer />
           </div>
-          <h2 style={{ fontFamily: F, fontWeight: 800, fontSize: 'clamp(28px, 5vw, 44px)', color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: 16 }}>
-            Ready to find out<br />what's going on?
-          </h2>
-          <p style={{ fontFamily: F, fontSize: 15, color: C.textMuted, marginBottom: 36, lineHeight: 1.7 }}>
-          </p>
-          <button onClick={onCTAClick} style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontWeight: 700, fontSize: 16, letterSpacing: '0.01em', padding: '16px 36px', borderRadius: 9999, boxShadow: '0 4px 28px rgba(249,115,22,0.4)', transition: 'opacity 0.2s, transform 0.15s' }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Diagnose my car for free">
-            Diagnose my car — it's free <ArrowRightIcon size={18} />
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-);
-
-/* ─── Footer ──────────────────────────────────────────────────────────────── */
-const LandingFooter: React.FC = () => (
-  <footer className="pth-footer-row" style={{ background: C.base, borderTop: `1px solid ${C.border}`, padding: '28px 40px' }}>
-    <LogoMark compact />
-    <nav aria-label="Footer navigation" style={{ display: 'flex', gap: 28 }}>
-      {NAV_LINKS.map(({ label, href }) => (
-        <a key={label} href={href} style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textDim, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textMuted)} onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = C.textDim)} {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{label}</a>
-      ))}
-    </nav>
-    <p style={{ fontFamily: F, fontSize: 12, color: C.textFaint }}>© {new Date().getFullYear()} PopTheHood. All rights reserved.</p>
-  </footer>
-);
-
-/* ─── Page root ───────────────────────────────────────────────────────────── */
-const LandingPage: React.FC<{ onEnterApp: () => void }> = ({ onEnterApp }) => (
-  <div className="pth-landing" style={{ background: C.base, minHeight: '100vh' }}>
-    <FontLoader />
-    <GlobalStyles />
-    <NavBar onCTAClick={onEnterApp} />
-    <HeroSection onCTAClick={onEnterApp} />
-    <StatsStrip />
-    <HowItWorksSection />
-    <FeaturesSection />
-    <TrustStrip />
-    <CTASection onCTAClick={onEnterApp} />
-    <LandingFooter />
-  </div>
-);
-
-export default LandingPage;
+        );
+      };

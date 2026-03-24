@@ -5,7 +5,7 @@ import DiagnosticView from './components/DiagnosticView';
 import TireAnalysisView from './components/TireAnalysisView';
 import ServicesView from './components/ServicesView';
 import ConsentBanner from './components/ConsentBanner';
-import LandingPage from './components/LandingPage';
+import { LandingPage } from './components/LandingPage';
 import { useUser } from '@clerk/react';
 import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices } from './services/geminiService';
 import { saveDiagnostic, saveTireScan, getUserDiagnostics, getUserTireScans } from './services/supabaseService';
@@ -222,7 +222,7 @@ const App: React.FC = () => {
           {announcement}
         </div>
         {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
-        <LandingPage onEnterApp={() => setShowLanding(false)} />
+        <LandingPage />
       </>
     );
   }
