@@ -148,7 +148,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             </svg>
           }
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
           {report.mostLikelyCauses.map((cause, idx) => (
             <div key={idx} className={S.subCard}>
               <div className="flex justify-between items-start mb-3 gap-2">
@@ -180,7 +180,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             </svg>
           }
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
           {report.recommendedActions.map((action, idx) => (
             <div key={idx} className="flex items-start gap-4 bg-black/40 border border-slate-800/60 p-4 rounded-xl">
               <span
@@ -252,7 +252,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
         <p className="text-slate-300 text-sm leading-relaxed mb-5" style={body}>{report.diyVsPro.explanation}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           {/* Safety warnings */}
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5">
             <h4 className="text-amber-400 text-xs font-bold flex items-center gap-2 mb-4" style={body}>
