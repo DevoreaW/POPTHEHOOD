@@ -104,12 +104,6 @@ const C = {
 const F = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
 
 /* ─── Icons ───────────────────────────────────────────────────────────────── */
-const WrenchIcon = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-  </svg>
-);
 
 const ArrowRightIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -185,15 +179,16 @@ const NAV_LINKS = [
 /* ─── Logo ────────────────────────────────────────────────────────────────── */
 const LogoMark: React.FC<{ compact?: boolean }> = ({ compact }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-    <div style={{
-      width: compact ? 36 : 40, height: compact ? 36 : 40, borderRadius: 10,
-      background: 'linear-gradient(135deg, #f97316, #dc2626)',
-      boxShadow: '0 4px 16px rgba(249,115,22,0.3)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: '#fff', flexShrink: 0,
-    }}>
-      <WrenchIcon size={compact ? 16 : 18} />
-    </div>
+    <img
+      src="/icons/icon.svg"
+      alt=""
+      aria-hidden="true"
+      style={{
+        width: compact ? 36 : 40, height: compact ? 36 : 40, borderRadius: 10,
+        boxShadow: '0 4px 16px rgba(249,115,22,0.3)',
+        flexShrink: 0,
+      }}
+    />
     <div>
       <div style={{ fontFamily: F, fontWeight: 800, fontSize: compact ? 14 : 16, letterSpacing: '0.04em', textTransform: 'uppercase', color: C.text, lineHeight: 1 }}>PopTheHood</div>
       <div style={{ fontFamily: F, fontWeight: 500, fontSize: 9, color: C.orange, letterSpacing: '0.16em', textTransform: 'uppercase', marginTop: 3, opacity: 0.8, whiteSpace: 'nowrap' }}>Diagnose Before You Dial</div>
