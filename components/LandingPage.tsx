@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SignInButton, SignUpButton } from '@clerk/react';
+import { SignInButton } from '@clerk/react';
 
 /* ─── Font loader ─────────────────────────────────────────────────────────── */
 const FontLoader = () => (
@@ -232,9 +232,7 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
           <SignInButton mode="modal">
             <button onClick={onCTAClick} type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 500, color: C.textMuted, transition: 'color 0.2s', padding: '8px 14px', borderRadius: 8 }} onMouseEnter={e => (e.currentTarget.style.color = C.text)} onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)} aria-label="Sign in to your account">Sign in</button>
           </SignInButton>
-          <SignUpButton mode="modal">
-            <button onClick={onCTAClick} type="button" style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '9px 20px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', transition: 'opacity 0.2s, transform 0.15s', whiteSpace: 'nowrap', flexShrink: 0 }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Create a new account">Get started</button>
-          </SignUpButton>
+          <button onClick={onCTAClick} type="button" style={{ background: 'linear-gradient(135deg, #f97316, #dc2626)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: 13, fontWeight: 700, padding: '9px 20px', borderRadius: 9999, boxShadow: '0 2px 12px rgba(249,115,22,0.3)', transition: 'opacity 0.2s, transform 0.15s', whiteSpace: 'nowrap', flexShrink: 0 }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }} aria-label="Get started">Get started</button>
         </div>
       </nav>
     </div>
