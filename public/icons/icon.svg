@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+  </defs>
 
-  <!-- Orange rounded square badge -->
-  <rect x="0" y="0" width="512" height="512" rx="112" fill="#f97316"/>
+  <!-- Gradient rounded square badge -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)"/>
 
   <!-- ICON: magnifying glass with gear inside, centered -->
   <g transform="translate(256, 230)">
@@ -11,13 +17,13 @@
 
     <!-- Magnifying glass outer ring -->
     <circle cx="0" cy="0" r="100" fill="white"/>
-    <!-- Lens (orange) -->
-    <circle cx="0" cy="0" r="76" fill="#f97316"/>
+    <!-- Lens -->
+    <circle cx="0" cy="0" r="76" fill="url(#bg)"/>
 
     <!-- Gear outer body -->
     <circle cx="0" cy="0" r="50" fill="white"/>
     <!-- Gear center hole -->
-    <circle cx="0" cy="0" r="20" fill="#f97316"/>
+    <circle cx="0" cy="0" r="20" fill="url(#bg)"/>
 
     <!-- Gear teeth (8 teeth) -->
     <g fill="white">
