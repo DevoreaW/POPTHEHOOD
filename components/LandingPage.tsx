@@ -149,12 +149,6 @@ const TowIcon = () => (
   </svg>
 );
 
-const ShieldIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M8 2L3 4v4c0 3.31 2.24 5.96 5 7 2.76-1.04 5-3.69 5-7V4L8 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-    <path d="M6 8l1.5 1.5L10 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 /* ─── Data ────────────────────────────────────────────────────────────────── */
 const STATS = [
@@ -176,7 +170,6 @@ const FEATURES = [
   { icon: <TowIcon />,      title: 'Request a Tow',   desc: 'Get towing services dispatched to your location when you need it most.'              },
 ];
 
-const TRUST_ITEMS = ['End-to-end encrypted', 'OWASP compliant', 'No data sold — ever', 'ADA accessible'];
 
 const DIAG_CAUSES = [
   { rank: '01', name: 'Worn Spark Plugs or Failing Ignition Coils', prob: 'HIGH',        probColor: '#f97316', probBg: 'rgba(249,115,22,0.1)',   probBorder: 'rgba(249,115,22,0.25)'  },
@@ -369,21 +362,6 @@ const FeaturesSection: React.FC = () => (
   </section>
 );
 
-/* ─── Trust strip ─────────────────────────────────────────────────────────── */
-const TrustStrip: React.FC = () => (
-  <div style={{ background: C.base, borderBottom: `1px solid ${C.border}`, padding: '32px 40px' }}>
-    <div className="pth-sec-inner">
-      <div className="pth-trust-row">
-        {TRUST_ITEMS.map((item) => (
-          <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ShieldIcon />
-            <span style={{ fontFamily: F, fontSize: 14, fontWeight: 500, color: C.textMuted }}>{item}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
 
 /* ─── Footer ──────────────────────────────────────────────────────────────── */
 const Footer: React.FC = () => (
@@ -413,7 +391,6 @@ export const LandingPage: React.FC<{ onEnterApp: () => void }> = ({ onEnterApp }
       <StatsStrip />
       <HowItWorksSection />
       <FeaturesSection />
-      <TrustStrip />
       <Footer />
     </div>
   );
