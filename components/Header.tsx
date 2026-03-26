@@ -21,18 +21,12 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
           className="flex items-center gap-3 bg-transparent border-none cursor-pointer p-0 text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 rounded-xl group"
           aria-label="Go to home screen"
         >
-          <div
-            className="bg-gradient-to-br from-orange-500 to-red-600 p-2.5 rounded-xl shadow-lg shadow-orange-500/20 flex-shrink-0 transition-opacity group-hover:opacity-85"
+          <img
+            src="/icons/icon.svg"
+            alt=""
             aria-hidden="true"
-          >
-            <svg
-              width="22" height="22" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor"
-              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            >
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-            </svg>
-          </div>
+            className="w-10 h-10 rounded-xl shadow-lg shadow-orange-500/20 flex-shrink-0 transition-opacity group-hover:opacity-85"
+          />
           <div className="min-w-0">
             <h1
               className="text-xl font-black uppercase leading-none tracking-wide text-white group-hover:text-orange-400 transition-colors"
