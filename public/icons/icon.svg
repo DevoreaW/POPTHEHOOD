@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+
+  <!-- Orange rounded square badge -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="#f97316"/>
+
+  <!-- ICON: magnifying glass with gear inside, centered -->
+  <g transform="translate(256, 230)">
+
+    <!-- Magnifying glass handle (angled bottom-right) -->
+    <line x1="62" y1="62" x2="128" y2="132" stroke="white" stroke-width="38" stroke-linecap="round"/>
+
+    <!-- Magnifying glass outer ring -->
+    <circle cx="0" cy="0" r="100" fill="white"/>
+    <!-- Lens (orange) -->
+    <circle cx="0" cy="0" r="76" fill="#f97316"/>
+
+    <!-- Gear outer body -->
+    <circle cx="0" cy="0" r="50" fill="white"/>
+    <!-- Gear center hole -->
+    <circle cx="0" cy="0" r="20" fill="#f97316"/>
+
+    <!-- Gear teeth (8 teeth) -->
+    <g fill="white">
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(0)"/>
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(45)"/>
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(90)"/>
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(135)"/>
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(180)"/>
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(225)"/>
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(270)"/>
+      <rect x="-10" y="-64" width="20" height="22" rx="4" transform="rotate(315)"/>
+    </g>
+
+  </g>
+
+</svg>
