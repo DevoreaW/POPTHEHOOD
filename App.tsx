@@ -23,6 +23,7 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<(DiagnosticReport | TireAnalysisReport)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState<string>('');
+  const [pendingFollowUp, setPendingFollowUp] = useState<{ description: string; vehicle: VehicleInfo } | null>(null);
   const [consentGiven, setConsentGiven] = useState<boolean>(() => {
     return localStorage.getItem('popthehood_consent_accepted') === 'true';
   });
@@ -204,6 +205,11 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleFollowUp = (question: string, vehicle: VehicleInfo) => {
+    setPendingFollowUp({ description: question, vehicle });
+    resetDiagnosis();
+  };
+
   const handleLogoClick = () => {
     setReport(null);
     setTireReport(null);
@@ -301,7 +307,13 @@ const App: React.FC = () => {
         ) : (
           <>
             {report && (
-              <DiagnosticView report={report} onReset={resetDiagnosis} onSave={saveToHistory} />
+              <DiagnosticView
+                report={report}
+                onReset={resetDiagnosis}
+                onSave={saveToHistory}
+                onFindServices={handleFindServices}
+                onFollowUp={handleFollowUp}
+              />
             )}
             {tireReport && (
               <TireAnalysisView report={tireReport} onReset={resetDiagnosis} onSave={saveToHistory} />
@@ -310,15 +322,28 @@ const App: React.FC = () => {
               <ServicesView report={serviceReport} onReset={resetDiagnosis} />
             )}
             {!report && !tireReport && !serviceReport && (
-              <VehicleForm
-                onDiagnose={handleDiagnose}
-                onTireScan={handleTireScan}
-                onFindServices={handleFindServices}
-                isLoading={isLoading}
-                history={history}
-                onHistorySelect={handleHistorySelect}
-                onHistoryClear={clearHistory}
-              />
+              <>
+                {!isSignedIn && (
+                  <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-6">
+                    <div className="flex items-center justify-between gap-4 bg-orange-500/5 border border-orange-500/20 rounded-xl px-5 py-3.5">
+                      <p className="text-sm text-slate-400" style={{ fontFamily: "'Barlow', sans-serif" }}>
+                        <span className="font-semibold text-orange-400">Save your history permanently.</span> Sign up free — your diagnoses won't disappear when you clear your browser.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                <VehicleForm
+                  onDiagnose={handleDiagnose}
+                  onTireScan={handleTireScan}
+                  onFindServices={handleFindServices}
+                  isLoading={isLoading}
+                  history={history}
+                  onHistorySelect={handleHistorySelect}
+                  onHistoryClear={clearHistory}
+                  prefill={pendingFollowUp}
+                  onPrefillUsed={() => setPendingFollowUp(null)}
+                />
+              </>
             )}
           </>
         )}

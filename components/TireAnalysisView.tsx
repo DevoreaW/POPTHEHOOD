@@ -66,7 +66,8 @@ const getScoreBg = (score: number) => {
 
 /* ─── Component ───────────────────────────────────────────────────────────── */
 const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, onSave }) => {
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved]       = useState(false);
+  const [shareState, setShareState] = useState<'idle' | 'copied'>('idle');
 
   const handleSave = () => {
     if (onSave) {
@@ -74,6 +75,19 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 2000);
     }
+  };
+
+  const handleShare = async () => {
+    const text = `PopTheHood Tire Scan\n\nHealth Score: ${report.healthScore}%\nCondition: ${report.condition}\nTread Depth: ${report.estimatedTreadDepth}\n\n${report.recommendation}\n\nScan your own tires free at popthehood.app`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'Tire Scan Results', text });
+      } else {
+        await navigator.clipboard.writeText(text);
+        setShareState('copied');
+        setTimeout(() => setShareState('idle'), 2500);
+      }
+    } catch { /* user cancelled */ }
   };
 
   return (
@@ -108,6 +122,20 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
                   </svg>
                 )}
                 {isSaved ? 'Saved!' : 'Save report'}
+              </button>
+
+              {/* Share */}
+              <button
+                aria-label="Share tire scan results"
+                onClick={handleShare}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 bg-black/40 text-slate-500 border-slate-800 hover:border-orange-500/40 hover:text-orange-400"
+                style={body}
+              >
+                {shareState === 'copied' ? (
+                  <><svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>Copied!</>
+                ) : (
+                  <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>Share</>
+                )}
               </button>
             </div>
             <p className="text-xs text-slate-600" style={body}>
@@ -244,8 +272,8 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
         >
           Scan Another Tire
         </button>
-        <p className="text-xs text-slate-700 text-center" style={body}>
-          AI-assisted visual inspection · for estimation only
+        <p className="text-xs text-slate-700 max-w-lg text-center leading-relaxed" style={body}>
+          AI-assisted visual inspection only. For accurate tread depth, use a physical gauge. Replace tires when in doubt — don't risk it.
         </p>
       </div>
 

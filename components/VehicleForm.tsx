@@ -10,6 +10,8 @@ interface VehicleFormProps {
   history: (DiagnosticReport | TireAnalysisReport)[];
   onHistorySelect: (item: DiagnosticReport | TireAnalysisReport) => void;
   onHistoryClear: () => void;
+  prefill?: { description: string; vehicle: VehicleInfo } | null;
+  onPrefillUsed?: () => void;
 }
 
 const POPULAR_MAKES = ["BMW", "Chevrolet", "Ford", "Honda", "Hyundai", "Jeep", "Nissan", "Ram", "Toyota", "Volkswagen"];
@@ -166,6 +168,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   history,
   onHistorySelect,
   onHistoryClear,
+  prefill,
+  onPrefillUsed,
 }) => {
   const [vehicle, setVehicle]             = useState<VehicleInfo>({ make: '', model: '', year: '', mileage: '', engine: '' });
   const [description, setDescription]     = useState('');
@@ -176,6 +180,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const [isConnecting, setIsConnecting]   = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [showCamera, setShowCamera]       = useState(false);
+  const [showTireTips, setShowTireTips]   = useState(false);
   const [manualEntry, setManualEntry]     = useState(false);
 
   const fileInputRef   = useRef<HTMLInputElement>(null);
@@ -186,6 +191,15 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   useEffect(() => {
     if (textAreaRef.current) textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
   }, [description, interimText]);
+
+  useEffect(() => {
+    if (prefill) {
+      setVehicle(prefill.vehicle);
+      setDescription(prefill.description);
+      onPrefillUsed?.();
+      setTimeout(() => textAreaRef.current?.focus(), 100);
+    }
+  }, [prefill]);
 
   useEffect(() => {
     if (isRecording) {
@@ -302,11 +316,52 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         />
       )}
 
+      {/* ── Tire photo tips modal ─────────────────────────────────────────── */}
+      {showTireTips && (
+        <div className="fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-gray-950 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <h3 className="text-white font-bold text-lg mb-1" style={body}>Tips for a good scan</h3>
+            <p className="text-slate-500 text-xs mb-5" style={body}>Better photos = more accurate results.</p>
+            <ul className="space-y-3 mb-6">
+              {[
+                ['Good lighting', 'Natural daylight or bright indoor light — avoid shadows across the tread.'],
+                ['Close up', 'Fill the frame with the tire tread, 6–12 inches away.'],
+                ['Show the tread', 'Aim at the grooves directly, not the sidewall.'],
+                ['Keep it still', 'Hold steady or rest your phone against something.'],
+              ].map(([title, tip]) => (
+                <li key={title} className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0" />
+                  <span className="text-sm text-slate-300" style={body}><span className="font-semibold text-white">{title}:</span> {tip}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowTireTips(false)}
+                className="flex-1 px-4 py-3 bg-white/5 border border-slate-800 text-slate-400 rounded-xl text-sm font-semibold"
+                style={body}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowTireTips(false); setShowCamera(true); }}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl text-sm font-bold"
+                style={body}
+              >
+                Got it — scan now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Quick Tools ───────────────────────────────────────────────────── */}
       <section className={S.card}>
         <SectionHead icon={<ToolboxIcon />} title="Quick Tools" />
         <div className="grid grid-cols-3 gap-2 sm:gap-3">
-          <button type="button" aria-label="Scan tire tread" onClick={() => setShowCamera(true)} className={S.toolBtn}>
+          <button type="button" aria-label="Scan tire tread" onClick={() => setShowTireTips(true)} className={S.toolBtn}>
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-500/10 border border-orange-500/15 flex items-center justify-center text-orange-500">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" />
