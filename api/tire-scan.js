@@ -8,11 +8,16 @@ const ALLOWED_ORIGINS = [
   'https://popthehood.vercel.app'
 ];
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(100, "1 h"),
-  analytics: true,
-});
+let ratelimit = null;
+try {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(100, "1 h"),
+    analytics: true,
+  });
+} catch {
+  console.warn('Upstash env vars missing — rate limiting disabled');
+}
 
 function setCorsHeaders(req, res) {
   const origin = req.headers.origin;
@@ -34,27 +39,36 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'anonymous';
+  const xff = req.headers['x-forwarded-for'];
+  const ip = (xff ? xff.split(',').pop().trim() : null)
+           || req.headers['x-real-ip']
+           || req.socket.remoteAddress
+           || 'anonymous';
 
-  const { success, limit, reset, remaining } = await ratelimit.limit(ip);
-
-  if (!success) {
-    return res.status(429).json({ 
-      error: 'Too many requests. Please try again later.',
-      limit,
-      reset,
-      remaining
-    });
+  if (ratelimit) {
+    const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+    if (!success) {
+      return res.status(429).json({ error: 'Too many requests. Please try again later.', limit, reset, remaining });
+    }
   }
 
   const { imageData, mimeType, prompt } = req.body;
 
-  if (!imageData || !prompt) {
-    return res.status(400).json({ error: 'Image data and prompt are required' });
+  if (!imageData || !prompt || !mimeType) {
+    return res.status(400).json({ error: 'Image data, mime type, and prompt are required' });
+  }
+
+  const VALID_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+  if (!VALID_MIME_TYPES.includes(mimeType)) {
+    return res.status(400).json({ error: 'Invalid file type. Supported: JPEG, PNG, WebP, GIF, HEIC.' });
+  }
+
+  // Reject base64 payloads over ~10MB (10MB * 4/3 base64 overhead ≈ 13.6M chars)
+  if (typeof imageData !== 'string' || imageData.length > 14_000_000) {
+    return res.status(400).json({ error: 'Image exceeds the 10MB size limit.' });
   }
 
   const cleanPrompt = sanitizeInput(prompt);
-  const cleanMimeType = sanitizeInput(mimeType);
 
   if (!cleanPrompt) {
     return res.status(400).json({ error: 'Invalid input provided' });
@@ -72,7 +86,7 @@ export default async function handler(req, res) {
           contents: [{
             parts: [
               { text: cleanPrompt },
-              { inline_data: { mime_type: cleanMimeType, data: imageData } }
+              { inline_data: { mime_type: mimeType, data: imageData } }
             ]
           }]
         })
@@ -86,7 +100,7 @@ export default async function handler(req, res) {
 
     if (!text) {
       console.error('Empty response from Gemini:', data);
-      return res.status(500).json({ error: 'Empty response from Gemini', details: data });
+      return res.status(500).json({ error: 'Something went wrong. Please try again.' });
     }
 
     return res.status(200).json({ result: text });

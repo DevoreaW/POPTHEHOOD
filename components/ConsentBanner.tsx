@@ -7,8 +7,8 @@ interface ConsentBannerProps {
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-const display: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
-const body: React.CSSProperties    = { fontFamily: "'Barlow', sans-serif" };
+const display: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
+const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
 
 const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
   const [ageConfirmed, setAgeConfirmed]   = useState(false);
@@ -117,7 +117,7 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
               ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
               : 'bg-black/40 border border-slate-800 text-slate-700 cursor-not-allowed'
             }`}
-          style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: 18, letterSpacing: '0.04em', fontStyle: 'normal' }}
+          style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 18, letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           I understand — let's go
         </button>

@@ -6,7 +6,7 @@ import TireAnalysisView from './components/TireAnalysisView';
 import ServicesView from './components/ServicesView';
 import ConsentBanner from './components/ConsentBanner';
 import { LandingPage } from './components/LandingPage';
-import { useUser } from '@clerk/react';
+import { useUser, useAuth } from '@clerk/react';
 import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices } from './services/geminiService';
 import { saveDiagnostic, saveTireScan, getUserDiagnostics, getUserTireScans } from './services/supabaseService';
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from './types';
@@ -15,6 +15,7 @@ const STORAGE_KEY = 'popthehood_history';
 
 const App: React.FC = () => {
   const { isSignedIn, user } = useUser();
+  const { getToken } = useAuth();
   const [showLanding, setShowLanding] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState<DiagnosticReport | null>(null);
@@ -32,9 +33,11 @@ const App: React.FC = () => {
     const loadHistory = async () => {
       if (isSignedIn && user) {
         try {
+          const token = await getToken();
+          if (!token) throw new Error('Not authenticated');
           const [diagnostics, tireScans] = await Promise.all([
-            getUserDiagnostics(user.id),
-            getUserTireScans(user.id)
+            getUserDiagnostics(token),
+            getUserTireScans(token)
           ]);
           const diagReports = (diagnostics || []).map((d: any) => ({ ...d.report, id: d.id, timestamp: new Date(d.created_at).getTime(), vehicle: { make: d.vehicle_make, model: d.vehicle_model, year: d.vehicle_year, mileage: d.vehicle_mileage } }));
           const tireReports = (tireScans || []).map((t: any) => ({ ...t.report, id: t.id, timestamp: new Date(t.created_at).getTime() }));
@@ -76,15 +79,17 @@ const App: React.FC = () => {
   const saveToHistory = async (item: DiagnosticReport | TireAnalysisReport) => {
     if (isSignedIn && user) {
       try {
+        const token = await getToken();
+        if (!token) throw new Error('Not authenticated');
         if ('healthScore' in item) {
-          await saveTireScan(user.id, item);
+          await saveTireScan(token, item);
         } else {
           const diagItem = item as DiagnosticReport;
-          await saveDiagnostic(user.id, diagItem.vehicle, diagItem);
+          await saveDiagnostic(token, diagItem.vehicle, diagItem);
         }
         const [diagnostics, tireScans] = await Promise.all([
-          getUserDiagnostics(user.id),
-          getUserTireScans(user.id)
+          getUserDiagnostics(token),
+          getUserTireScans(token)
         ]);
         const diagReports = (diagnostics || []).map((d: any) => ({ ...d.report, id: d.id, timestamp: new Date(d.created_at).getTime(), vehicle: { make: d.vehicle_make, model: d.vehicle_model, year: d.vehicle_year, mileage: d.vehicle_mileage } }));
         const tireReports = (tireScans || []).map((t: any) => ({ ...t.report, id: t.id, timestamp: new Date(t.created_at).getTime() }));
@@ -258,7 +263,7 @@ const App: React.FC = () => {
                 <line x1="12" y1="9" x2="12" y2="13" />
                 <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
-              <p className="text-sm text-amber-200/70" style={{ fontFamily: "'Barlow', sans-serif" }}>
+              <p className="text-sm text-amber-200/70" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                 <span className="font-semibold text-amber-400">Virtual Diagnostic Warning:</span>{' '}
                 This tool provides mechanical advice based on AI analysis. It is not a replacement for an in-person safety inspection. If your car is smoking, losing brakes, or shaking violently,{' '}
                 <span className="underline">do not drive it.</span>
@@ -271,12 +276,12 @@ const App: React.FC = () => {
         {error && (
           <div role="alert" aria-live="assertive" className="max-w-4xl mx-auto px-4 mb-8">
             <div className="bg-rose-500/10 border border-rose-500/25 text-rose-400 p-4 rounded-xl flex items-center justify-between">
-              <span className="text-sm" style={{ fontFamily: "'Barlow', sans-serif" }}>{error}</span>
+              <span className="text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>{error}</span>
               <button
                 onClick={() => setError(null)}
                 className="text-rose-400 font-semibold ml-4 hover:text-rose-300 transition-colors text-sm"
                 aria-label="Dismiss error message"
-                style={{ fontFamily: "'Barlow', sans-serif" }}
+                style={{ fontFamily: "'Open Sans', sans-serif" }}
               >
                 Dismiss
               </button>
@@ -296,10 +301,10 @@ const App: React.FC = () => {
               className="w-16 h-16 rounded-full border-4 border-slate-800 border-t-orange-500 animate-spin"
             />
             <div className="text-center">
-              <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "'Barlow', sans-serif" }}>
+              <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                 Running analysis…
               </h3>
-              <p className="text-slate-500 text-sm" style={{ fontFamily: "'Barlow', sans-serif" }}>
+              <p className="text-slate-500 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                 Our AI is reviewing your vehicle information.
               </p>
             </div>
@@ -326,7 +331,7 @@ const App: React.FC = () => {
                 {!isSignedIn && (
                   <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-6">
                     <div className="flex items-center justify-between gap-4 bg-orange-500/5 border border-orange-500/20 rounded-xl px-5 py-3.5">
-                      <p className="text-sm text-slate-400" style={{ fontFamily: "'Barlow', sans-serif" }}>
+                      <p className="text-sm text-slate-400" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                         <span className="font-semibold text-orange-400">Save your history permanently.</span> Sign up free — your diagnoses won't disappear when you clear your browser.
                       </p>
                     </div>
@@ -353,17 +358,17 @@ const App: React.FC = () => {
       <footer className="border-t border-slate-800/60 py-8 px-4 mt-20" style={{ background: '#030712' }}>
         <div className="max-w-lg md:max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
-            <p className="text-slate-600 text-sm" style={{ fontFamily: "'Barlow', sans-serif" }}>
+            <p className="text-slate-600 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
               © 2026 POPTHEHOOD. All rights reserved.
             </p>
-            <p className="text-slate-700 text-xs mt-1" style={{ fontFamily: "'Barlow', sans-serif" }}>
+            <p className="text-slate-700 text-xs mt-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
               Developed for educational purposes. Technician oversight required.
             </p>
           </div>
           <nav aria-label="Footer navigation">
             <div className="flex items-center gap-6">
-              <a href="/privacy" className="text-slate-600 hover:text-slate-300 text-sm transition-colors" style={{ fontFamily: "'Barlow', sans-serif" }}>Privacy</a>
-              <a href="/terms"   className="text-slate-600 hover:text-slate-300 text-sm transition-colors" style={{ fontFamily: "'Barlow', sans-serif" }}>Terms</a>
+              <a href="/privacy" className="text-slate-600 hover:text-slate-300 text-sm transition-colors" style={{ fontFamily: "'Open Sans', sans-serif" }}>Privacy</a>
+              <a href="/terms"   className="text-slate-600 hover:text-slate-300 text-sm transition-colors" style={{ fontFamily: "'Open Sans', sans-serif" }}>Terms</a>
             </div>
           </nav>
         </div>

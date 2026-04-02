@@ -1,4 +1,44 @@
+import { z } from 'zod';
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from "../types";
+
+const DiagnosticSchema = z.object({
+  severity: z.enum(['GREEN', 'YELLOW', 'RED']),
+  analysisSummary: z.string(),
+  mostLikelyCauses: z.array(z.object({
+    issue: z.string(),
+    probability: z.string(),
+    reasoning: z.string(),
+  })),
+  mechanicalExplanation: z.string(),
+  recommendedActions: z.array(z.string()),
+  costEstimate: z.object({ parts: z.string(), labor: z.string(), total: z.string() }),
+  diyVsPro: z.object({
+    canDiy: z.boolean(),
+    explanation: z.string(),
+    safetyWarnings: z.array(z.string()),
+  }),
+  urgency: z.object({
+    timeline: z.string(),
+    risksOfDelay: z.string(),
+    workarounds: z.string().optional(),
+  }),
+  followUpQuestions: z.array(z.string()),
+  additionalContext: z.object({
+    commonModelIssues: z.string(),
+    recallPotential: z.string(),
+    prevention: z.string(),
+  }),
+});
+
+const TireScanSchema = z.object({
+  healthScore: z.number().min(0).max(100),
+  estimatedTreadDepth: z.string(),
+  condition: z.enum(['Excellent', 'Good', 'Fair', 'Replace Soon', 'Dangerous']),
+  findings: z.array(z.string()),
+  recommendation: z.string(),
+  safetyWarning: z.string().optional(),
+  visualAnomalies: z.array(z.string()),
+});
 
 export const generateDiagnosticReport = async (
   vehicle: VehicleInfo,
@@ -10,7 +50,11 @@ export const generateDiagnosticReport = async (
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
     });
-    const data = await response.json();
+    const raw = await response.text();
+    if (!raw) throw new Error('Empty response from server. Please try again.');
+    let data: any;
+    try { data = JSON.parse(raw); } catch { throw new Error('Unexpected response from server. Please try again.'); }
+    if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
     return data.result;
   };
 
@@ -47,8 +91,9 @@ Respond ONLY with a valid JSON object with these fields:
 
   try {
     const clean = text.replace(/```json|```/g, '').trim();
-    const data = JSON.parse(clean);
-    return { ...data, id: crypto.randomUUID(), timestamp: Date.now(), vehicle } as DiagnosticReport;
+    const parsed = DiagnosticSchema.safeParse(JSON.parse(clean));
+    if (!parsed.success) throw new Error('Invalid response shape');
+    return { ...parsed.data, id: crypto.randomUUID(), timestamp: Date.now(), vehicle } as DiagnosticReport;
   } catch (error) {
     console.error("Failed to parse Gemini response", error);
     throw new Error("Diagnosis failed. Please try again with clearer inputs.");
@@ -78,13 +123,18 @@ export const analyzeTireTread = async (
     body: JSON.stringify({ imageData: base64Data, mimeType, prompt })
   });
 
-  const data = await response.json();
+  const raw = await response.text();
+  if (!raw) throw new Error('Empty response from server. Please try again.');
+  let data: any;
+  try { data = JSON.parse(raw); } catch { throw new Error('Unexpected response from server. Please try again.'); }
+  if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
   const text = data.result;
 
   try {
     const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    return { ...parsed, id: crypto.randomUUID(), timestamp: Date.now() };
+    const parsed = TireScanSchema.safeParse(JSON.parse(clean));
+    if (!parsed.success) throw new Error('Invalid response shape');
+    return { ...parsed.data, id: crypto.randomUUID(), timestamp: Date.now() };
   } catch (error) {
     console.error('Failed to parse tire scan response', error);
     throw new Error('Tire scan failed. Please try again.');
@@ -102,7 +152,11 @@ export const searchNearbyServices = async (
     body: JSON.stringify({ latitude, longitude, type })
   });
 
-  const data = await response.json();
+  const raw = await response.text();
+  if (!raw) throw new Error('Empty response from server. Please try again.');
+  let data: any;
+  try { data = JSON.parse(raw); } catch { throw new Error('Unexpected response from server. Please try again.'); }
+  if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
 
   if (!data.places || data.places.length === 0) {
     return {

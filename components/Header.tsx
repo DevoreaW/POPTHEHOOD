@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
           <div className="min-w-0">
             <h1
               className="text-xl font-black uppercase leading-none tracking-wide text-white group-hover:text-orange-400 transition-colors"
-              style={{ fontFamily: "'Inter', sans-serif" }}
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               POPTHEHOOD
             </h1>

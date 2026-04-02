@@ -10,8 +10,8 @@ interface DiagnosticViewProps {
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-const display: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
-const body: React.CSSProperties    = { fontFamily: "'Barlow', sans-serif" };
+const display: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
+const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
@@ -52,6 +52,16 @@ const SeverityBadge: React.FC<{ severity: Severity }> = ({ severity }) => {
       {label}
     </span>
   );
+};
+
+/* ─── Probability badge colors (spec §3.5) ────────────────────────────────── */
+const getProbStyle = (prob: string): string => {
+  const p = prob.toUpperCase();
+  if (p === 'HIGH')                           return 'text-orange-400 bg-orange-500/10 border-orange-500/25';
+  if (p.includes('MEDIUM-HIGH') || p.includes('MEDIUM HIGH')) return 'text-amber-400 bg-amber-500/10 border-amber-500/25';
+  if (p === 'MEDIUM')                         return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+  if (p.includes('LOW') && p.includes('MEDIUM')) return 'text-slate-500 bg-slate-500/10 border-slate-500/20';
+  return 'text-slate-600 bg-slate-800/60 border-slate-700/40'; // LOW
 };
 
 /* ─── Save button states ──────────────────────────────────────────────────── */
@@ -160,7 +170,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             <div key={idx} className={S.subCard}>
               <div className="flex justify-between items-start mb-3 gap-2">
                 <h4 className="font-semibold text-white text-sm leading-snug" style={body}>{cause.issue}</h4>
-                <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 shrink-0" style={body}>{cause.probability}</span>
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-full border shrink-0 ${getProbStyle(cause.probability)}`} style={body}>{cause.probability}</span>
               </div>
               <p className="text-xs text-slate-500 leading-relaxed" style={body}>{cause.reasoning}</p>
             </div>
@@ -378,7 +388,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           aria-label="Start a new diagnostic session"
           onClick={onReset}
           className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
-          style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: 20, letterSpacing: '0.04em', fontStyle: 'normal' }}
+          style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 20, letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           Start New Diagnostic
         </button>

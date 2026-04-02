@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { ServiceSearchReport } from '../types';
 
+function isSafeUrl(url: string): boolean {
+  try {
+    const { protocol } = new URL(url);
+    return protocol === 'https:' || protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
 interface ServicesViewProps {
   report: ServiceSearchReport;
   onReset: () => void;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-const display: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
-const body: React.CSSProperties    = { fontFamily: "'Barlow', sans-serif" };
+const display: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
+const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
@@ -119,7 +128,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
             {report.places.map((place, idx) => (
               <a
                 key={idx}
-                href={place.uri}
+                href={isSafeUrl(place.uri) ? place.uri : '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open ${place.title} in Google Maps`}
@@ -177,7 +186,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
           aria-label="Return to dashboard"
           onClick={onReset}
           className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
-          style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: 20, letterSpacing: '0.04em', fontStyle: 'normal' }}
+          style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 20, letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           Back to Dashboard
         </button>

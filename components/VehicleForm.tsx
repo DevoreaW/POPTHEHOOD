@@ -77,10 +77,8 @@ const CAR_MODELS: Record<string, string[]> = {
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-// CTA buttons: Inter, non-italic for consistency
-const display: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
-// Regular Inter: all UI text — readable at any size
-const body: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
+const display: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
+const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
@@ -271,8 +269,24 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
+
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_FILE_COUNT = 5;
+    const VALID_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+
+    const incoming = Array.from(e.target.files);
+    const remaining = MAX_FILE_COUNT - files.length;
+
+    const valid = incoming.slice(0, remaining).filter(file => {
+      if (!VALID_MIME_TYPES.includes(file.type)) return false;
+      if (file.size > MAX_FILE_SIZE) return false;
+      return true;
+    });
+
+    if (valid.length === 0) return;
+
     const processed: DiagnosticInput['files'] = await Promise.all(
-      Array.from(e.target.files).map(file => new Promise<DiagnosticInput['files'][0]>(resolve => {
+      valid.map(file => new Promise<DiagnosticInput['files'][0]>(resolve => {
         const reader = new FileReader();
         reader.onloadend = () => {
           let type: 'image' | 'audio' | 'video' = 'image';
@@ -664,7 +678,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
             }`}
-          style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: 'clamp(18px, 5vw, 22px)', letterSpacing: '0.04em', fontStyle: 'normal' }}
+          style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 'clamp(18px, 5vw, 22px)', letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           {isLoading ? (
             <>

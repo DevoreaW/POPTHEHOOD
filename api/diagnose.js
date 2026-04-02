@@ -8,11 +8,16 @@ const ALLOWED_ORIGINS = [
   'https://popthehood.vercel.app'
 ];
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(100, "1 h"),
-  analytics: true,
-});
+let ratelimit = null;
+try {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(100, "1 h"),
+    analytics: true,
+  });
+} catch {
+  console.warn('Upstash env vars missing — rate limiting disabled');
+}
 
 function setCorsHeaders(req, res) {
   const origin = req.headers.origin;
@@ -35,17 +40,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'anonymous';
+  const xff = req.headers['x-forwarded-for'];
+  const ip = (xff ? xff.split(',').pop().trim() : null)
+           || req.headers['x-real-ip']
+           || req.socket.remoteAddress
+           || 'anonymous';
 
-  const { success, limit, reset, remaining } = await ratelimit.limit(ip);
-
-  if (!success) {
-    return res.status(429).json({ 
-      error: 'Too many requests. Please try again later.',
-      limit,
-      reset,
-      remaining
-    });
+  if (ratelimit) {
+    const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+    if (!success) {
+      return res.status(429).json({ error: 'Too many requests. Please try again later.', limit, reset, remaining });
+    }
   }
 
   const { prompt } = req.body;
