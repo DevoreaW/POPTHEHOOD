@@ -484,7 +484,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
                 fontFamily: F, fontSize: 11, fontWeight: 700,
                 color: C.orange, letterSpacing: '0.08em', textTransform: 'uppercase',
               }}>
-                2019 Honda Civic
+                2012 Acura TLX
               </div>
               {/* Drive with caution badge */}
               <div style={{
