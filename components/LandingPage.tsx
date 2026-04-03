@@ -97,6 +97,7 @@ const GlobalStyles = () => (
       .pth-nav-inner  { padding: 0 20px; }
       .pth-cta-row    { flex-direction: column; align-items: flex-start; }
       .pth-nav-status { display: none !important; }
+      .pth-nav-signin { display: none !important; }
       .pth-footer-row { flex-direction: column; text-align: center; gap: 20px; align-items: center; }
       .pth-stat-item  { border-right: none !important; border-bottom: 1px solid ${C.border}; }
       .pth-stat-item:last-child { border-bottom: none; }
@@ -296,6 +297,7 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
           <SignInButton mode="modal">
             <button
               type="button"
+              className="pth-nav-signin"
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
                 fontFamily: F, fontSize: 13, fontWeight: 600,

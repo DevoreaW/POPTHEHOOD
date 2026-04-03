@@ -673,12 +673,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className={`not-italic w-full py-5 rounded-full flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950
+          className={`not-italic w-full py-3 sm:py-5 rounded-full flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950
             ${isLoading
               ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
             }`}
-          style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 'clamp(18px, 5vw, 22px)', letterSpacing: '0.04em', fontStyle: 'normal' }}
+          style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 'clamp(16px, 4vw, 22px)', letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
           {isLoading ? (
             <>
