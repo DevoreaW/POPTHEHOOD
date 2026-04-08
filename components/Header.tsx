@@ -25,21 +25,28 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
             src="/icons/icon.svg"
             alt=""
             aria-hidden="true"
-            className="w-10 h-10 rounded-xl shadow-lg shadow-orange-500/20 flex-shrink-0 transition-opacity group-hover:opacity-85"
+            style={{ width: 34, height: 34, borderRadius: 10, flexShrink: 0, boxShadow: '0 4px 16px rgba(249,115,22,0.28)', transition: 'opacity 0.2s' }}
+            className="group-hover:opacity-85"
           />
-          <div className="min-w-0">
-            <h1
-              className="text-xl font-extrabold uppercase leading-none text-white group-hover:text-orange-400 transition-colors"
-              style={{ fontFamily: "'Open Sans', sans-serif", letterSpacing: '0.02em' }}
+          <div>
+            <div style={{
+              fontFamily: "'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+              fontWeight: 800, fontSize: 18, letterSpacing: '0.02em',
+              textTransform: 'uppercase', color: '#fff', lineHeight: 1,
+              transition: 'color 0.2s',
+            }}
+              className="group-hover:text-orange-400"
             >
-              POPTHEHOOD
-            </h1>
-            <p
-              className="text-[9px] font-semibold text-orange-500 uppercase leading-none mt-1 whitespace-nowrap"
-              style={{ letterSpacing: '0.18em', opacity: 0.75 }}
-            >
+              PopTheHood
+            </div>
+            <div style={{
+              fontFamily: "'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+              fontWeight: 600, fontSize: 9, color: '#f97316',
+              letterSpacing: '0.18em', textTransform: 'uppercase',
+              marginTop: 3, opacity: 0.75, whiteSpace: 'nowrap',
+            }}>
               Diagnose Before You Dial
-            </p>
+            </div>
           </div>
         </button>
 
