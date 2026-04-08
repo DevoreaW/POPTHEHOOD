@@ -153,6 +153,33 @@ export const analyzeTireTread = async (
   }
 };
 
+export const askFollowUpQuestion = async (
+  question: string,
+  report: DiagnosticReport
+): Promise<string> => {
+  const prompt = `You are an ASE-certified master automotive technician.
+
+VEHICLE: ${report.vehicle.year} ${report.vehicle.make} ${report.vehicle.model} (${report.vehicle.mileage} miles)
+ORIGINAL DIAGNOSIS SUMMARY: ${report.analysisSummary}
+MOST LIKELY CAUSES: ${report.mostLikelyCauses.map(c => c.issue).join(', ')}
+
+FOLLOW-UP QUESTION: ${question}
+
+Answer this question clearly and practically in 2-4 sentences. Be direct. Plain text only — no JSON, no markdown headers, no bullet points.`;
+
+  const response = await fetch('/api/diagnose', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const raw = await response.text();
+  if (!raw) throw new Error('Empty response from server. Please try again.');
+  let data: any;
+  try { data = JSON.parse(raw); } catch { throw new Error('Unexpected response from server. Please try again.'); }
+  if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
+  return data.result;
+};
+
 export const searchNearbyServices = async (
   type: 'mechanic' | 'towing',
   latitude: number,

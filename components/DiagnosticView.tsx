@@ -6,7 +6,7 @@ interface DiagnosticViewProps {
   onReset: () => void;
   onSave?: (report: DiagnosticReport) => Promise<void> | void;
   onFindServices?: (type: 'mechanic' | 'towing') => void;
-  onFollowUp?: (question: string, vehicle: DiagnosticReport['vehicle']) => void;
+  onAskFollowUp?: (question: string, report: DiagnosticReport) => Promise<string>;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
@@ -74,10 +74,22 @@ const saveStyles = {
 const saveLabels = { idle: 'Save report', saving: 'Saving…', saved: 'Saved!', error: 'Save failed' };
 
 /* ─── Component ───────────────────────────────────────────────────────────── */
-const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave, onFindServices, onFollowUp }) => {
+const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave, onFindServices, onAskFollowUp }) => {
   const [saveState, setSaveState]                   = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [shareState, setShareState]                 = useState<'idle' | 'copied'>('idle');
   const [reportedInaccuracy, setReportedInaccuracy] = useState(false);
+  const [followUpState, setFollowUpState]           = useState<Record<number, { loading: boolean; answer: string | null; error: string | null }>>({});
+
+  const handleFollowUpClick = async (question: string, index: number) => {
+    if (!onAskFollowUp || followUpState[index]?.loading) return;
+    setFollowUpState(prev => ({ ...prev, [index]: { loading: true, answer: null, error: null } }));
+    try {
+      const answer = await onAskFollowUp(question, report);
+      setFollowUpState(prev => ({ ...prev, [index]: { loading: false, answer, error: null } }));
+    } catch (err: any) {
+      setFollowUpState(prev => ({ ...prev, [index]: { loading: false, answer: null, error: err.message || 'Failed to get answer.' } }));
+    }
+  };
 
   const handleSave = async () => {
     if (!onSave || saveState === 'saving' || saveState === 'saved') return;
@@ -361,24 +373,43 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           title="Narrow It Down"
           icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
         />
-        <p className="text-xs text-slate-600 mb-4" style={body}>Tap a question to run a follow-up diagnosis with your same vehicle info pre-filled.</p>
+        <p className="text-xs text-slate-600 mb-4" style={body}>Tap a question to get an instant answer from the AI.</p>
         <div className="flex flex-col gap-3">
-          {report.followUpQuestions.map((q, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => onFollowUp?.(q, report.vehicle)}
-              disabled={!onFollowUp}
-              className="flex items-start gap-3 bg-black/40 border border-slate-800/60 hover:border-orange-500/30 hover:bg-slate-900/60 p-4 rounded-xl text-left w-full transition-all group disabled:cursor-default disabled:hover:border-slate-800/60 disabled:hover:bg-black/40"
-              style={body}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0 group-hover:bg-orange-400" />
-              <span className="text-slate-400 text-sm leading-relaxed flex-1 group-hover:text-slate-300">{q}</span>
-              {onFollowUp && (
-                <svg className="w-4 h-4 text-slate-700 group-hover:text-orange-500 shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-              )}
-            </button>
-          ))}
+          {report.followUpQuestions.map((q, i) => {
+            const state = followUpState[i];
+            const answered = !!state?.answer;
+            return (
+              <div key={i} className="rounded-xl overflow-hidden border border-slate-800/60">
+                <button
+                  type="button"
+                  onClick={() => handleFollowUpClick(q, i)}
+                  disabled={!onAskFollowUp || state?.loading || answered}
+                  className="flex items-start gap-3 bg-black/40 hover:border-orange-500/30 hover:bg-slate-900/60 p-4 text-left w-full transition-all group disabled:cursor-default disabled:hover:bg-black/40"
+                  style={body}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${answered ? 'bg-emerald-500' : 'bg-orange-500 group-hover:bg-orange-400'}`} />
+                  <span className="text-slate-400 text-sm leading-relaxed flex-1 group-hover:text-slate-300">{q}</span>
+                  {state?.loading ? (
+                    <div className="w-4 h-4 rounded-full border-2 border-slate-700 border-t-orange-500 animate-spin shrink-0 mt-0.5" />
+                  ) : answered ? (
+                    <svg className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                  ) : onAskFollowUp ? (
+                    <svg className="w-4 h-4 text-slate-700 group-hover:text-orange-500 shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                  ) : null}
+                </button>
+                {state?.answer && (
+                  <div className="px-4 pb-4 pt-1 bg-slate-900/40 border-t border-slate-800/60">
+                    <p className="text-sm text-slate-300 leading-relaxed" style={body}>{state.answer}</p>
+                  </div>
+                )}
+                {state?.error && (
+                  <div className="px-4 pb-4 pt-1 bg-rose-500/5 border-t border-rose-500/20">
+                    <p className="text-xs text-rose-400" style={body}>{state.error}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
 

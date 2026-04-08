@@ -7,7 +7,7 @@ import ServicesView from './components/ServicesView';
 import ConsentBanner from './components/ConsentBanner';
 import { LandingPage } from './components/LandingPage';
 import { useUser, useAuth } from '@clerk/react';
-import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices } from './services/geminiService';
+import { generateDiagnosticReport, analyzeTireTread, searchNearbyServices, askFollowUpQuestion } from './services/geminiService';
 import { saveDiagnostic, saveTireScan, getUserDiagnostics, getUserTireScans } from './services/supabaseService';
 import { VehicleInfo, DiagnosticInput, DiagnosticReport, TireAnalysisReport, ServiceSearchReport } from './types';
 
@@ -24,8 +24,7 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<(DiagnosticReport | TireAnalysisReport)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState<string>('');
-  const [pendingFollowUp, setPendingFollowUp] = useState<{ description: string; vehicle: VehicleInfo } | null>(null);
-  const [consentGiven, setConsentGiven] = useState<boolean>(() => {
+const [consentGiven, setConsentGiven] = useState<boolean>(() => {
     return localStorage.getItem('popthehood_consent_accepted') === 'true';
   });
 
@@ -212,11 +211,6 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleFollowUp = (question: string, vehicle: VehicleInfo) => {
-    setPendingFollowUp({ description: question, vehicle });
-    resetDiagnosis();
-  };
-
   const handleLogoClick = () => {
     setReport(null);
     setTireReport(null);
@@ -319,7 +313,7 @@ const App: React.FC = () => {
                 onReset={resetDiagnosis}
                 onSave={saveToHistory}
                 onFindServices={handleFindServices}
-                onFollowUp={handleFollowUp}
+                onAskFollowUp={askFollowUpQuestion}
               />
             )}
             {tireReport && (
@@ -347,8 +341,6 @@ const App: React.FC = () => {
                   history={history}
                   onHistorySelect={handleHistorySelect}
                   onHistoryClear={clearHistory}
-                  prefill={pendingFollowUp}
-                  onPrefillUsed={() => setPendingFollowUp(null)}
                 />
               </>
             )}
