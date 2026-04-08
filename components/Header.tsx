@@ -29,12 +29,15 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
           />
           <div className="min-w-0">
             <h1
-              className="text-xl font-black uppercase leading-none tracking-wide text-white group-hover:text-orange-400 transition-colors"
-              style={{ fontFamily: "'Open Sans', sans-serif" }}
+              className="text-xl font-extrabold uppercase leading-none text-white group-hover:text-orange-400 transition-colors"
+              style={{ fontFamily: "'Open Sans', sans-serif", letterSpacing: '0.02em' }}
             >
               POPTHEHOOD
             </h1>
-            <p className="text-[9px] font-black text-orange-500 uppercase tracking-[0.2em] leading-none mt-1 whitespace-nowrap">
+            <p
+              className="text-[9px] font-semibold text-orange-500 uppercase leading-none mt-1 whitespace-nowrap"
+              style={{ letterSpacing: '0.18em', opacity: 0.75 }}
+            >
               Diagnose Before You Dial
             </p>
           </div>
