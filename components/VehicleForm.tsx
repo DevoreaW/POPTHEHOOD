@@ -270,16 +270,25 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_VIDEO_SIZE = 3 * 1024 * 1024;  // 3MB — keep under Vercel's 4.5MB body limit
     const MAX_FILE_COUNT = 5;
-    const VALID_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+    const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+    const VALID_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo', 'video/mpeg', 'video/3gpp'];
 
     const incoming = Array.from(e.target.files);
     const remaining = MAX_FILE_COUNT - files.length;
 
     const valid = incoming.slice(0, remaining).filter(file => {
-      if (!VALID_MIME_TYPES.includes(file.type)) return false;
-      if (file.size > MAX_FILE_SIZE) return false;
+      if (VALID_VIDEO_TYPES.includes(file.type)) {
+        if (file.size > MAX_VIDEO_SIZE) {
+          alert(`"${file.name}" is too large. Videos must be under 3MB (keep clips under ~10 seconds).`);
+          return false;
+        }
+        return true;
+      }
+      if (!VALID_IMAGE_TYPES.includes(file.type)) return false;
+      if (file.size > MAX_IMAGE_SIZE) return false;
       return true;
     });
 

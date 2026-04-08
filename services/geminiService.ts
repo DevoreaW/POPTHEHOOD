@@ -58,12 +58,16 @@ export const generateDiagnosticReport = async (
     return data.result;
   };
 
-  const imageFiles = (input.files || [])
-    .filter(f => f.type === 'image')
-    .map(f => ({ data: f.data.split(',')[1] || f.data, mimeType: f.mimeType }));
+  const mediaFiles = (input.files || [])
+    .filter(f => f.type === 'image' || f.type === 'video')
+    .map(f => ({ data: f.data.split(',')[1] || f.data, mimeType: f.mimeType, type: f.type }));
 
-  const imageNote = imageFiles.length > 0
-    ? `\nATTACHED IMAGES: The user has provided ${imageFiles.length} image(s) for visual reference. Analyze them as additional diagnostic evidence alongside the description.\n`
+  const imageCount = mediaFiles.filter(f => f.type === 'image').length;
+  const videoCount = mediaFiles.filter(f => f.type === 'video').length;
+  const mediaParts = mediaFiles.map(({ data, mimeType }) => ({ data, mimeType }));
+
+  const mediaNote = mediaFiles.length > 0
+    ? `\nATTACHED MEDIA: The user has provided ${imageCount > 0 ? `${imageCount} image(s)` : ''}${imageCount > 0 && videoCount > 0 ? ' and ' : ''}${videoCount > 0 ? `${videoCount} short video clip(s)` : ''} for visual/audio reference. Analyze them as additional diagnostic evidence alongside the description.\n`
     : '';
 
   const prompt = `You are an ASE-certified master automotive technician with 25+ years of diagnostic experience.
@@ -77,7 +81,7 @@ Engine Type: ${vehicle.engine || 'Unknown'}
 
 USER SYMPTOM DESCRIPTION:
 ${input.description}
-${imageNote}
+${mediaNote}
 OBD-II CODES:
 ${input.obdCodes || 'None provided'}
 
@@ -95,7 +99,7 @@ Respond ONLY with a valid JSON object with these fields:
   "additionalContext": { "commonModelIssues": "string", "recallPotential": "string", "prevention": "string" }
 }`;
 
-  const text = await callDiagnose(prompt, imageFiles.length > 0 ? imageFiles : undefined);
+  const text = await callDiagnose(prompt, mediaParts.length > 0 ? mediaParts : undefined);
 
   try {
     const clean = text.replace(/```json|```/g, '').trim();
