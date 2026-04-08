@@ -1,5 +1,6 @@
 import React from 'react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/react';
+import LogoMark from './LogoMark';
 
 interface HeaderProps {
   onLogoClick?: () => void;
@@ -21,33 +22,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
           className="flex items-center gap-3 bg-transparent border-none cursor-pointer p-0 text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 rounded-xl group"
           aria-label="Go to home screen"
         >
-          <img
-            src="/icons/icon.svg"
-            alt=""
-            aria-hidden="true"
-            style={{ width: 34, height: 34, borderRadius: 10, flexShrink: 0, boxShadow: '0 4px 16px rgba(249,115,22,0.28)', transition: 'opacity 0.2s' }}
-            className="group-hover:opacity-85"
-          />
-          <div>
-            <div style={{
-              fontFamily: "'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 800, fontSize: 18, letterSpacing: '0.02em',
-              textTransform: 'uppercase', color: '#fff', lineHeight: 1,
-              transition: 'color 0.2s',
-            }}
-              className="group-hover:text-orange-400"
-            >
-              PopTheHood
-            </div>
-            <div style={{
-              fontFamily: "'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 600, fontSize: 9, color: '#f97316',
-              letterSpacing: '0.18em', textTransform: 'uppercase',
-              marginTop: 3, opacity: 0.75, whiteSpace: 'nowrap',
-            }}>
-              Diagnose Before You Dial
-            </div>
-          </div>
+          <LogoMark compact />
         </button>
 
         {/* ── Right side ── */}
