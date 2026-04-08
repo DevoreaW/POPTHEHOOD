@@ -124,7 +124,7 @@ const App: React.FC = () => {
       setReport(result);
       setTireReport(null);
       setServiceReport(null);
-      await saveToHistory(result);
+      saveToHistory(result);
       announce('Diagnosis complete. Results are now available.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
@@ -143,7 +143,7 @@ const App: React.FC = () => {
       setTireReport(result);
       setReport(null);
       setServiceReport(null);
-      await saveToHistory(result);
+      saveToHistory(result);
       announce('Tire scan complete. Results are now available.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
