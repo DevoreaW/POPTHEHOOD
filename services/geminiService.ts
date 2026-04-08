@@ -155,7 +155,8 @@ export const analyzeTireTread = async (
 
 export const askFollowUpQuestion = async (
   question: string,
-  report: DiagnosticReport
+  report: DiagnosticReport,
+  userAnswer: string
 ): Promise<string> => {
   const prompt = `You are an ASE-certified master automotive technician.
 
@@ -163,9 +164,10 @@ VEHICLE: ${report.vehicle.year} ${report.vehicle.make} ${report.vehicle.model} (
 ORIGINAL DIAGNOSIS SUMMARY: ${report.analysisSummary}
 MOST LIKELY CAUSES: ${report.mostLikelyCauses.map(c => c.issue).join(', ')}
 
-FOLLOW-UP QUESTION: ${question}
+FOLLOW-UP QUESTION ASKED: ${question}
+USER'S ANSWER: ${userAnswer}
 
-Answer this question clearly and practically in 2-4 sentences. Be direct. Plain text only — no JSON, no markdown headers, no bullet points.`;
+Based on the user's answer, give a focused, practical response in 2-4 sentences that narrows down the diagnosis or tells them what to do next. Plain text only — no JSON, no markdown headers, no bullet points.`;
 
   const response = await fetch('/api/diagnose', {
     method: 'POST',

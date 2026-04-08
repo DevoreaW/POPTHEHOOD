@@ -6,7 +6,7 @@ interface DiagnosticViewProps {
   onReset: () => void;
   onSave?: (report: DiagnosticReport) => Promise<void> | void;
   onFindServices?: (type: 'mechanic' | 'towing') => void;
-  onAskFollowUp?: (question: string, report: DiagnosticReport) => Promise<string>;
+  onAskFollowUp?: (question: string, report: DiagnosticReport, userAnswer: string) => Promise<string>;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
@@ -78,16 +78,29 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
   const [saveState, setSaveState]                   = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [shareState, setShareState]                 = useState<'idle' | 'copied'>('idle');
   const [reportedInaccuracy, setReportedInaccuracy] = useState(false);
-  const [followUpState, setFollowUpState]           = useState<Record<number, { loading: boolean; answer: string | null; error: string | null }>>({});
+  type FollowUpEntry = { status: 'idle' | 'open' | 'loading' | 'done'; userInput: string; answer: string | null; error: string | null };
+  const [followUpState, setFollowUpState] = useState<Record<number, FollowUpEntry>>({});
 
-  const handleFollowUpClick = async (question: string, index: number) => {
-    if (!onAskFollowUp || followUpState[index]?.loading) return;
-    setFollowUpState(prev => ({ ...prev, [index]: { loading: true, answer: null, error: null } }));
+  const getEntry = (i: number): FollowUpEntry =>
+    followUpState[i] ?? { status: 'idle', userInput: '', answer: null, error: null };
+
+  const setEntry = (i: number, patch: Partial<FollowUpEntry>) =>
+    setFollowUpState(prev => ({ ...prev, [i]: { ...getEntry(i), ...patch } }));
+
+  const handleQuestionClick = (i: number) => {
+    const entry = getEntry(i);
+    if (entry.status === 'idle') setEntry(i, { status: 'open' });
+  };
+
+  const handleSubmitAnswer = async (question: string, i: number) => {
+    const entry = getEntry(i);
+    if (!onAskFollowUp || !entry.userInput.trim() || entry.status === 'loading') return;
+    setEntry(i, { status: 'loading', error: null });
     try {
-      const answer = await onAskFollowUp(question, report);
-      setFollowUpState(prev => ({ ...prev, [index]: { loading: false, answer, error: null } }));
+      const answer = await onAskFollowUp(question, report, entry.userInput.trim());
+      setEntry(i, { status: 'done', answer, error: null });
     } catch (err: any) {
-      setFollowUpState(prev => ({ ...prev, [index]: { loading: false, answer: null, error: err.message || 'Failed to get answer.' } }));
+      setEntry(i, { status: 'open', error: err.message || 'Failed to get answer. Please try again.' });
     }
   };
 
@@ -373,38 +386,64 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           title="Narrow It Down"
           icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
         />
-        <p className="text-xs text-slate-600 mb-4" style={body}>Tap a question to get an instant answer from the AI.</p>
+        <p className="text-xs text-slate-600 mb-4" style={body}>Tap a question, answer it, and the AI will respond based on what you say.</p>
         <div className="flex flex-col gap-3">
           {report.followUpQuestions.map((q, i) => {
-            const state = followUpState[i];
-            const answered = !!state?.answer;
+            const entry = getEntry(i);
             return (
               <div key={i} className="rounded-xl overflow-hidden border border-slate-800/60">
+                {/* Question row */}
                 <button
                   type="button"
-                  onClick={() => handleFollowUpClick(q, i)}
-                  disabled={!onAskFollowUp || state?.loading || answered}
-                  className="flex items-start gap-3 bg-black/40 hover:border-orange-500/30 hover:bg-slate-900/60 p-4 text-left w-full transition-all group disabled:cursor-default disabled:hover:bg-black/40"
+                  onClick={() => handleQuestionClick(i)}
+                  disabled={!onAskFollowUp || entry.status !== 'idle'}
+                  className="flex items-start gap-3 bg-black/40 hover:bg-slate-900/60 p-4 text-left w-full transition-all group disabled:cursor-default disabled:hover:bg-black/40"
                   style={body}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${answered ? 'bg-emerald-500' : 'bg-orange-500 group-hover:bg-orange-400'}`} />
+                  <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${entry.status === 'done' ? 'bg-emerald-500' : 'bg-orange-500 group-hover:bg-orange-400'}`} />
                   <span className="text-slate-400 text-sm leading-relaxed flex-1 group-hover:text-slate-300">{q}</span>
-                  {state?.loading ? (
-                    <div className="w-4 h-4 rounded-full border-2 border-slate-700 border-t-orange-500 animate-spin shrink-0 mt-0.5" />
-                  ) : answered ? (
+                  {entry.status === 'done' ? (
                     <svg className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                  ) : onAskFollowUp ? (
-                    <svg className="w-4 h-4 text-slate-700 group-hover:text-orange-500 shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                  ) : entry.status === 'idle' && onAskFollowUp ? (
+                    <svg className="w-4 h-4 text-slate-700 group-hover:text-orange-500 shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                   ) : null}
                 </button>
-                {state?.answer && (
-                  <div className="px-4 pb-4 pt-1 bg-slate-900/40 border-t border-slate-800/60">
-                    <p className="text-sm text-slate-300 leading-relaxed" style={body}>{state.answer}</p>
+
+                {/* User input area */}
+                {(entry.status === 'open' || entry.status === 'loading') && (
+                  <div className="px-4 pb-4 pt-3 bg-slate-900/40 border-t border-slate-800/60 flex flex-col gap-3">
+                    <p className="text-xs text-slate-500" style={body}>Your answer:</p>
+                    <textarea
+                      autoFocus
+                      rows={3}
+                      value={entry.userInput}
+                      onChange={e => setEntry(i, { userInput: e.target.value })}
+                      onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSubmitAnswer(q, i); }}
+                      placeholder="Type your answer here…"
+                      disabled={entry.status === 'loading'}
+                      className="w-full bg-black/40 border border-slate-700/60 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-orange-500/50 disabled:opacity-50"
+                      style={body}
+                    />
+                    {entry.error && <p className="text-xs text-rose-400" style={body}>{entry.error}</p>}
+                    <button
+                      type="button"
+                      onClick={() => handleSubmitAnswer(q, i)}
+                      disabled={!entry.userInput.trim() || entry.status === 'loading'}
+                      className="self-end flex items-center gap-2 bg-orange-500 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-5 py-2 rounded-full transition-colors"
+                      style={body}
+                    >
+                      {entry.status === 'loading' ? (
+                        <><div className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" /> Analyzing…</>
+                      ) : 'Ask AI'}
+                    </button>
                   </div>
                 )}
-                {state?.error && (
-                  <div className="px-4 pb-4 pt-1 bg-rose-500/5 border-t border-rose-500/20">
-                    <p className="text-xs text-rose-400" style={body}>{state.error}</p>
+
+                {/* AI answer */}
+                {entry.status === 'done' && entry.answer && (
+                  <div className="px-4 pb-4 pt-3 bg-slate-900/40 border-t border-slate-800/60">
+                    <p className="text-xs text-slate-500 mb-2" style={body}>Your answer: <span className="text-slate-400">{entry.userInput}</span></p>
+                    <p className="text-sm text-slate-300 leading-relaxed" style={body}>{entry.answer}</p>
                   </div>
                 )}
               </div>

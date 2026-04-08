@@ -313,7 +313,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
                 onReset={resetDiagnosis}
                 onSave={saveToHistory}
                 onFindServices={handleFindServices}
-                onAskFollowUp={askFollowUpQuestion}
+                onAskFollowUp={(q, r, ans) => askFollowUpQuestion(q, r, ans)}
               />
             )}
             {tireReport && (
