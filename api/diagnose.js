@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const { prompt } = req.body;
+  const { prompt, images } = req.body;
 
   if (!prompt) {
     return res.status(400).json({ error: 'Prompt is required' });
@@ -67,14 +67,23 @@ export default async function handler(req, res) {
 
   try {
     const apiKey = process.env.API_KEY || process.env.VITE_API_KEY;
-    
+
+    const parts = [{ text: cleanPrompt }];
+    if (Array.isArray(images)) {
+      for (const img of images) {
+        if (img && typeof img.data === 'string' && typeof img.mimeType === 'string') {
+          parts.push({ inlineData: { mimeType: img.mimeType, data: img.data } });
+        }
+      }
+    }
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: cleanPrompt }] }]
+          contents: [{ parts }]
         })
       }
     );

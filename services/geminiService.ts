@@ -44,11 +44,11 @@ export const generateDiagnosticReport = async (
   vehicle: VehicleInfo,
   input: DiagnosticInput
 ): Promise<DiagnosticReport> => {
-  const callDiagnose = async (prompt: string) => {
+  const callDiagnose = async (prompt: string, images?: { data: string; mimeType: string }[]) => {
     const response = await fetch('/api/diagnose', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt, images })
     });
     const raw = await response.text();
     if (!raw) throw new Error('Empty response from server. Please try again.');
@@ -57,6 +57,14 @@ export const generateDiagnosticReport = async (
     if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
     return data.result;
   };
+
+  const imageFiles = (input.files || [])
+    .filter(f => f.type === 'image')
+    .map(f => ({ data: f.data.split(',')[1] || f.data, mimeType: f.mimeType }));
+
+  const imageNote = imageFiles.length > 0
+    ? `\nATTACHED IMAGES: The user has provided ${imageFiles.length} image(s) for visual reference. Analyze them as additional diagnostic evidence alongside the description.\n`
+    : '';
 
   const prompt = `You are an ASE-certified master automotive technician with 25+ years of diagnostic experience.
 
@@ -69,7 +77,7 @@ Engine Type: ${vehicle.engine || 'Unknown'}
 
 USER SYMPTOM DESCRIPTION:
 ${input.description}
-
+${imageNote}
 OBD-II CODES:
 ${input.obdCodes || 'None provided'}
 
@@ -87,7 +95,7 @@ Respond ONLY with a valid JSON object with these fields:
   "additionalContext": { "commonModelIssues": "string", "recallPotential": "string", "prevention": "string" }
 }`;
 
-  const text = await callDiagnose(prompt);
+  const text = await callDiagnose(prompt, imageFiles.length > 0 ? imageFiles : undefined);
 
   try {
     const clean = text.replace(/```json|```/g, '').trim();

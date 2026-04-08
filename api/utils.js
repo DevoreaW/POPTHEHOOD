@@ -1,31 +1,22 @@
 export function sanitizeInput(input) {
   if (typeof input !== 'string') return '';
-  
+
+  // Slice first to bound all subsequent regex work and prevent ReDoS
   return input
-    // Remove ALL HTML tags
-    .replace(/<[^>]*>/g, '')
-    // Remove javascript protocol
-    .replace(/javascript:/gi, '')
-    // Remove data protocol (can be used for XSS)
-    .replace(/data:/gi, '')
-    // Remove vbscript protocol
-    .replace(/vbscript:/gi, '')
-    // Remove event handlers
-    .replace(/on\w+\s*=/gi, '')
-    // Remove script tags more aggressively
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    // Remove style tags
-    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-    // Remove potentially dangerous characters used in SQL injection
-    .replace(/(\b)(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|EXEC|EXECUTE|ALTER|CREATE|TRUNCATE)(\b)/gi, '')
+    .slice(0, 2000)
     // Remove null bytes
     .replace(/\0/g, '')
+    // Remove HTML tags (simple, non-backtracking pattern)
+    .replace(/<[^>]*>/g, '')
+    // Remove dangerous protocols
+    .replace(/javascript:/gi, '')
+    .replace(/data:/gi, '')
+    .replace(/vbscript:/gi, '')
+    // Remove inline event handlers
+    .replace(/on\w+\s*=/gi, '')
     // Remove excessive whitespace
     .replace(/\s+/g, ' ')
-    // Trim whitespace
-    .trim()
-    // Limit length to 2000 characters
-    .slice(0, 2000);
+    .trim();
 }
 
 export function validateRequired(fields) {
