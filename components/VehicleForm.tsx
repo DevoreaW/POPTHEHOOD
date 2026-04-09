@@ -263,7 +263,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     const { name, value } = e.target;
     if (name === 'description') setDescription(value);
     else if (name === 'obdCodes') setObdCodes(value);
-    else if (name === 'mileage') setVehicle(p => ({ ...p, mileage: value }));
+    else if (name === 'mileage') {
+      const digits = value.replace(/\D/g, '');
+      const formatted = digits ? Number(digits).toLocaleString() : '';
+      setVehicle(p => ({ ...p, mileage: formatted }));
+    }
     else if (name === 'make' || name === 'model' || name === 'year') setVehicle(p => ({ ...p, [name]: value }));
   };
 
@@ -463,7 +467,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               </div>
               <div className="space-y-2">
                 <label className={S.fieldLabel} style={body}>Mileage</label>
-                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
+                <input name="mileage" inputMode="numeric" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
               </div>
             </div>
           ) : (
@@ -519,7 +523,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
               <div className="space-y-2">
                 <label className={S.fieldLabel} style={body}>Mileage</label>
-                <input name="mileage" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
+                <input name="mileage" inputMode="numeric" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
               </div>
 
               <p className="text-xs text-slate-600 pl-1" style={body}>
