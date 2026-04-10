@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SignInButton } from '@clerk/react';
+import { SignInButton, UserButton, useUser } from '@clerk/react';
 import LogoMark from './LogoMark';
 
 /* ─── Font loader ─────────────────────────────────────────────────────────── */
@@ -230,6 +230,7 @@ const SectionHead: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon,
 
 /* ─── NavBar ──────────────────────────────────────────────────────────────── */
 const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
+  const { isSignedIn } = useUser();
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 24);
@@ -263,23 +264,27 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             </span>
           </div>
 
-          <SignInButton mode="modal">
-            <button
-              type="button"
-              className="pth-nav-signin"
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                fontFamily: F, fontSize: 13, fontWeight: 600,
-                color: C.textMuted, padding: '8px 14px', borderRadius: 8,
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.color = C.text)}
-              onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}
-              aria-label="Sign in to your account"
-            >
-              Sign in
-            </button>
-          </SignInButton>
+          {isSignedIn ? (
+            <UserButton appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
+          ) : (
+            <SignInButton mode="modal">
+              <button
+                type="button"
+                className="pth-nav-signin"
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontFamily: F, fontSize: 13, fontWeight: 600,
+                  color: C.textMuted, padding: '8px 14px', borderRadius: 8,
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = C.text)}
+                onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}
+                aria-label="Sign in to your account"
+              >
+                Sign in
+              </button>
+            </SignInButton>
+          )}
 
           <button
             onClick={onCTAClick}
