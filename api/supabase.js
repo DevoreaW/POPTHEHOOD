@@ -35,29 +35,15 @@ function setCorsHeaders(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
-// Derive the Clerk JWKS URL from the publishable key so we don't need
-// CLERK_SECRET_KEY as an additional environment variable.
-function getClerkJwksUrl() {
-  const key = process.env.VITE_CLERK_PUBLISHABLE_KEY || '';
-  // Format: pk_test_<base64> or pk_live_<base64>
-  const match = key.match(/^pk_(?:test|live)_(.+)$/);
-  if (!match) return null;
-  const domain = Buffer.from(match[1], 'base64').toString('utf-8').replace(/\$$/, '');
-  return `https://${domain}/.well-known/jwks.json`;
-}
-
 async function verifyClerkToken(authHeader) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new Error('unauthorized');
   }
   const token = authHeader.slice(7);
-  const jwksUrl = getClerkJwksUrl();
-  if (!jwksUrl) throw new Error('unauthorized');
+  const secretKey = process.env.CLERK_SECRET_KEY;
+  if (!secretKey) throw new Error('unauthorized');
 
-  const payload = await verifyToken(token, {
-    jwksUrl,
-    authorizedParties: ALLOWED_ORIGINS,
-  });
+  const payload = await verifyToken(token, { secretKey });
   return payload.sub; // Clerk user ID
 }
 
