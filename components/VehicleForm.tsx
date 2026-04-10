@@ -85,9 +85,9 @@ const S = {
   card:        'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
   secIcon:     'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
   fieldLabel:  'text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1',
-  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/40 border border-slate-800 rounded-full text-white font-medium text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
-  inputBase:   'w-full h-12 px-5 bg-black/40 border border-slate-800 rounded-full text-white font-medium text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-600',
-  toolBtn:     'flex flex-col items-center justify-center gap-3 p-5 sm:p-6 bg-black/40 border border-slate-800 rounded-2xl transition-all hover:bg-slate-900 hover:border-orange-500/30 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950',
+  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/40 border border-slate-800 rounded-xl text-white font-medium text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
+  inputBase:   'w-full h-12 px-5 bg-black/40 border border-slate-800 rounded-xl text-white font-medium text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-600',
+  toolBtn:     'flex items-center gap-4 px-5 py-4 bg-black/40 border border-slate-800 rounded-xl transition-all hover:bg-slate-900/60 hover:border-orange-500/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 w-full text-left',
   historyItem: 'flex items-center gap-4 p-4 bg-black/40 border border-slate-800 rounded-xl hover:bg-slate-900 hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 w-full',
 };
 
@@ -177,9 +177,10 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const [isRecording, setIsRecording]     = useState(false);
   const [isConnecting, setIsConnecting]   = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [showCamera, setShowCamera]       = useState(false);
-  const [showTireTips, setShowTireTips]   = useState(false);
-  const [manualEntry, setManualEntry]     = useState(false);
+  const [showCamera, setShowCamera]         = useState(false);
+  const [showTireTips, setShowTireTips]     = useState(false);
+  const [manualEntry, setManualEntry]       = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const fileInputRef   = useRef<HTMLInputElement>(null);
   const textAreaRef    = useRef<HTMLTextAreaElement>(null);
@@ -317,9 +318,15 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!vehicle.make || !vehicle.model || (!description && !interimText)) {
-      alert('Please provide vehicle info and describe the symptoms.'); return;
+    if (!vehicle.make || !vehicle.model) {
+      setValidationError('Please select your vehicle make and model before running a diagnosis.');
+      return;
     }
+    if (!description && !interimText) {
+      setValidationError('Please describe your symptoms before running a diagnosis.');
+      return;
+    }
+    setValidationError(null);
     onDiagnose(vehicle, { description: (description + ' ' + interimText).trim(), obdCodes, files });
   };
 
@@ -387,35 +394,48 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       {/* ── Quick Tools ───────────────────────────────────────────────────── */}
       <section className={S.card}>
         <SectionHead icon={<ToolboxIcon />} title="Quick Tools" />
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="flex flex-col gap-2">
           <button type="button" aria-label="Scan tire tread" onClick={() => setShowTireTips(true)} className={S.toolBtn}>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-orange-500/10 border border-orange-500/15 flex items-center justify-center text-orange-500">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="w-9 h-9 rounded-lg bg-orange-500/10 border border-orange-500/15 flex items-center justify-center text-orange-500 flex-shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" />
                 <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" />
                 <line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" />
               </svg>
             </div>
-            <span className="text-xs font-semibold text-slate-400" style={body}>Tire Scan</span>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-white" style={body}>Tire Tread Scan</div>
+              <div className="text-xs text-slate-500 mt-0.5" style={body}>Upload or photograph your tire for a wear analysis</div>
+            </div>
+            <ChevronRight />
           </button>
 
           <button type="button" aria-label="Find local mechanic" onClick={() => onFindServices('mechanic')} className={S.toolBtn}>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-500/10 border border-blue-500/15 flex items-center justify-center text-blue-500">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/15 flex items-center justify-center text-blue-400 flex-shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <circle cx="12" cy="11" r="3" />
               </svg>
             </div>
-            <span className="text-xs font-semibold text-slate-400" style={body}>Find Mechanic</span>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-white" style={body}>Find a Mechanic</div>
+              <div className="text-xs text-slate-500 mt-0.5" style={body}>Nearby rated shops based on your location</div>
+            </div>
+            <ChevronRight />
           </button>
 
           <button type="button" aria-label="Request towing service" onClick={() => onFindServices('towing')} className={S.toolBtn}>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-500/10 border border-red-500/15 flex items-center justify-center text-red-500">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <div className="w-9 h-9 rounded-lg bg-rose-500/10 border border-rose-500/15 flex items-center justify-center text-rose-400 flex-shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="9" width="12" height="7" rx="1.5" /><path d="M14 12.5h5l2 3.5H14" />
+                <circle cx="7" cy="18" r="1.8" /><circle cx="18" cy="18" r="1.8" />
               </svg>
             </div>
-            <span className="text-xs font-semibold text-slate-400" style={body}>Request Tow</span>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-white" style={body}>Request Towing</div>
+              <div className="text-xs text-slate-500 mt-0.5" style={body}>Find tow services dispatched to your location</div>
+            </div>
+            <ChevronRight />
           </button>
         </div>
       </section>
@@ -635,7 +655,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   type="button"
                   aria-label="Attach photos or videos"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/40 border-2 border-dashed border-slate-800 rounded-full text-slate-500 hover:border-orange-500/30 hover:text-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 text-sm font-medium"
+                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/40 border-2 border-dashed border-slate-800 rounded-xl text-slate-500 hover:border-orange-500/30 hover:text-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 text-sm font-medium"
                   style={body}
                 >
                   <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -681,6 +701,16 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             </div>
           )}
         </section>
+
+        {/* ── Validation error ─────────────────────────────────────────── */}
+        {validationError && (
+          <div role="alert" className="flex items-center gap-3 px-5 py-3 bg-rose-500/10 border border-rose-500/25 rounded-xl">
+            <svg className="w-4 h-4 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span className="text-sm text-rose-300" style={body}>{validationError}</span>
+          </div>
+        )}
 
         {/* ── Submit — orange CTA button ────────────────────────────────── */}
         <button

@@ -8,8 +8,7 @@ interface TireAnalysisViewProps {
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-const display: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
-const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
+const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
@@ -154,10 +153,17 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
                 {report.healthScore}%
               </p>
             </div>
-            <div className="relative w-14 h-14">
-              <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
-              <div className={`absolute inset-2 rounded-full ${getScoreBg(report.healthScore)} animate-pulse shadow-lg`} />
-            </div>
+            <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+              <circle cx="28" cy="28" r="22" fill="none" stroke="#1e293b" strokeWidth="5" />
+              <circle
+                cx="28" cy="28" r="22" fill="none"
+                stroke={report.healthScore >= 80 ? '#10b981' : report.healthScore >= 50 ? '#f59e0b' : '#f43f5e'}
+                strokeWidth="5"
+                strokeLinecap="round"
+                strokeDasharray={`${(report.healthScore / 100) * 138.2} 138.2`}
+                transform="rotate(-90 28 28)"
+              />
+            </svg>
           </div>
         </div>
       </section>
@@ -167,10 +173,9 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
         {/* Condition */}
         <section className={S.card}>
           <p className={`${S.label} mb-3`} style={body}>Current condition</p>
-          {/* Condition value: condensed italic is fine here — it's a single status word */}
           <p
-            className={`text-4xl sm:text-5xl font-black uppercase italic mb-4 ${getConditionColor(report.condition)}`}
-            style={display}
+            className={`text-4xl sm:text-5xl font-black uppercase mb-4 ${getConditionColor(report.condition)}`}
+            style={body}
           >
             {report.condition}
           </p>

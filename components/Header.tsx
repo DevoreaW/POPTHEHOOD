@@ -28,22 +28,6 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
         {/* ── Right side ── */}
         <div className="flex items-center gap-3 flex-shrink-0">
 
-          {/* System status */}
-          <div className="hidden sm:flex flex-col items-end mr-1" aria-hidden="true">
-            <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.15em]">
-              System Status
-            </span>
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-              </span>
-              <span className="text-[11px] font-black text-emerald-500 uppercase tracking-wide">
-                Online
-              </span>
-            </div>
-          </div>
-
           {/* Auth */}
           {isLoaded && (
             <>
@@ -53,18 +37,18 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
                 <nav aria-label="Authentication" className="flex items-center gap-2 whitespace-nowrap">
                   <SignInButton mode="modal">
                     <button
-                      className="text-[11px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors whitespace-nowrap px-2 py-1"
+                      className="text-sm font-medium text-slate-400 hover:text-white transition-colors whitespace-nowrap px-3 py-1.5"
                       aria-label="Sign in to your account"
                     >
-                      Sign In
+                      Sign in
                     </button>
                   </SignInButton>
                   <SignUpButton mode="modal">
                     <button
-                      className="text-[11px] font-bold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-4 py-2 rounded-full uppercase tracking-widest transition-all whitespace-nowrap"
+                      className="text-sm font-semibold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-4 py-2 rounded-xl transition-all whitespace-nowrap"
                       aria-label="Create a new account"
                     >
-                      Sign Up
+                      Sign up
                     </button>
                   </SignUpButton>
                 </nav>

@@ -359,11 +359,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
       {/* ── Additional Context ───────────────────────────────────────────── */}
       <section className={S.card}>
-        <SectionHead
-          title="Additional Context"
-          accent="text-slate-400 bg-slate-500/10 border-slate-500/20"
-          icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-        />
+        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-5" style={body}>Additional Context</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div>
             <p className={`${S.fieldLabel} mb-2`} style={body}>Known issues</p>
@@ -382,10 +378,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
       {/* ── Follow-up questions ──────────────────────────────────────────── */}
       <section className={S.card}>
-        <SectionHead
-          title="Narrow It Down"
-          icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-        />
+        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-2" style={body}>Narrow It Down</p>
         <p className="text-xs text-slate-600 mb-4" style={body}>Tap a question, answer it, and the AI will respond based on what you say.</p>
         <div className="flex flex-col gap-3">
           {report.followUpQuestions.map((q, i) => {
@@ -457,8 +450,8 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <button
           aria-label="Start a new diagnostic session"
           onClick={onReset}
-          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-12 py-5 rounded-full font-black transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
-          style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 20, letterSpacing: '0.04em', fontStyle: 'normal' }}
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
+          style={{ fontFamily: "'Open Sans', sans-serif", fontStyle: 'normal' }}
         >
           Start New Diagnostic
         </button>
