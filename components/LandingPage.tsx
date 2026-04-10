@@ -42,12 +42,37 @@ const GlobalStyles = () => (
   <style>{`
     .pth-landing * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .pth-hero-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .pth-hero-grid  { display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; align-items: center; }
     .pth-steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .pth-feat-grid  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .pth-feat-grid  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .pth-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+
+    .pth-feat-hero {
+      display: flex; gap: 32px; align-items: flex-start;
+      background: rgba(249,115,22,0.05);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 20px; padding: 36px 40px; margin-bottom: 16px;
+    }
+    .pth-feat-hero-icon {
+      width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
+      background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.25);
+      display: flex; align-items: center; justify-content: center;
+    }
     .pth-footer-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .pth-cta-row    { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+    @keyframes pthBlurFadeIn {
+      from { opacity: 0; filter: blur(10px); transform: translateY(10px); }
+      to   { opacity: 1; filter: blur(0);    transform: translateY(0);    }
+    }
+    .pth-blur-fade { opacity: 0; animation: pthBlurFadeIn 0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .pth-blur-fade-1 { animation-delay: 0.05s; }
+    .pth-blur-fade-2 { animation-delay: 0.18s; }
+    .pth-blur-fade-3 { animation-delay: 0.32s; }
+    .pth-blur-fade-4 { animation-delay: 0.48s; }
+    @media (prefers-reduced-motion: reduce) {
+      .pth-blur-fade { animation: none; opacity: 1; filter: none; transform: none; }
+    }
     .pth-nav-inner  { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 40px; max-width: 1200px; margin: 0 auto; }
 
     .pth-hero-pad  { padding: 104px 40px 80px; max-width: 1200px; margin: 0 auto; }
@@ -92,7 +117,8 @@ const GlobalStyles = () => (
 
     @media (max-width: 768px) {
       .pth-steps-grid { grid-template-columns: 1fr; gap: 16px; }
-      .pth-feat-grid  { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .pth-feat-grid  { grid-template-columns: 1fr; gap: 16px; }
+      .pth-feat-hero  { flex-direction: column; gap: 20px; padding: 28px 24px; }
       .pth-stats-grid { grid-template-columns: 1fr; }
       .pth-sec-pad    { padding: 64px 24px; }
       .pth-nav-inner  { padding: 0 20px; }
@@ -104,8 +130,8 @@ const GlobalStyles = () => (
       .pth-stat-item:last-child { border-bottom: none; }
     }
 
-    @media (max-width: 480px) {
-      .pth-feat-grid { grid-template-columns: 1fr; }
+    @media (max-width: 960px) {
+      .pth-feat-grid { grid-template-columns: repeat(2, 1fr); }
     }
   `}</style>
 );
@@ -154,18 +180,12 @@ const LightningIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-const StepsIcon = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-  </svg>
-);
 
 /* ─── Data ────────────────────────────────────────────────────────────────── */
 const STATS = [
-  { value: 'No Scanner',  label: 'Required — just describe your symptoms'     },
-  { value: 'Any Device',  label: 'Works on your phone, tablet, or desktop'   },
-  { value: 'Free',        label: 'To get started — no credit card needed'    },
+  { value: '< 30 sec',  label: 'Average diagnosis time'            },
+  { value: '10,000+',   label: 'Vehicle models supported'          },
+  { value: '$0',        label: 'To get started — no card required' },
 ];
 
 const HOW_IT_WORKS = [
@@ -249,21 +269,6 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
       <nav className="pth-nav-inner" aria-label="Main navigation">
         <LogoMark compact />
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-          {/* Online status — hidden on mobile */}
-          <div className="pth-nav-status" style={{
-            display: 'flex', alignItems: 'center', gap: 8, marginRight: 12,
-            background: C.greenBg, border: '1px solid rgba(16,185,129,0.2)',
-            borderRadius: 9999, padding: '5px 12px',
-          }}>
-            <span style={{ position: 'relative', width: 8, height: 8, display: 'inline-block' }}>
-              <span className="pth-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: C.green }} />
-              <span style={{ position: 'absolute', inset: 1, borderRadius: '50%', background: C.green }} />
-            </span>
-            <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: C.green, letterSpacing: '0.04em' }}>
-              All systems online
-            </span>
-          </div>
-
           {isSignedIn ? (
             <UserButton appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
           ) : (
@@ -345,9 +350,11 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
       }} />
       {/* Dot grid texture */}
       <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.02,
-        backgroundImage: `radial-gradient(${C.textMuted} 1px, transparent 1px)`,
-        backgroundSize: '28px 28px',
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        backgroundImage: `radial-gradient(rgba(148,163,184,0.18) 1px, transparent 1px)`,
+        backgroundSize: '32px 32px',
+        WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 0%, black 40%, transparent 100%)',
+        maskImage: 'radial-gradient(ellipse 80% 80% at 50% 0%, black 40%, transparent 100%)',
       }} />
 
       <div ref={ref} className="pth-hero-pad">
@@ -356,7 +363,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
           {/* Left — headline & CTA */}
           <div>
             {/* Badge */}
-            <div style={{
+            <div className="pth-blur-fade pth-blur-fade-1" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               background: C.orangeBg, border: `1px solid ${C.orangeBorder}`,
               padding: '6px 14px', borderRadius: 9999, marginBottom: 28,
@@ -374,7 +381,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             </div>
 
             {/* Hero headline — Barlow Condensed Italic 900 */}
-            <h1 style={{
+            <h1 className="pth-blur-fade pth-blur-fade-2" style={{
               fontFamily: FC, fontWeight: 800,
               fontSize: 'clamp(52px, 7vw, 92px)',
               lineHeight: 0.92, letterSpacing: '-0.01em',
@@ -391,14 +398,14 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
               {' '}the shop does.
             </h1>
 
-            <p style={{
+            <p className="pth-blur-fade pth-blur-fade-3" style={{
               fontFamily: F, fontSize: 17, lineHeight: 1.75,
               color: C.textMuted, maxWidth: 430, marginBottom: 40,
             }}>
-              Describe your symptoms and get an instant AI diagnosis — with ranked causes, repair costs, and nearby mechanic options. No scanner needed.
+              Describe what's wrong and get a mechanic-level breakdown in seconds — no scanner, no shop visit, no guesswork.
             </p>
 
-            <div className="pth-cta-row">
+            <div className="pth-cta-row pth-blur-fade pth-blur-fade-4">
               {/* Primary CTA — condensed italic */}
               <button
                 onClick={onCTAClick}
@@ -458,7 +465,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
                 fontFamily: F, fontSize: 11, fontWeight: 700,
                 color: C.orange, letterSpacing: '0.08em', textTransform: 'uppercase',
               }}>
-                2012 Acura TLX
+                2012 Acura TL
               </div>
               {/* Drive with caution badge */}
               <div style={{
@@ -607,8 +614,9 @@ const StatsStrip: React.FC = () => (
 const HowItWorksSection: React.FC = () => (
   <section id="how-it-works" className="pth-sec-pad" style={{ background: C.base, borderBottom: `1px solid ${C.border}` }}>
     <div className="pth-sec-inner">
-      <SectionHead icon={<StepsIcon />} title="How it works" />
-
+      <div style={{ fontFamily: F, fontWeight: 700, fontSize: 11, color: C.textDim, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 20 }}>
+        How it works
+      </div>
       <h2 style={{
         fontFamily: F, fontWeight: 700, fontSize: 'clamp(28px, 4vw, 44px)',
         color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em',
@@ -646,47 +654,69 @@ const HowItWorksSection: React.FC = () => (
 );
 
 /* ─── Features ────────────────────────────────────────────────────────────── */
-const FeaturesSection: React.FC = () => (
-  <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
-    <div className="pth-sec-inner">
-      <SectionHead icon={<LightningIcon />} title="Features" />
+const FeaturesSection: React.FC = () => {
+  const [hero, ...rest] = FEATURES;
+  return (
+    <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
+      <div className="pth-sec-inner">
+        <SectionHead icon={<LightningIcon />} title="Features" />
 
-      <h2 style={{
-        fontFamily: F, fontWeight: 700, fontSize: 'clamp(28px, 4vw, 44px)',
-        color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em',
-        marginBottom: 48, textTransform: 'uppercase',
-      }}>
-        Everything you need.
-      </h2>
+        <h2 style={{
+          fontFamily: F, fontWeight: 700, fontSize: 'clamp(28px, 4vw, 44px)',
+          color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em',
+          marginBottom: 48, textTransform: 'uppercase',
+        }}>
+          Built for real car problems.
+        </h2>
 
-      <div className="pth-feat-grid">
-        {FEATURES.map(({ icon, title, desc }, i) => (
-          <div key={i} className="pth-feat-card">
-            {/* Icon badge */}
-            <div style={{
-              width: 44, height: 44, borderRadius: 12, marginBottom: 20,
-              background: C.orangeBg, border: `1px solid ${C.orangeBorder}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: C.orange,
-            }}>
-              {icon}
-            </div>
+        {/* Hero feature — AI Diagnosis */}
+        <div className="pth-feat-hero">
+          <div className="pth-feat-hero-icon" style={{ color: C.orange }}>
+            <DiagnoseIcon size={28} />
+          </div>
+          <div>
             <h3 style={{
-              fontFamily: F, fontWeight: 700, fontSize: 15,
-              color: C.text, marginBottom: 8, textTransform: 'uppercase',
-              letterSpacing: '0.03em',
+              fontFamily: F, fontWeight: 700, fontSize: 20,
+              color: C.text, marginBottom: 10, textTransform: 'uppercase',
+              letterSpacing: '0.02em',
             }}>
-              {title}
+              {hero.title}
             </h3>
-            <p style={{ fontFamily: F, fontSize: 13, color: C.textMuted, lineHeight: 1.7 }}>
-              {desc}
+            <p style={{ fontFamily: F, fontSize: 15, color: C.textMuted, lineHeight: 1.75, maxWidth: 560 }}>
+              {hero.desc}
             </p>
           </div>
-        ))}
+        </div>
+
+        {/* Supporting features */}
+        <div className="pth-feat-grid">
+          {rest.map(({ icon, title, desc }, i) => (
+            <div key={i} className="pth-feat-card">
+              <div style={{
+                width: 40, height: 40, borderRadius: 10, marginBottom: 18,
+                background: C.orangeBg, border: `1px solid ${C.orangeBorder}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: C.orange,
+              }}>
+                {icon}
+              </div>
+              <h3 style={{
+                fontFamily: F, fontWeight: 700, fontSize: 14,
+                color: C.text, marginBottom: 8, textTransform: 'uppercase',
+                letterSpacing: '0.03em',
+              }}>
+                {title}
+              </h3>
+              <p style={{ fontFamily: F, fontSize: 13, color: C.textMuted, lineHeight: 1.7 }}>
+                {desc}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 /* ─── Bottom CTA ──────────────────────────────────────────────────────────── */
 const BottomCTA: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
@@ -778,7 +808,7 @@ const Footer: React.FC = () => (
           ))}
         </div>
         <div style={{ fontFamily: F, fontSize: 12, color: C.textDim }}>
-          © 2025 PopTheHood. All rights reserved.
+          © 2026 PopTheHood. All rights reserved.
         </div>
       </div>
     </div>
