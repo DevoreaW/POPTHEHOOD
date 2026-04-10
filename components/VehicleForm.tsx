@@ -77,8 +77,7 @@ const CAR_MODELS: Record<string, string[]> = {
 const YEARS = Array.from({ length: 2026 - 1990 + 1 }, (_, i) => (2026 - i).toString());
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
-const display: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
-const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
+const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
@@ -716,7 +715,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className={`not-italic w-full py-3 sm:py-5 rounded-full flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950
+          className={`not-italic w-full py-3 rounded-xl flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950
             ${isLoading
               ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'

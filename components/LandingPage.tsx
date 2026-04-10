@@ -297,10 +297,10 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             style={{
               background: `linear-gradient(135deg, ${C.orange}, ${C.orangeRed})`,
               color: '#fff', border: 'none', cursor: 'pointer',
-              fontFamily: FC, fontWeight: 800,
-              fontSize: 15, letterSpacing: '0.02em',
-              padding: '9px 22px', borderRadius: 9999,
-              boxShadow: '0 2px 16px rgba(249,115,22,0.3)',
+              fontFamily: FC, fontWeight: 600,
+              fontSize: 14, letterSpacing: '0.01em',
+              padding: '8px 18px', borderRadius: 10,
+              boxShadow: '0 2px 12px rgba(249,115,22,0.25)',
               transition: 'opacity 0.2s, transform 0.15s',
               whiteSpace: 'nowrap', flexShrink: 0,
             }}
@@ -414,10 +414,10 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
                   display: 'inline-flex', alignItems: 'center', gap: 10,
                   background: `linear-gradient(135deg, ${C.orange}, ${C.orangeRed})`,
                   color: '#fff', border: 'none', cursor: 'pointer',
-                  fontFamily: FC, fontWeight: 800,
-                  fontSize: 20, letterSpacing: '0.01em',
-                  padding: '14px 32px', borderRadius: 9999,
-                  boxShadow: '0 4px 28px rgba(249,115,22,0.4)',
+                  fontFamily: FC, fontWeight: 700,
+                  fontSize: 15, letterSpacing: '0.01em',
+                  padding: '10px 24px', borderRadius: 12,
+                  boxShadow: '0 2px 16px rgba(249,115,22,0.35)',
                   transition: 'opacity 0.2s, transform 0.15s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
@@ -435,7 +435,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
                   background: 'transparent', color: C.textMuted,
                   border: `1px solid ${C.border}`,
                   fontFamily: F, fontWeight: 600, fontSize: 14,
-                  padding: '13px 24px', borderRadius: 9999,
+                  padding: '9px 20px', borderRadius: 12,
                   textDecoration: 'none', transition: 'color 0.2s, border-color 0.2s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.color = C.text; e.currentTarget.style.borderColor = '#334155'; }}
@@ -763,10 +763,10 @@ const BottomCTA: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
           display: 'inline-flex', alignItems: 'center', gap: 12,
           background: `linear-gradient(135deg, ${C.orange}, ${C.orangeRed})`,
           color: '#fff', border: 'none', cursor: 'pointer',
-          fontFamily: FC, fontWeight: 800,
-          fontSize: 22, letterSpacing: '0.01em',
-          padding: '16px 40px', borderRadius: 9999,
-          boxShadow: '0 6px 36px rgba(249,115,22,0.4)',
+          fontFamily: FC, fontWeight: 700,
+          fontSize: 15, letterSpacing: '0.01em',
+          padding: '10px 28px', borderRadius: 12,
+          boxShadow: '0 2px 16px rgba(249,115,22,0.35)',
           transition: 'opacity 0.2s, transform 0.15s',
         }}
         onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
