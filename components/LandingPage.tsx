@@ -132,6 +132,7 @@ const GlobalStyles = () => (
 
     @media (max-width: 960px) {
       .pth-feat-grid { grid-template-columns: repeat(2, 1fr); }
+      .pth-feat-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
     }
   `}</style>
 );
