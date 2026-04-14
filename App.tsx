@@ -124,6 +124,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
       setTireReport(null);
       setServiceReport(null);
       saveToHistory(result);
+      window.history.pushState({ view: 'report' }, '');
       announce('Diagnosis complete. Results are now available.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
@@ -143,6 +144,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
       setReport(null);
       setServiceReport(null);
       saveToHistory(result);
+      window.history.pushState({ view: 'report' }, '');
       announce('Tire scan complete. Results are now available.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
@@ -167,6 +169,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
             setReport(null);
             setTireReport(null);
             setIsLoading(false);
+            window.history.pushState({ view: 'report' }, '');
             announce(`Found nearby ${type === 'mechanic' ? 'mechanics' : 'towing services'}. Results are now available.`);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           } catch (err: any) {
@@ -212,13 +215,30 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
   };
 
   const handleLogoClick = () => {
-    setReport(null);
-    setTireReport(null);
-    setServiceReport(null);
-    setError(null);
-    setShowLanding(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    resetDiagnosis();
   };
+
+  // ── Browser back button support ───────────────────────────────────────────
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state?.view === 'form') {
+        setReport(null);
+        setTireReport(null);
+        setServiceReport(null);
+        setError(null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setReport(null);
+        setTireReport(null);
+        setServiceReport(null);
+        setError(null);
+        setShowLanding(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // ── Landing page ──────────────────────────────────────────────────────────
   if (showLanding) {
@@ -228,7 +248,10 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
           {announcement}
         </div>
         {!consentGiven && <ConsentBanner onAccept={() => setConsentGiven(true)} />}
-        <LandingPage onEnterApp={() => setShowLanding(false)} />
+        <LandingPage onEnterApp={() => {
+          window.history.pushState({ view: 'form' }, '');
+          setShowLanding(false);
+        }} />
       </>
     );
   }
