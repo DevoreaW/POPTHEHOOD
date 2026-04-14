@@ -18,7 +18,6 @@ let tokenExpiry = 0;
 
 async function getToken() {
   if (cachedToken && Date.now() < tokenExpiry) return cachedToken;
-
   const res = await fetch('https://carapi.app/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -27,12 +26,32 @@ async function getToken() {
       api_secret: process.env.CARAPI_APP_SECRET,
     }),
   });
-
   if (!res.ok) throw new Error('CarAPI auth failed');
   const token = await res.text();
   cachedToken = token.replace(/"/g, '').trim();
-  tokenExpiry = Date.now() + 23 * 60 * 60 * 1000; // 23 hours
+  tokenExpiry = Date.now() + 23 * 60 * 60 * 1000;
   return cachedToken;
+}
+
+// Fetch all pages of trims/v2 for a given make + optional year
+async function fetchAllTrims(token, make, year) {
+  const results = [];
+  let page = 1;
+  while (true) {
+    const url = new URL('https://carapi.app/api/trims/v2');
+    url.searchParams.set('make', make);
+    if (year) url.searchParams.set('year', year);
+    url.searchParams.set('limit', '200');
+    url.searchParams.set('page', String(page));
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!r.ok) break;
+    const data = await r.json();
+    if (!data.data?.length) break;
+    results.push(...data.data);
+    if (page >= data.collection.pages) break;
+    page++;
+  }
+  return results;
 }
 
 export default async function handler(req, res) {
@@ -45,41 +64,43 @@ export default async function handler(req, res) {
   if (!type || !['models', 'trims'].includes(type)) {
     return res.status(400).json({ error: 'type must be "models" or "trims"' });
   }
-  if (type === 'models' && !make) return res.status(400).json({ error: 'make required' });
-  if (type === 'trims' && (!make || !model)) return res.status(400).json({ error: 'make and model required' });
+  if (!make) return res.status(400).json({ error: 'make required' });
+  if (type === 'trims' && !model) return res.status(400).json({ error: 'model required for trims' });
 
   try {
     const token = await getToken();
+    const allTrims = await fetchAllTrims(token, make, year);
 
     if (type === 'models') {
-      const url = new URL('https://carapi.app/api/models');
-      url.searchParams.set('make', make);
-      url.searchParams.set('limit', '100');
-
-      const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-      if (!r.ok) throw new Error(`CarAPI models failed: ${r.status}`);
-      const data = await r.json();
-
+      // Use series if present, otherwise fall back to model name
       const names = [...new Set(
-        (data.data || []).map(m => m.name).filter(Boolean)
+        allTrims.map(t => t.series || t.model).filter(Boolean)
       )].sort();
       return res.status(200).json({ models: names });
     }
 
     if (type === 'trims') {
-      const url = new URL('https://carapi.app/api/trims');
-      url.searchParams.set('make', make);
-      url.searchParams.set('model', model);
-      if (year) url.searchParams.set('year', year);
-      url.searchParams.set('limit', '200');
+      // Match trims where series === model (BMW-style) OR model === model (Honda-style)
+      const matched = allTrims.filter(t =>
+        (t.series && t.series === model) || (!t.series && t.model === model)
+      );
 
-      const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-      if (!r.ok) throw new Error(`CarAPI trims failed: ${r.status}`);
-      const data = await r.json();
+      let names;
+      if (matched.length && matched[0].series) {
+        // Series-based (BMW): return model names, append submodel if not Base
+        names = [...new Set(
+          matched.map(t => {
+            const sub = t.submodel && t.submodel !== 'Base' ? ` ${t.submodel}` : '';
+            return `${t.model}${sub}`;
+          })
+        )].sort();
+      } else {
+        // Standard (Honda): return trim/submodel names
+        names = [...new Set(
+          matched.map(t => t.trim || t.submodel).filter(Boolean)
+        )].sort();
+      }
 
-      const names = [...new Set(
-        (data.data || []).map(t => t.name).filter(Boolean)
-      )].sort();
       return res.status(200).json({ trims: names });
     }
   } catch (err) {
