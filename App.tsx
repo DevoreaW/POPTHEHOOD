@@ -374,7 +374,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
       {/* Footer */}
       <footer className="border-t border-[#4a4a52]/60 py-8 mt-20" style={{ background: '#2a2a2e' }}>
         <div className="max-w-lg md:max-w-4xl mx-auto px-3 sm:px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="text-left">
+          <div className="text-left md:pl-0" style={{ paddingLeft: 45 }}>
             <p className="text-slate-400 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
               © 2026 POPTHEHOOD. All rights reserved.
             </p>
