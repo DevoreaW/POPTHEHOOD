@@ -88,7 +88,7 @@ const GlobalStyles = () => (
     }
     .pth-step-card:hover {
       border-color: rgba(249,115,22,0.35);
-      box-shadow: 0 0 0 1px rgba(249,115,22,0.1), 0 12px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.1), 0 12px 40px rgba(0,0,0,0.12);
     }
 
     .pth-feat-card {
@@ -101,7 +101,7 @@ const GlobalStyles = () => (
     .pth-feat-card:hover {
       border-color: rgba(249,115,22,0.3);
       transform: translateY(-3px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
     }
 
     @keyframes pth-ping {
@@ -352,7 +352,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
       {/* Dot grid texture */}
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: `radial-gradient(rgba(148,163,184,0.18) 1px, transparent 1px)`,
+        backgroundImage: `radial-gradient(rgba(74,74,82,0.2) 1px, transparent 1px)`,
         backgroundSize: '32px 32px',
         WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 0%, black 40%, transparent 100%)',
         maskImage: 'radial-gradient(ellipse 80% 80% at 50% 0%, black 40%, transparent 100%)',
@@ -439,7 +439,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
                   padding: '9px 20px', borderRadius: 12,
                   textDecoration: 'none', transition: 'color 0.2s, border-color 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color = C.text; e.currentTarget.style.borderColor = '#334155'; }}
+                onMouseEnter={e => { e.currentTarget.style.color = C.text; e.currentTarget.style.borderColor = C.textDim; }}
                 onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.borderColor = C.border; }}
               >
                 How it works
@@ -452,7 +452,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
             background: C.card,
             border: `1px solid ${C.border}`,
             borderRadius: 20, padding: 24,
-            boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03)',
+            boxShadow: `0 32px 80px rgba(0,0,0,0.2), 0 0 0 1px ${C.border}`,
           }}>
             {/* Card header row */}
             <div style={{
