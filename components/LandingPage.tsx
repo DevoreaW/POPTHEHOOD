@@ -388,7 +388,7 @@ const HeroSection: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
               lineHeight: 0.92, letterSpacing: '-0.01em',
               color: C.text, marginBottom: 28,
             }}>
-              Know what's wrong<br />
+              Know what's wrong{' '}
               <span style={{
                 background: `linear-gradient(135deg, ${C.orange}, ${C.orangeRed})`,
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
@@ -619,9 +619,9 @@ const HowItWorksSection: React.FC = () => (
         How it works
       </div>
       <h2 style={{
-        fontFamily: F, fontWeight: 700, fontSize: 'clamp(28px, 4vw, 44px)',
+        fontFamily: F, fontWeight: 700, fontSize: 'clamp(20px, 4vw, 44px)',
         color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em',
-        marginBottom: 48, textTransform: 'uppercase',
+        marginBottom: 48, textTransform: 'uppercase', whiteSpace: 'nowrap',
       }}>
         A diagnosis in three steps.
       </h2>
@@ -663,9 +663,9 @@ const FeaturesSection: React.FC = () => {
         <SectionHead icon={<LightningIcon />} title="Features" />
 
         <h2 style={{
-          fontFamily: F, fontWeight: 700, fontSize: 'clamp(28px, 4vw, 44px)',
+          fontFamily: F, fontWeight: 700, fontSize: 'clamp(20px, 4vw, 44px)',
           color: C.text, lineHeight: 1.1, letterSpacing: '-0.02em',
-          marginBottom: 48, textTransform: 'uppercase',
+          marginBottom: 48, textTransform: 'uppercase', whiteSpace: 'nowrap',
         }}>
           Built for real car problems.
         </h2>
