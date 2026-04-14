@@ -20,9 +20,9 @@ const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:    'bg-[#e2e2e5] rounded-2xl p-5 sm:p-8 border border-[#cdcdd2]/60',
+  card:    'bg-[#3a3a40] rounded-2xl p-5 sm:p-8 border border-[#4a4a52]/60',
   secIcon: 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secDiv:  'flex-1 h-px bg-[#cdcdd2]/80',
+  secDiv:  'flex-1 h-px bg-[#4a4a52]/80',
 };
 
 /* ─── Section header ──────────────────────────────────────────────────────── */
@@ -34,7 +34,7 @@ const SectionHead: React.FC<{
   <div className="flex items-center gap-3 mb-6 overflow-hidden">
     <div className={`${S.secIcon} border ${accent} flex-shrink-0`}>{icon}</div>
     <span
-      className="font-bold text-[#111113] flex-shrink-0 tracking-wide uppercase"
+      className="font-bold text-[#f1f5f9] flex-shrink-0 tracking-wide uppercase"
       style={{ ...body, fontSize: 'clamp(13px, 3.5vw, 16px)' }}
     >
       {title}
@@ -71,10 +71,10 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
           </div>
           <div>
             {/* Title: regular Barlow bold */}
-            <h2 className="text-xl sm:text-2xl font-bold text-[#111113]" style={body}>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#f1f5f9]" style={body}>
               {isTowing ? 'Emergency Towing' : 'Nearby Mechanics'}
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5" style={body}>
+            <p className="text-xs text-slate-400 mt-0.5" style={body}>
               Local services near you
             </p>
           </div>
@@ -93,7 +93,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
         />
         <div className="border-l-2 border-orange-500/30 pl-5">
           <p
-            className={`text-slate-500 text-sm sm:text-base leading-relaxed italic transition-all duration-300 ${!isExpanded && shouldTruncate ? 'line-clamp-3' : ''}`}
+            className={`text-slate-400 text-sm sm:text-base leading-relaxed italic transition-all duration-300 ${!isExpanded && shouldTruncate ? 'line-clamp-3' : ''}`}
             style={body}
           >
             "{report.text}"
@@ -131,12 +131,12 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open ${place.title} in Google Maps`}
-                className="group flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-5 bg-black/[0.06] border border-[#cdcdd2]/60 rounded-xl hover:border-orange-500/30 hover:bg-[#cdcdd2]/60 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6]"
+                className="group flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-5 bg-black/40 border border-[#4a4a52]/60 rounded-xl hover:border-orange-500/30 hover:bg-[#4a4a52]/60 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#2a2a2e]"
               >
                 {/* Rank + info */}
                 <div className="flex items-start gap-4">
                   <span
-                    className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 text-[#111113] text-sm font-bold flex items-center justify-center shrink-0 mt-0.5"
+                    className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 text-[#f1f5f9] text-sm font-bold flex items-center justify-center shrink-0 mt-0.5"
                     style={body}
                   >
                     {idx + 1}
@@ -144,13 +144,13 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
                   <div className="min-w-0">
                     {/* Place name: regular semibold — much easier to read */}
                     <h3
-                      className="text-sm sm:text-base font-semibold text-[#111113] group-hover:text-orange-400 transition-colors mb-1"
+                      className="text-sm sm:text-base font-semibold text-[#f1f5f9] group-hover:text-orange-400 transition-colors mb-1"
                       style={body}
                     >
                       {place.title}
                     </h3>
                     {place.snippet && (
-                      <p className="text-xs text-slate-500 italic line-clamp-2" style={body}>
+                      <p className="text-xs text-slate-400 italic line-clamp-2" style={body}>
                         "{place.snippet}"
                       </p>
                     )}
@@ -159,7 +159,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
 
                 {/* Maps CTA */}
                 <div
-                  className="flex items-center gap-2 bg-black/[0.06] border border-[#cdcdd2] group-hover:border-orange-500/30 group-hover:bg-orange-500/8 text-slate-500 group-hover:text-orange-400 px-4 py-2.5 rounded-xl text-xs font-medium shrink-0 transition-all self-start md:self-auto"
+                  className="flex items-center gap-2 bg-black/40 border border-[#4a4a52] group-hover:border-orange-500/30 group-hover:bg-orange-500/8 text-slate-400 group-hover:text-orange-400 px-4 py-2.5 rounded-xl text-xs font-medium shrink-0 transition-all self-start md:self-auto"
                   style={body}
                 >
                   Open in Maps
@@ -171,7 +171,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 border-2 border-dashed border-[#cdcdd2]/60 rounded-xl">
+          <div className="text-center py-12 border-2 border-dashed border-[#4a4a52]/60 rounded-xl">
             <p className="text-sm text-slate-400" style={body}>
               No verified map results found in this area.
             </p>
@@ -184,7 +184,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
         <button
           aria-label="Return to dashboard"
           onClick={onReset}
-          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#111113] px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6]"
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#f1f5f9] px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#2a2a2e]"
           style={{ fontFamily: "'Open Sans', sans-serif", fontStyle: 'normal' }}
         >
           New Search

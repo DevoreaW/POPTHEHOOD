@@ -258,7 +258,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
 
   // ── Main app ──────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#f4f4f6' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#2a2a2e' }}>
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
       </div>
@@ -317,13 +317,13 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
           >
             <div
               aria-hidden="true"
-              className="w-16 h-16 rounded-full border-4 border-[#cdcdd2] border-t-orange-500 animate-spin"
+              className="w-16 h-16 rounded-full border-4 border-[#4a4a52] border-t-orange-500 animate-spin"
             />
             <div className="text-center">
-              <h3 className="text-lg font-bold text-[#111113] mb-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+              <h3 className="text-lg font-bold text-[#f1f5f9] mb-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                 Running analysis…
               </h3>
-              <p className="text-slate-500 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+              <p className="text-slate-400 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                 Our AI is reviewing your vehicle information.
               </p>
             </div>
@@ -350,7 +350,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
                 {!isSignedIn && (
                   <div className="max-w-lg md:max-w-4xl mx-auto px-4 mb-6">
                     <div className="flex items-center justify-between gap-4 bg-orange-500/5 border border-orange-500/20 rounded-xl px-5 py-3.5">
-                      <p className="text-sm text-slate-500" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+                      <p className="text-sm text-slate-400" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                         <span className="font-semibold text-orange-400">Save your history permanently.</span> Sign up free — your diagnoses won't disappear when you clear your browser.
                       </p>
                     </div>
@@ -372,10 +372,10 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#cdcdd2]/60 py-8 px-4 mt-20" style={{ background: '#f4f4f6' }}>
+      <footer className="border-t border-[#4a4a52]/60 py-8 px-4 mt-20" style={{ background: '#2a2a2e' }}>
         <div className="max-w-lg md:max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
-            <p className="text-slate-500 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+            <p className="text-slate-400 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
               © 2026 POPTHEHOOD. All rights reserved.
             </p>
             <p className="text-slate-400 text-xs mt-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
@@ -384,8 +384,8 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
           </div>
           <nav aria-label="Footer navigation">
             <div className="flex items-center gap-6">
-              <a href="/privacy" className="text-slate-500 hover:text-slate-500 text-sm transition-colors" style={{ fontFamily: "'Open Sans', sans-serif" }}>Privacy</a>
-              <a href="/terms"   className="text-slate-500 hover:text-slate-500 text-sm transition-colors" style={{ fontFamily: "'Open Sans', sans-serif" }}>Terms</a>
+              <a href="/privacy" className="text-slate-400 hover:text-slate-400 text-sm transition-colors" style={{ fontFamily: "'Open Sans', sans-serif" }}>Privacy</a>
+              <a href="/terms"   className="text-slate-400 hover:text-slate-400 text-sm transition-colors" style={{ fontFamily: "'Open Sans', sans-serif" }}>Terms</a>
             </div>
           </nav>
         </div>
