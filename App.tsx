@@ -235,7 +235,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
 
   // ── Main app ──────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#080f0b' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#0e0e10' }}>
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
       </div>
@@ -349,7 +349,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/60 py-8 px-4 mt-20" style={{ background: '#080f0b' }}>
+      <footer className="border-t border-slate-800/60 py-8 px-4 mt-20" style={{ background: '#0e0e10' }}>
         <div className="max-w-lg md:max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <p className="text-slate-600 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
