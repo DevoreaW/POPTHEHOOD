@@ -11,7 +11,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
 
   return (
     <header
-      className="bg-[#e8e6e3] text-[#1a1a1c] py-4 px-4 sticky top-0 z-50 border-b border-[#d4d1cd]/60"
+      className="bg-[#e2e2e5] text-[#111113] py-4 px-4 sticky top-0 z-50 border-b border-[#cdcdd2]/60"
       role="banner"
     >
       <div className="max-w-lg md:max-w-4xl mx-auto flex items-center justify-between">
@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
         {/* ── Logo — clickable, goes back to landing ── */}
         <button
           onClick={onLogoClick}
-          className="flex items-center gap-3 bg-transparent border-none cursor-pointer p-0 text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] rounded-xl group"
+          className="flex items-center gap-3 bg-transparent border-none cursor-pointer p-0 text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6] rounded-xl group"
           aria-label="Go to home screen"
         >
           <LogoMark compact />
@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
                 <nav aria-label="Authentication" className="flex items-center gap-2 whitespace-nowrap">
                   <SignInButton mode="modal">
                     <button
-                      className="text-sm font-medium text-slate-500 hover:text-[#1a1a1c] transition-colors whitespace-nowrap px-3 py-1.5"
+                      className="text-sm font-medium text-slate-500 hover:text-[#111113] transition-colors whitespace-nowrap px-3 py-1.5"
                       aria-label="Sign in to your account"
                     >
                       Sign in
@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
                   </SignInButton>
                   <SignUpButton mode="modal">
                     <button
-                      className="text-sm font-semibold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#1a1a1c] px-4 py-2 rounded-xl transition-all whitespace-nowrap"
+                      className="text-sm font-semibold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#111113] px-4 py-2 rounded-xl transition-all whitespace-nowrap"
                       aria-label="Create a new account"
                     >
                       Sign up

@@ -11,16 +11,16 @@ const FontLoader = () => (
 
 /* ─── Design tokens ───────────────────────────────────────────────────────── */
 const C = {
-  base:          '#f5f4f2',
-  surface:       '#edecea',
-  card:          '#e8e6e3',
-  border:        '#d4d1cd',
+  base:          '#f4f4f6',
+  surface:       '#ebebed',
+  card:          '#e2e2e5',
+  border:        '#cdcdd2',
   borderFaint:   'rgba(212,209,205,0.6)',
   orange:        '#f97316',
   orangeRed:     '#dc2626',
   orangeBg:      'rgba(249,115,22,0.08)',
   orangeBorder:  'rgba(249,115,22,0.22)',
-  text:          '#1a1a1c',
+  text:          '#111113',
   textSub:       '#374151',
   textMuted:     '#6b7280',
   textDim:       '#9ca3af',

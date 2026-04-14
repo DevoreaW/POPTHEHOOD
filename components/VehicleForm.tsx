@@ -443,13 +443,13 @@ const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:        'bg-[#e8e6e3] rounded-2xl p-5 sm:p-8 border border-[#d4d1cd]/60',
+  card:        'bg-[#e2e2e5] rounded-2xl p-5 sm:p-8 border border-[#cdcdd2]/60',
   secIcon:     'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
   fieldLabel:  'text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1',
-  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/[0.06] border border-[#d4d1cd] rounded-xl text-[#1a1a1c] font-medium text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
-  inputBase:   'w-full h-12 px-5 bg-black/[0.06] border border-[#d4d1cd] rounded-xl text-[#1a1a1c] font-medium text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-400',
-  toolBtn:     'flex items-center gap-4 px-5 py-4 bg-black/[0.06] border border-[#d4d1cd] rounded-xl transition-all hover:bg-[#d4d1cd]/60 hover:border-orange-500/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] w-full text-left',
-  historyItem: 'flex items-center gap-4 p-4 bg-black/[0.06] border border-[#d4d1cd] rounded-xl hover:bg-[#edecea] hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] w-full',
+  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/[0.06] border border-[#cdcdd2] rounded-xl text-[#111113] font-medium text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
+  inputBase:   'w-full h-12 px-5 bg-black/[0.06] border border-[#cdcdd2] rounded-xl text-[#111113] font-medium text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-400',
+  toolBtn:     'flex items-center gap-4 px-5 py-4 bg-black/[0.06] border border-[#cdcdd2] rounded-xl transition-all hover:bg-[#cdcdd2]/60 hover:border-orange-500/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6] w-full text-left',
+  historyItem: 'flex items-center gap-4 p-4 bg-black/[0.06] border border-[#cdcdd2] rounded-xl hover:bg-[#ebebed] hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6] w-full',
 };
 
 /* ─── Section header ──────────────────────────────────────────────────────── */
@@ -465,12 +465,12 @@ const SectionHead: React.FC<{
     </div>
     {/* Regular Barlow bold — no italic, no condensed — much easier to read */}
     <span
-      className="font-bold text-[#1a1a1c] flex-shrink-0 tracking-wide"
+      className="font-bold text-[#111113] flex-shrink-0 tracking-wide"
       style={{ ...body, fontSize: 'clamp(14px, 3.5vw, 16px)', textTransform: 'uppercase' }}
     >
       {title}
     </span>
-    <div className="flex-1 h-px bg-[#d4d1cd] min-w-0" />
+    <div className="flex-1 h-px bg-[#cdcdd2] min-w-0" />
     {right && <div className="flex-shrink-0 ml-1">{right}</div>}
   </div>
 );
@@ -770,8 +770,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       {/* ── Tire photo tips modal ─────────────────────────────────────────── */}
       {showTireTips && (
         <div className="fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-[#e8e6e3] border border-[#d4d1cd] rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <h3 className="text-[#1a1a1c] font-bold text-lg mb-1" style={body}>Tips for a good scan</h3>
+          <div className="bg-[#e2e2e5] border border-[#cdcdd2] rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <h3 className="text-[#111113] font-bold text-lg mb-1" style={body}>Tips for a good scan</h3>
             <p className="text-slate-500 text-xs mb-5" style={body}>Better photos = more accurate results.</p>
             <ul className="space-y-3 mb-6">
               {[
@@ -782,7 +782,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               ].map(([title, tip]) => (
                 <li key={title} className="flex items-start gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0" />
-                  <span className="text-sm text-slate-500" style={body}><span className="font-semibold text-[#1a1a1c]">{title}:</span> {tip}</span>
+                  <span className="text-sm text-slate-500" style={body}><span className="font-semibold text-[#111113]">{title}:</span> {tip}</span>
                 </li>
               ))}
             </ul>
@@ -790,7 +790,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <button
                 type="button"
                 onClick={() => setShowTireTips(false)}
-                className="flex-1 px-4 py-3 bg-black/[0.04] border border-[#d4d1cd] text-slate-500 rounded-xl text-sm font-semibold"
+                className="flex-1 px-4 py-3 bg-black/[0.04] border border-[#cdcdd2] text-slate-500 rounded-xl text-sm font-semibold"
                 style={body}
               >
                 Cancel
@@ -798,7 +798,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <button
                 type="button"
                 onClick={() => { setShowTireTips(false); setShowCamera(true); }}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-[#1a1a1c] rounded-xl text-sm font-bold"
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-[#111113] rounded-xl text-sm font-bold"
                 style={body}
               >
                 Got it — scan now
@@ -821,7 +821,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-[#1a1a1c]" style={body}>Tire Tread Scan</div>
+              <div className="text-sm font-semibold text-[#111113]" style={body}>Tire Tread Scan</div>
               <div className="text-xs text-slate-500 mt-0.5" style={body}>Upload or photograph your tire for a wear analysis</div>
             </div>
             <ChevronRight />
@@ -835,7 +835,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-[#1a1a1c]" style={body}>Find a Mechanic</div>
+              <div className="text-sm font-semibold text-[#111113]" style={body}>Find a Mechanic</div>
               <div className="text-xs text-slate-500 mt-0.5" style={body}>Nearby rated shops based on your location</div>
             </div>
             <ChevronRight />
@@ -849,7 +849,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-[#1a1a1c]" style={body}>Request Towing</div>
+              <div className="text-sm font-semibold text-[#111113]" style={body}>Request Towing</div>
               <div className="text-xs text-slate-500 mt-0.5" style={body}>Find tow services dispatched to your location</div>
             </div>
             <ChevronRight />
@@ -1050,12 +1050,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   aria-label="Toggle voice input"
                   disabled={isConnecting}
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl border-b-2 font-semibold text-xs transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] whitespace-nowrap
+                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl border-b-2 font-semibold text-xs transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6] whitespace-nowrap
                     ${isRecording
-                      ? 'bg-orange-600 border-orange-800 text-[#1a1a1c]'
+                      ? 'bg-orange-600 border-orange-800 text-[#111113]'
                       : isConnecting
-                      ? 'bg-[#d4d1cd] border-[#f5f4f2] text-slate-500'
-                      : 'bg-black/[0.06] border-[#d4d1cd] text-slate-500 hover:border-orange-500/40 hover:text-[#1a1a1c]'
+                      ? 'bg-[#cdcdd2] border-[#f4f4f6] text-slate-500'
+                      : 'bg-black/[0.06] border-[#cdcdd2] text-slate-500 hover:border-orange-500/40 hover:text-[#111113]'
                     }`}
                   style={body}
                 >
@@ -1098,8 +1098,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   onChange={handleInputChange}
                   rows={5}
                   placeholder="e.g. Loud knocking from the engine at idle, gets worse when accelerating. Started 3 days ago, only happens when the engine is warm. No warning lights."
-                  className={`w-full min-h-[120px] px-5 py-4 bg-black/[0.06] border rounded-2xl outline-none resize-none text-[#1a1a1c] text-sm leading-relaxed transition-colors font-medium
-                    ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-[#d4d1cd] focus:border-orange-500/50'}`}
+                  className={`w-full min-h-[120px] px-5 py-4 bg-black/[0.06] border rounded-2xl outline-none resize-none text-[#111113] text-sm leading-relaxed transition-colors font-medium
+                    ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-[#cdcdd2] focus:border-orange-500/50'}`}
                   style={{ ...body, color: '#f1f5f9', caretColor: "#f97316" }}
                 />
                 {isRecording && (
@@ -1122,7 +1122,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   { label: 'Where?',   hint: 'Engine, brakes, steering',        icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z' },
                   { label: 'How long?', hint: 'Days, weeks, getting worse',     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
                 ].map(({ label, hint, icon }) => (
-                  <div key={label} className="flex items-start gap-2 bg-black/[0.04] border border-[#d4d1cd]/60 rounded-xl px-3 py-2.5 min-h-[52px]">
+                  <div key={label} className="flex items-start gap-2 bg-black/[0.04] border border-[#cdcdd2]/60 rounded-xl px-3 py-2.5 min-h-[52px]">
                     <svg className="w-3.5 h-3.5 text-orange-500/60 flex-shrink-0 mt-px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={icon} />
                     </svg>
@@ -1155,7 +1155,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   type="button"
                   aria-label="Attach photos or videos"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/[0.06] border-2 border-dashed border-[#d4d1cd] rounded-xl text-slate-500 hover:border-orange-500/30 hover:text-slate-500 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] text-sm font-medium"
+                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/[0.06] border-2 border-dashed border-[#cdcdd2] rounded-xl text-slate-500 hover:border-orange-500/30 hover:text-slate-500 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6] text-sm font-medium"
                   style={body}
                 >
                   <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1169,17 +1169,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           </div>
 
           {files.length > 0 && (
-            <div className="mt-5 pt-5 border-t border-[#d4d1cd]/60">
+            <div className="mt-5 pt-5 border-t border-[#cdcdd2]/60">
               <p className="text-xs font-semibold text-slate-500 mb-3" style={body}>
                 Attachments ({files.length})
               </p>
               <div className="flex flex-wrap gap-3">
                 {files.map((file, idx) => (
-                  <div key={idx} className="relative group w-16 h-16 rounded-xl overflow-hidden border border-[#d4d1cd] bg-[#edecea] flex items-center justify-center">
+                  <div key={idx} className="relative group w-16 h-16 rounded-xl overflow-hidden border border-[#cdcdd2] bg-[#ebebed] flex items-center justify-center">
                     {file.type === 'image' ? (
                       <img src={file.data} className="w-full h-full object-cover" alt={file.name} />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-[#d4d1cd]">
+                      <div className="w-full h-full flex items-center justify-center bg-[#cdcdd2]">
                         <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
@@ -1189,7 +1189,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                       type="button"
                       aria-label="Remove attachment"
                       onClick={() => removeFile(idx)}
-                      className="absolute top-1 right-1 bg-red-600 text-[#1a1a1c] rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-1 right-1 bg-red-600 text-[#111113] rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -1216,10 +1216,10 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className={`not-italic w-full py-3 rounded-xl flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2]
+          className={`not-italic w-full py-3 rounded-xl flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6]
             ${isLoading
-              ? 'bg-[#d4d1cd] text-slate-500 cursor-not-allowed'
-              : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#1a1a1c] shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
+              ? 'bg-[#cdcdd2] text-slate-500 cursor-not-allowed'
+              : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#111113] shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
             }`}
           style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 'clamp(16px, 4vw, 22px)', letterSpacing: '0.04em', fontStyle: 'normal' }}
         >
@@ -1282,7 +1282,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   {/* History title: regular bold, not condensed italic */}
-                  <div className="font-semibold text-[#1a1a1c] text-sm truncate" style={body}>
+                  <div className="font-semibold text-[#111113] text-sm truncate" style={body}>
                     {isTireReport(item) ? 'Tire Scan Report' : `${(item as DiagnosticReport).vehicle.year} ${(item as DiagnosticReport).vehicle.make} ${(item as DiagnosticReport).vehicle.model}`}
                   </div>
                   <div className="text-xs text-slate-500 mt-0.5" style={body}>

@@ -15,10 +15,10 @@ const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:      'bg-[#e8e6e3] rounded-2xl p-5 sm:p-8 border border-[#d4d1cd]/60',
+  card:      'bg-[#e2e2e5] rounded-2xl p-5 sm:p-8 border border-[#cdcdd2]/60',
   secIcon:   'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secDiv:    'flex-1 h-px bg-[#d4d1cd]/80',
-  subCard:   'bg-black/[0.06] border border-[#d4d1cd]/60 rounded-xl p-5',
+  secDiv:    'flex-1 h-px bg-[#cdcdd2]/80',
+  subCard:   'bg-black/[0.06] border border-[#cdcdd2]/60 rounded-xl p-5',
   fieldLabel:'text-[10px] font-bold text-slate-500 uppercase tracking-widest',
 };
 
@@ -31,7 +31,7 @@ const SectionHead: React.FC<{
 }> = ({ icon, title, accent = 'text-orange-500 bg-orange-500/10 border-orange-500/20', right }) => (
   <div className="flex items-center gap-3 mb-6 overflow-hidden">
     <div className={`${S.secIcon} border ${accent} flex-shrink-0`}>{icon}</div>
-    <span className="font-bold text-[#1a1a1c] flex-shrink-0 tracking-wide uppercase" style={{ ...body, fontSize: 'clamp(13px, 3.5vw, 16px)' }}>
+    <span className="font-bold text-[#111113] flex-shrink-0 tracking-wide uppercase" style={{ ...body, fontSize: 'clamp(13px, 3.5vw, 16px)' }}>
       {title}
     </span>
     <div className={S.secDiv} />
@@ -61,13 +61,13 @@ const getProbStyle = (prob: string): string => {
   if (p.includes('MEDIUM-HIGH') || p.includes('MEDIUM HIGH')) return 'text-amber-400 bg-amber-500/10 border-amber-500/25';
   if (p === 'MEDIUM')                         return 'text-slate-500 bg-slate-500/10 border-slate-500/20';
   if (p.includes('LOW') && p.includes('MEDIUM')) return 'text-slate-500 bg-slate-500/10 border-slate-500/20';
-  return 'text-slate-500 bg-[#d4d1cd]/60 border-[#d4d1cd]/40'; // LOW
+  return 'text-slate-500 bg-[#cdcdd2]/60 border-[#cdcdd2]/40'; // LOW
 };
 
 /* ─── Save button states ──────────────────────────────────────────────────── */
 const saveStyles = {
-  idle:   'bg-black/[0.06] text-slate-500 hover:border-orange-500/40 hover:text-orange-400 border border-[#d4d1cd]',
-  saving: 'bg-black/[0.06] text-slate-500 border border-[#d4d1cd] cursor-not-allowed',
+  idle:   'bg-black/[0.06] text-slate-500 hover:border-orange-500/40 hover:text-orange-400 border border-[#cdcdd2]',
+  saving: 'bg-black/[0.06] text-slate-500 border border-[#cdcdd2] cursor-not-allowed',
   saved:  'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25',
   error:  'bg-rose-500/10   text-rose-400   border border-rose-500/25',
 };
@@ -143,14 +143,14 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
       <section className={S.card}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#1a1a1c]" style={body}>Diagnostic Assessment</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#111113]" style={body}>Diagnostic Assessment</h2>
 
             {/* Save */}
             <button
               aria-label={saveLabels[saveState]}
               onClick={handleSave}
               disabled={saveState === 'saving' || saveState === 'saved'}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] ${saveStyles[saveState]}`}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6] ${saveStyles[saveState]}`}
               style={body}
             >
               {saveState === 'saving' && <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>}
@@ -164,7 +164,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             <button
               aria-label="Share this diagnosis"
               onClick={handleShare}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] bg-black/[0.06] border border-[#d4d1cd] hover:border-orange-500/40 hover:text-orange-400 text-slate-500"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6] bg-black/[0.06] border border-[#cdcdd2] hover:border-orange-500/40 hover:text-orange-400 text-slate-500"
               style={body}
             >
               {shareState === 'copied' ? (
@@ -194,7 +194,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           {report.mostLikelyCauses.map((cause, idx) => (
             <div key={idx} className={S.subCard}>
               <div className="flex justify-between items-start mb-3 gap-2">
-                <h4 className="font-semibold text-[#1a1a1c] text-sm leading-snug" style={body}>{cause.issue}</h4>
+                <h4 className="font-semibold text-[#111113] text-sm leading-snug" style={body}>{cause.issue}</h4>
                 <span className={`text-[10px] font-bold px-2 py-1 rounded-full border shrink-0 ${getProbStyle(cause.probability)}`} style={body}>{cause.probability}</span>
               </div>
               <p className="text-xs text-slate-500 leading-relaxed" style={body}>{cause.reasoning}</p>
@@ -212,8 +212,8 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         />
         <div className="flex flex-col gap-3">
           {report.recommendedActions.map((action, idx) => (
-            <div key={idx} className="flex items-start gap-4 bg-black/[0.06] border border-[#d4d1cd]/60 p-4 rounded-xl">
-              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-[#1a1a1c] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5" style={body}>{idx + 1}</span>
+            <div key={idx} className="flex items-start gap-4 bg-black/[0.06] border border-[#cdcdd2]/60 p-4 rounded-xl">
+              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-[#111113] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5" style={body}>{idx + 1}</span>
               <span className="text-slate-500 text-sm leading-relaxed font-medium" style={body}>{action}</span>
             </div>
           ))}
@@ -244,7 +244,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                 href={youtubeUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-[#1a1a1c] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
+                className="flex-1 flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-[#111113] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
                 style={body}
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
@@ -254,7 +254,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                 <button
                   type="button"
                   onClick={() => onFindServices('mechanic')}
-                  className="flex-1 flex items-center justify-center gap-2 bg-black/[0.06] hover:border-blue-500/40 hover:text-blue-400 text-slate-500 border border-[#d4d1cd] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 bg-black/[0.06] hover:border-blue-500/40 hover:text-blue-400 text-slate-500 border border-[#cdcdd2] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
                   style={body}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><circle cx="12" cy="11" r="3" /></svg>
@@ -268,7 +268,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                 <button
                   type="button"
                   onClick={() => onFindServices('mechanic')}
-                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-[#1a1a1c] px-5 py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-500/20"
+                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-[#111113] px-5 py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-500/20"
                   style={body}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><circle cx="12" cy="11" r="3" /></svg>
@@ -279,7 +279,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                 href={youtubeUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 bg-black/[0.06] hover:border-rose-500/40 hover:text-rose-400 text-slate-500 border border-[#d4d1cd] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
+                className="flex-1 flex items-center justify-center gap-2 bg-black/[0.06] hover:border-rose-500/40 hover:text-rose-400 text-slate-500 border border-[#cdcdd2] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
                 style={body}
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
@@ -300,11 +300,11 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
           <div className={S.subCard}>
             <p className={`${S.fieldLabel} mb-2`} style={body}>Estimated Parts</p>
-            <p className="text-xl font-bold text-[#1a1a1c]" style={body}>{report.costEstimate.parts}</p>
+            <p className="text-xl font-bold text-[#111113]" style={body}>{report.costEstimate.parts}</p>
           </div>
           <div className={S.subCard}>
             <p className={`${S.fieldLabel} mb-2`} style={body}>Estimated Labor</p>
-            <p className="text-xl font-bold text-[#1a1a1c]" style={body}>{report.costEstimate.labor}</p>
+            <p className="text-xl font-bold text-[#111113]" style={body}>{report.costEstimate.labor}</p>
           </div>
           <div className="bg-orange-500/8 border border-orange-500/20 rounded-xl p-5">
             <p className={`${S.fieldLabel} text-orange-500/70 mb-2`} style={body}>Total Est. Repair</p>
@@ -346,11 +346,11 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             </ul>
           </div>
           <div className={S.subCard}>
-            <h4 className="font-semibold text-[#1a1a1c] text-sm mb-3" style={body}>Mechanical breakdown</h4>
+            <h4 className="font-semibold text-[#111113] text-sm mb-3" style={body}>Mechanical breakdown</h4>
             <p className="text-xs text-slate-500 leading-relaxed mb-4" style={body}>{report.mechanicalExplanation}</p>
-            <div className="pt-4 border-t border-[#d4d1cd]/60">
+            <div className="pt-4 border-t border-[#cdcdd2]/60">
               <p className={`${S.fieldLabel} mb-2`} style={body}>Urgency & timeline</p>
-              <p className="text-xs text-slate-500" style={body}><span className="font-semibold text-[#1a1a1c] mr-1">Next steps:</span>{report.urgency.timeline}</p>
+              <p className="text-xs text-slate-500" style={body}><span className="font-semibold text-[#111113] mr-1">Next steps:</span>{report.urgency.timeline}</p>
               <p className="text-xs text-rose-400 mt-2 font-semibold" style={body}>{report.urgency.risksOfDelay}</p>
             </div>
           </div>
@@ -365,11 +365,11 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             <p className={`${S.fieldLabel} mb-2`} style={body}>Known issues</p>
             <p className="text-sm text-slate-500 leading-relaxed" style={body}>{report.additionalContext.commonModelIssues}</p>
           </div>
-          <div className="sm:border-l sm:border-[#d4d1cd]/60 sm:pl-6">
+          <div className="sm:border-l sm:border-[#cdcdd2]/60 sm:pl-6">
             <p className={`${S.fieldLabel} mb-2`} style={body}>Recall alert</p>
             <p className="text-sm text-slate-500 leading-relaxed" style={body}>{report.additionalContext.recallPotential}</p>
           </div>
-          <div className="sm:border-l sm:border-[#d4d1cd]/60 sm:pl-6">
+          <div className="sm:border-l sm:border-[#cdcdd2]/60 sm:pl-6">
             <p className={`${S.fieldLabel} mb-2`} style={body}>Prevention</p>
             <p className="text-sm text-slate-500 leading-relaxed" style={body}>{report.additionalContext.prevention}</p>
           </div>
@@ -384,13 +384,13 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           {report.followUpQuestions.map((q, i) => {
             const entry = getEntry(i);
             return (
-              <div key={i} className="rounded-xl overflow-hidden border border-[#d4d1cd]/60">
+              <div key={i} className="rounded-xl overflow-hidden border border-[#cdcdd2]/60">
                 {/* Question row */}
                 <button
                   type="button"
                   onClick={() => handleQuestionClick(i)}
                   disabled={!onAskFollowUp || entry.status !== 'idle'}
-                  className="flex items-start gap-3 bg-black/[0.06] hover:bg-[#d4d1cd]/60 p-4 text-left w-full transition-all group disabled:cursor-default disabled:hover:bg-black/[0.06]"
+                  className="flex items-start gap-3 bg-black/[0.06] hover:bg-[#cdcdd2]/60 p-4 text-left w-full transition-all group disabled:cursor-default disabled:hover:bg-black/[0.06]"
                   style={body}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${entry.status === 'done' ? 'bg-emerald-500' : 'bg-orange-500 group-hover:bg-orange-400'}`} />
@@ -404,7 +404,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
                 {/* User input area */}
                 {(entry.status === 'open' || entry.status === 'loading') && (
-                  <div className="px-4 pb-4 pt-3 bg-[#d4d1cd]/40 border-t border-[#d4d1cd]/60 flex flex-col gap-3">
+                  <div className="px-4 pb-4 pt-3 bg-[#cdcdd2]/40 border-t border-[#cdcdd2]/60 flex flex-col gap-3">
                     <p className="text-xs text-slate-500" style={body}>Your answer:</p>
                     <textarea
                       autoFocus
@@ -414,7 +414,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                       onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSubmitAnswer(q, i); }}
                       placeholder="Type your answer here…"
                       disabled={entry.status === 'loading'}
-                      className="w-full bg-black/[0.06] border border-[#d4d1cd]/60 rounded-xl px-4 py-3 text-sm text-slate-400 placeholder-slate-600 resize-none focus:outline-none focus:border-orange-500/50 disabled:opacity-50"
+                      className="w-full bg-black/[0.06] border border-[#cdcdd2]/60 rounded-xl px-4 py-3 text-sm text-slate-400 placeholder-slate-600 resize-none focus:outline-none focus:border-orange-500/50 disabled:opacity-50"
                       style={body}
                     />
                     {entry.error && <p className="text-xs text-rose-400" style={body}>{entry.error}</p>}
@@ -422,7 +422,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                       type="button"
                       onClick={() => handleSubmitAnswer(q, i)}
                       disabled={!entry.userInput.trim() || entry.status === 'loading'}
-                      className="self-end flex items-center gap-2 bg-orange-500 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-[#1a1a1c] text-sm font-semibold px-5 py-2 rounded-full transition-colors"
+                      className="self-end flex items-center gap-2 bg-orange-500 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-[#111113] text-sm font-semibold px-5 py-2 rounded-full transition-colors"
                       style={body}
                     >
                       {entry.status === 'loading' ? (
@@ -434,7 +434,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
                 {/* AI answer */}
                 {entry.status === 'done' && entry.answer && (
-                  <div className="px-4 pb-4 pt-3 bg-[#d4d1cd]/40 border-t border-[#d4d1cd]/60">
+                  <div className="px-4 pb-4 pt-3 bg-[#cdcdd2]/40 border-t border-[#cdcdd2]/60">
                     <p className="text-xs text-slate-500 mb-2" style={body}>Your answer: <span className="text-slate-500">{entry.userInput}</span></p>
                     <p className="text-sm text-slate-500 leading-relaxed" style={body}>{entry.answer}</p>
                   </div>
@@ -450,7 +450,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <button
           aria-label="Start a new diagnostic session"
           onClick={onReset}
-          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#1a1a1c] px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2]"
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#111113] px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f4f4f6]"
           style={{ fontFamily: "'Open Sans', sans-serif", fontStyle: 'normal' }}
         >
           Start New Diagnostic

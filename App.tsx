@@ -258,7 +258,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
 
   // ── Main app ──────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#f5f4f2' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#f4f4f6' }}>
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
       </div>
@@ -317,10 +317,10 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
           >
             <div
               aria-hidden="true"
-              className="w-16 h-16 rounded-full border-4 border-[#d4d1cd] border-t-orange-500 animate-spin"
+              className="w-16 h-16 rounded-full border-4 border-[#cdcdd2] border-t-orange-500 animate-spin"
             />
             <div className="text-center">
-              <h3 className="text-lg font-bold text-[#1a1a1c] mb-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+              <h3 className="text-lg font-bold text-[#111113] mb-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
                 Running analysis…
               </h3>
               <p className="text-slate-500 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
@@ -372,7 +372,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#d4d1cd]/60 py-8 px-4 mt-20" style={{ background: '#f5f4f2' }}>
+      <footer className="border-t border-[#cdcdd2]/60 py-8 px-4 mt-20" style={{ background: '#f4f4f6' }}>
         <div className="max-w-lg md:max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <p className="text-slate-500 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>
