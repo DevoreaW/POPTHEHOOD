@@ -543,6 +543,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const [manualEntry, setManualEntry]       = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
+  // ── Car Query API state ────────────────────────────────────────────────────
+  const [apiModels, setApiModels]         = useState<string[]>([]);
+  const [apiTrims, setApiTrims]           = useState<string[]>([]);
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [loadingTrims, setLoadingTrims]   = useState(false);
+
   const fileInputRef   = useRef<HTMLInputElement>(null);
   const textAreaRef    = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -570,6 +576,49 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [isRecording]);
+
+  // ── Fetch models when make changes ────────────────────────────────────────
+  useEffect(() => {
+    if (!vehicle.make) { setApiModels([]); setApiTrims([]); return; }
+    const controller = new AbortController();
+    setLoadingModels(true);
+    setApiModels([]);
+    setApiTrims([]);
+    const make = encodeURIComponent(vehicle.make.toLowerCase());
+    fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${make}`, { signal: controller.signal })
+      .then(r => r.json())
+      .then(data => {
+        const names: string[] = [...new Set<string>(
+          (data.Models || []).map((m: any) => m.model_name as string)
+        )].sort();
+        setApiModels(names.length ? names : (CAR_MODELS[vehicle.make] || []));
+      })
+      .catch(err => { if (err.name !== 'AbortError') setApiModels(CAR_MODELS[vehicle.make] || []); })
+      .finally(() => setLoadingModels(false));
+    return () => controller.abort();
+  }, [vehicle.make]);
+
+  // ── Fetch trims when make + model changes ─────────────────────────────────
+  useEffect(() => {
+    if (!vehicle.make || !vehicle.model) { setApiTrims([]); return; }
+    const controller = new AbortController();
+    setLoadingTrims(true);
+    setApiTrims([]);
+    const make  = encodeURIComponent(vehicle.make.toLowerCase());
+    const model = encodeURIComponent(vehicle.model.toLowerCase());
+    const yearParam = vehicle.year ? `&year=${vehicle.year}` : '';
+    fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getTrims&make=${make}&model=${model}${yearParam}`, { signal: controller.signal })
+      .then(r => r.json())
+      .then(data => {
+        const trimNames: string[] = [...new Set<string>(
+          (data.Trims || []).map((t: any) => t.model_trim as string).filter(Boolean)
+        )].sort();
+        setApiTrims(trimNames.length ? trimNames : (CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []));
+      })
+      .catch(err => { if (err.name !== 'AbortError') setApiTrims(CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []); })
+      .finally(() => setLoadingTrims(false));
+    return () => controller.abort();
+  }, [vehicle.make, vehicle.model, vehicle.year]);
 
   const startRecording = async () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -617,7 +666,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === 'make') setVehicle(p => ({ ...p, make: value, model: '' }));
+    if (name === 'make')  setVehicle(p => ({ ...p, make: value, model: '', trim: '' }));
+    else if (name === 'model') setVehicle(p => ({ ...p, model: value, trim: '' }));
     else setVehicle(p => ({ ...p, [name]: value }));
   };
 
@@ -697,8 +747,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   };
 
   const isTireReport = (item: any): item is TireAnalysisReport => 'healthScore' in item;
-  const models     = CAR_MODELS[vehicle.make] || [];
-  const trims      = (vehicle.make && vehicle.model) ? (CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []) : [];
+  const models     = apiModels.length ? apiModels : (CAR_MODELS[vehicle.make] || []);
+  const trims      = apiTrims.length ? apiTrims : ((vehicle.make && vehicle.model) ? (CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []) : []);
   const otherMakes = ALL_MAKES.filter(m => !POPULAR_MAKES.includes(m));
   const charCount  = (description + interimText).length;
 
@@ -860,11 +910,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                       name="trim"
                       value={vehicle.trim || ''}
                       onChange={handleSelectChange}
-                      disabled={trims.length === 0}
-                      className={`${S.selectBase} ${trims.length === 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
+                      disabled={trims.length === 0 || loadingTrims}
+                      className={`${S.selectBase} ${(trims.length === 0 || loadingTrims) ? 'opacity-40 cursor-not-allowed' : ''}`}
                       style={body}
                     >
-                      <option value="">{trims.length === 0 ? 'Select make & model first' : 'Select trim'}</option>
+                      <option value="">{loadingTrims ? 'Loading…' : trims.length === 0 ? 'Select make & model first' : 'Select trim'}</option>
                       {trims.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
                     <ChevronDown />
@@ -909,12 +959,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                       name="model"
                       value={vehicle.model}
                       onChange={handleSelectChange}
-                      disabled={!vehicle.make}
-                      className={`${S.selectBase} ${!vehicle.make ? 'opacity-40 cursor-not-allowed' : ''}`}
+                      disabled={!vehicle.make || loadingModels}
+                      className={`${S.selectBase} ${(!vehicle.make || loadingModels) ? 'opacity-40 cursor-not-allowed' : ''}`}
                       style={body}
                     >
                       <option value="" disabled>
-                        {vehicle.make ? 'Select model' : 'Pick a make first'}
+                        {loadingModels ? 'Loading…' : vehicle.make ? 'Select model' : 'Pick a make first'}
                       </option>
                       {models.map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
@@ -947,11 +997,11 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                       name="trim"
                       value={vehicle.trim || ''}
                       onChange={handleSelectChange}
-                      disabled={trims.length === 0}
-                      className={`${S.selectBase} ${trims.length === 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
+                      disabled={trims.length === 0 || loadingTrims}
+                      className={`${S.selectBase} ${(trims.length === 0 || loadingTrims) ? 'opacity-40 cursor-not-allowed' : ''}`}
                       style={body}
                     >
-                      <option value="">{trims.length === 0 ? 'Select make & model first' : 'Select trim'}</option>
+                      <option value="">{loadingTrims ? 'Loading…' : trims.length === 0 ? 'Select make & model first' : 'Select trim'}</option>
                       {trims.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
                     <ChevronDown />
