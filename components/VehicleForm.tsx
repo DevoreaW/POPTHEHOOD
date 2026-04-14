@@ -443,13 +443,13 @@ const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:        'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
+  card:        'bg-[#1f1f24] rounded-2xl p-5 sm:p-8 border border-[#2e2e35]/60',
   secIcon:     'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
   fieldLabel:  'text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1',
-  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/40 border border-slate-800 rounded-xl text-white font-medium text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
-  inputBase:   'w-full h-12 px-5 bg-black/40 border border-slate-800 rounded-xl text-white font-medium text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-600',
-  toolBtn:     'flex items-center gap-4 px-5 py-4 bg-black/40 border border-slate-800 rounded-xl transition-all hover:bg-slate-900/60 hover:border-orange-500/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 w-full text-left',
-  historyItem: 'flex items-center gap-4 p-4 bg-black/40 border border-slate-800 rounded-xl hover:bg-slate-900 hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 w-full',
+  selectBase:  'w-full h-12 pl-5 pr-10 bg-black/40 border border-[#2e2e35] rounded-xl text-white font-medium text-sm cursor-pointer appearance-none outline-none transition-colors focus:border-orange-500/50',
+  inputBase:   'w-full h-12 px-5 bg-black/40 border border-[#2e2e35] rounded-xl text-white font-medium text-sm outline-none transition-colors focus:border-orange-500/50 placeholder:text-slate-600',
+  toolBtn:     'flex items-center gap-4 px-5 py-4 bg-black/40 border border-[#2e2e35] rounded-xl transition-all hover:bg-[#18181c]/60 hover:border-orange-500/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] w-full text-left',
+  historyItem: 'flex items-center gap-4 p-4 bg-black/40 border border-[#2e2e35] rounded-xl hover:bg-[#18181c] hover:border-orange-500/25 transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] w-full',
 };
 
 /* ─── Section header ──────────────────────────────────────────────────────── */
@@ -470,7 +470,7 @@ const SectionHead: React.FC<{
     >
       {title}
     </span>
-    <div className="flex-1 h-px bg-slate-800 min-w-0" />
+    <div className="flex-1 h-px bg-[#2e2e35] min-w-0" />
     {right && <div className="flex-shrink-0 ml-1">{right}</div>}
   </div>
 );
@@ -715,7 +715,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       {/* ── Tire photo tips modal ─────────────────────────────────────────── */}
       {showTireTips && (
         <div className="fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-gray-950 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+          <div className="bg-[#1f1f24] border border-[#2e2e35] rounded-2xl p-6 max-w-sm w-full shadow-2xl">
             <h3 className="text-white font-bold text-lg mb-1" style={body}>Tips for a good scan</h3>
             <p className="text-slate-500 text-xs mb-5" style={body}>Better photos = more accurate results.</p>
             <ul className="space-y-3 mb-6">
@@ -735,7 +735,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <button
                 type="button"
                 onClick={() => setShowTireTips(false)}
-                className="flex-1 px-4 py-3 bg-white/5 border border-slate-800 text-slate-400 rounded-xl text-sm font-semibold"
+                className="flex-1 px-4 py-3 bg-white/5 border border-[#2e2e35] text-slate-400 rounded-xl text-sm font-semibold"
                 style={body}
               >
                 Cancel
@@ -995,12 +995,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   aria-label="Toggle voice input"
                   disabled={isConnecting}
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl border-b-2 font-semibold text-xs transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 whitespace-nowrap
+                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl border-b-2 font-semibold text-xs transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] whitespace-nowrap
                     ${isRecording
                       ? 'bg-orange-600 border-orange-800 text-white'
                       : isConnecting
-                      ? 'bg-slate-800 border-slate-900 text-slate-400'
-                      : 'bg-black/40 border-slate-800 text-slate-300 hover:border-orange-500/40 hover:text-white'
+                      ? 'bg-[#2e2e35] border-[#0e0e10] text-slate-400'
+                      : 'bg-black/40 border-[#2e2e35] text-slate-300 hover:border-orange-500/40 hover:text-white'
                     }`}
                   style={body}
                 >
@@ -1044,7 +1044,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   rows={5}
                   placeholder="e.g. Loud knocking from the engine at idle, gets worse when accelerating. Started 3 days ago, only happens when the engine is warm. No warning lights."
                   className={`w-full min-h-[120px] px-5 py-4 bg-black/40 border rounded-2xl outline-none resize-none text-white text-sm leading-relaxed transition-colors font-medium
-                    ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-slate-800 focus:border-orange-500/50'}`}
+                    ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-[#2e2e35] focus:border-orange-500/50'}`}
                   style={{ ...body, color: '#f1f5f9', caretColor: '#f97316' }}
                 />
                 {isRecording && (
@@ -1089,7 +1089,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   type="button"
                   aria-label="Attach photos or videos"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/40 border-2 border-dashed border-slate-800 rounded-xl text-slate-500 hover:border-orange-500/30 hover:text-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 text-sm font-medium"
+                  className="w-full h-12 flex items-center justify-center gap-2 px-5 bg-black/40 border-2 border-dashed border-[#2e2e35] rounded-xl text-slate-500 hover:border-orange-500/30 hover:text-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] text-sm font-medium"
                   style={body}
                 >
                   <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1103,17 +1103,17 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           </div>
 
           {files.length > 0 && (
-            <div className="mt-5 pt-5 border-t border-slate-800/60">
+            <div className="mt-5 pt-5 border-t border-[#2e2e35]/60">
               <p className="text-xs font-semibold text-slate-600 mb-3" style={body}>
                 Attachments ({files.length})
               </p>
               <div className="flex flex-wrap gap-3">
                 {files.map((file, idx) => (
-                  <div key={idx} className="relative group w-16 h-16 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex items-center justify-center">
+                  <div key={idx} className="relative group w-16 h-16 rounded-xl overflow-hidden border border-[#2e2e35] bg-[#18181c] flex items-center justify-center">
                     {file.type === 'image' ? (
                       <img src={file.data} className="w-full h-full object-cover" alt={file.name} />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                      <div className="w-full h-full flex items-center justify-center bg-[#2e2e35]">
                         <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
@@ -1150,9 +1150,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className={`not-italic w-full py-3 rounded-xl flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950
+          className={`not-italic w-full py-3 rounded-xl flex items-center justify-center gap-3 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]
             ${isLoading
-              ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+              ? 'bg-[#2e2e35] text-slate-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
             }`}
           style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 'clamp(16px, 4vw, 22px)', letterSpacing: '0.04em', fontStyle: 'normal' }}
@@ -1232,7 +1232,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
       {/* ── Privacy badge ─────────────────────────────────────────────────── */}
       <div className="flex justify-center py-4">
-        <div className="inline-flex items-center gap-2 bg-orange-500/5 border border-slate-800 rounded-full px-4 py-2.5">
+        <div className="inline-flex items-center gap-2 bg-orange-500/5 border border-[#2e2e35] rounded-full px-4 py-2.5">
           <svg className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>

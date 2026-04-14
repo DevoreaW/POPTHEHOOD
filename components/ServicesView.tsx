@@ -20,9 +20,9 @@ const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:    'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
+  card:    'bg-[#1f1f24] rounded-2xl p-5 sm:p-8 border border-[#2e2e35]/60',
   secIcon: 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secDiv:  'flex-1 h-px bg-slate-800/80',
+  secDiv:  'flex-1 h-px bg-[#2e2e35]/80',
 };
 
 /* ─── Section header ──────────────────────────────────────────────────────── */
@@ -131,7 +131,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open ${place.title} in Google Maps`}
-                className="group flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-5 bg-black/40 border border-slate-800/60 rounded-xl hover:border-orange-500/30 hover:bg-slate-900/60 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+                className="group flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-5 bg-black/40 border border-[#2e2e35]/60 rounded-xl hover:border-orange-500/30 hover:bg-[#18181c]/60 transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]"
               >
                 {/* Rank + info */}
                 <div className="flex items-start gap-4">
@@ -159,7 +159,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
 
                 {/* Maps CTA */}
                 <div
-                  className="flex items-center gap-2 bg-black/40 border border-slate-800 group-hover:border-orange-500/30 group-hover:bg-orange-500/8 text-slate-500 group-hover:text-orange-400 px-4 py-2.5 rounded-xl text-xs font-medium shrink-0 transition-all self-start md:self-auto"
+                  className="flex items-center gap-2 bg-black/40 border border-[#2e2e35] group-hover:border-orange-500/30 group-hover:bg-orange-500/8 text-slate-500 group-hover:text-orange-400 px-4 py-2.5 rounded-xl text-xs font-medium shrink-0 transition-all self-start md:self-auto"
                   style={body}
                 >
                   Open in Maps
@@ -171,7 +171,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 border-2 border-dashed border-slate-800/60 rounded-xl">
+          <div className="text-center py-12 border-2 border-dashed border-[#2e2e35]/60 rounded-xl">
             <p className="text-sm text-slate-700" style={body}>
               No verified map results found in this area.
             </p>
@@ -184,7 +184,7 @@ const ServicesView: React.FC<ServicesViewProps> = ({ report, onReset }) => {
         <button
           aria-label="Return to dashboard"
           onClick={onReset}
-          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]"
           style={{ fontFamily: "'Open Sans', sans-serif", fontStyle: 'normal' }}
         >
           New Search

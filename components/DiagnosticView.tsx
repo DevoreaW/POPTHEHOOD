@@ -15,10 +15,10 @@ const body: React.CSSProperties    = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:      'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
+  card:      'bg-[#1f1f24] rounded-2xl p-5 sm:p-8 border border-[#2e2e35]/60',
   secIcon:   'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secDiv:    'flex-1 h-px bg-slate-800/80',
-  subCard:   'bg-black/40 border border-slate-800/60 rounded-xl p-5',
+  secDiv:    'flex-1 h-px bg-[#2e2e35]/80',
+  subCard:   'bg-black/40 border border-[#2e2e35]/60 rounded-xl p-5',
   fieldLabel:'text-[10px] font-bold text-slate-500 uppercase tracking-widest',
 };
 
@@ -61,13 +61,13 @@ const getProbStyle = (prob: string): string => {
   if (p.includes('MEDIUM-HIGH') || p.includes('MEDIUM HIGH')) return 'text-amber-400 bg-amber-500/10 border-amber-500/25';
   if (p === 'MEDIUM')                         return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
   if (p.includes('LOW') && p.includes('MEDIUM')) return 'text-slate-500 bg-slate-500/10 border-slate-500/20';
-  return 'text-slate-600 bg-slate-800/60 border-slate-700/40'; // LOW
+  return 'text-slate-600 bg-[#2e2e35]/60 border-[#2e2e35]/40'; // LOW
 };
 
 /* ─── Save button states ──────────────────────────────────────────────────── */
 const saveStyles = {
-  idle:   'bg-black/40 text-slate-400 hover:border-orange-500/40 hover:text-orange-400 border border-slate-800',
-  saving: 'bg-black/40 text-slate-600 border border-slate-800 cursor-not-allowed',
+  idle:   'bg-black/40 text-slate-400 hover:border-orange-500/40 hover:text-orange-400 border border-[#2e2e35]',
+  saving: 'bg-black/40 text-slate-600 border border-[#2e2e35] cursor-not-allowed',
   saved:  'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25',
   error:  'bg-rose-500/10   text-rose-400   border border-rose-500/25',
 };
@@ -150,7 +150,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
               aria-label={saveLabels[saveState]}
               onClick={handleSave}
               disabled={saveState === 'saving' || saveState === 'saved'}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 ${saveStyles[saveState]}`}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] ${saveStyles[saveState]}`}
               style={body}
             >
               {saveState === 'saving' && <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>}
@@ -164,7 +164,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             <button
               aria-label="Share this diagnosis"
               onClick={handleShare}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 bg-black/40 border border-slate-800 hover:border-orange-500/40 hover:text-orange-400 text-slate-400"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] bg-black/40 border border-[#2e2e35] hover:border-orange-500/40 hover:text-orange-400 text-slate-400"
               style={body}
             >
               {shareState === 'copied' ? (
@@ -212,7 +212,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         />
         <div className="flex flex-col gap-3">
           {report.recommendedActions.map((action, idx) => (
-            <div key={idx} className="flex items-start gap-4 bg-black/40 border border-slate-800/60 p-4 rounded-xl">
+            <div key={idx} className="flex items-start gap-4 bg-black/40 border border-[#2e2e35]/60 p-4 rounded-xl">
               <span className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5" style={body}>{idx + 1}</span>
               <span className="text-slate-300 text-sm leading-relaxed font-medium" style={body}>{action}</span>
             </div>
@@ -254,7 +254,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                 <button
                   type="button"
                   onClick={() => onFindServices('mechanic')}
-                  className="flex-1 flex items-center justify-center gap-2 bg-black/40 hover:border-blue-500/40 hover:text-blue-400 text-slate-400 border border-slate-800 px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 bg-black/40 hover:border-blue-500/40 hover:text-blue-400 text-slate-400 border border-[#2e2e35] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
                   style={body}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><circle cx="12" cy="11" r="3" /></svg>
@@ -279,7 +279,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                 href={youtubeUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 bg-black/40 hover:border-rose-500/40 hover:text-rose-400 text-slate-400 border border-slate-800 px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
+                className="flex-1 flex items-center justify-center gap-2 bg-black/40 hover:border-rose-500/40 hover:text-rose-400 text-slate-400 border border-[#2e2e35] px-5 py-3.5 rounded-xl font-bold text-sm transition-all"
                 style={body}
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
@@ -348,7 +348,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           <div className={S.subCard}>
             <h4 className="font-semibold text-white text-sm mb-3" style={body}>Mechanical breakdown</h4>
             <p className="text-xs text-slate-500 leading-relaxed mb-4" style={body}>{report.mechanicalExplanation}</p>
-            <div className="pt-4 border-t border-slate-800/60">
+            <div className="pt-4 border-t border-[#2e2e35]/60">
               <p className={`${S.fieldLabel} mb-2`} style={body}>Urgency & timeline</p>
               <p className="text-xs text-slate-300" style={body}><span className="font-semibold text-white mr-1">Next steps:</span>{report.urgency.timeline}</p>
               <p className="text-xs text-rose-400 mt-2 font-semibold" style={body}>{report.urgency.risksOfDelay}</p>
@@ -365,11 +365,11 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             <p className={`${S.fieldLabel} mb-2`} style={body}>Known issues</p>
             <p className="text-sm text-slate-300 leading-relaxed" style={body}>{report.additionalContext.commonModelIssues}</p>
           </div>
-          <div className="sm:border-l sm:border-slate-800/60 sm:pl-6">
+          <div className="sm:border-l sm:border-[#2e2e35]/60 sm:pl-6">
             <p className={`${S.fieldLabel} mb-2`} style={body}>Recall alert</p>
             <p className="text-sm text-slate-300 leading-relaxed" style={body}>{report.additionalContext.recallPotential}</p>
           </div>
-          <div className="sm:border-l sm:border-slate-800/60 sm:pl-6">
+          <div className="sm:border-l sm:border-[#2e2e35]/60 sm:pl-6">
             <p className={`${S.fieldLabel} mb-2`} style={body}>Prevention</p>
             <p className="text-sm text-slate-300 leading-relaxed" style={body}>{report.additionalContext.prevention}</p>
           </div>
@@ -384,13 +384,13 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           {report.followUpQuestions.map((q, i) => {
             const entry = getEntry(i);
             return (
-              <div key={i} className="rounded-xl overflow-hidden border border-slate-800/60">
+              <div key={i} className="rounded-xl overflow-hidden border border-[#2e2e35]/60">
                 {/* Question row */}
                 <button
                   type="button"
                   onClick={() => handleQuestionClick(i)}
                   disabled={!onAskFollowUp || entry.status !== 'idle'}
-                  className="flex items-start gap-3 bg-black/40 hover:bg-slate-900/60 p-4 text-left w-full transition-all group disabled:cursor-default disabled:hover:bg-black/40"
+                  className="flex items-start gap-3 bg-black/40 hover:bg-[#18181c]/60 p-4 text-left w-full transition-all group disabled:cursor-default disabled:hover:bg-black/40"
                   style={body}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${entry.status === 'done' ? 'bg-emerald-500' : 'bg-orange-500 group-hover:bg-orange-400'}`} />
@@ -404,7 +404,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
                 {/* User input area */}
                 {(entry.status === 'open' || entry.status === 'loading') && (
-                  <div className="px-4 pb-4 pt-3 bg-slate-900/40 border-t border-slate-800/60 flex flex-col gap-3">
+                  <div className="px-4 pb-4 pt-3 bg-[#18181c]/40 border-t border-[#2e2e35]/60 flex flex-col gap-3">
                     <p className="text-xs text-slate-500" style={body}>Your answer:</p>
                     <textarea
                       autoFocus
@@ -414,7 +414,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
                       onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSubmitAnswer(q, i); }}
                       placeholder="Type your answer here…"
                       disabled={entry.status === 'loading'}
-                      className="w-full bg-black/40 border border-slate-700/60 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-orange-500/50 disabled:opacity-50"
+                      className="w-full bg-black/40 border border-[#2e2e35]/60 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-orange-500/50 disabled:opacity-50"
                       style={body}
                     />
                     {entry.error && <p className="text-xs text-rose-400" style={body}>{entry.error}</p>}
@@ -434,7 +434,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
 
                 {/* AI answer */}
                 {entry.status === 'done' && entry.answer && (
-                  <div className="px-4 pb-4 pt-3 bg-slate-900/40 border-t border-slate-800/60">
+                  <div className="px-4 pb-4 pt-3 bg-[#18181c]/40 border-t border-[#2e2e35]/60">
                     <p className="text-xs text-slate-500 mb-2" style={body}>Your answer: <span className="text-slate-400">{entry.userInput}</span></p>
                     <p className="text-sm text-slate-300 leading-relaxed" style={body}>{entry.answer}</p>
                   </div>
@@ -450,7 +450,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <button
           aria-label="Start a new diagnostic session"
           onClick={onReset}
-          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]"
           style={{ fontFamily: "'Open Sans', sans-serif", fontStyle: 'normal' }}
         >
           Start New Diagnostic

@@ -294,7 +294,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
           >
             <div
               aria-hidden="true"
-              className="w-16 h-16 rounded-full border-4 border-slate-800 border-t-orange-500 animate-spin"
+              className="w-16 h-16 rounded-full border-4 border-[#2e2e35] border-t-orange-500 animate-spin"
             />
             <div className="text-center">
               <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "'Open Sans', sans-serif" }}>
@@ -349,7 +349,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/60 py-8 px-4 mt-20" style={{ background: '#0e0e10' }}>
+      <footer className="border-t border-[#2e2e35]/60 py-8 px-4 mt-20" style={{ background: '#0e0e10' }}>
         <div className="max-w-lg md:max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
             <p className="text-slate-600 text-sm" style={{ fontFamily: "'Open Sans', sans-serif" }}>

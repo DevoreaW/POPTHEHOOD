@@ -11,7 +11,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
 
   return (
     <header
-      className="bg-gray-950 text-white py-4 px-4 sticky top-0 z-50 border-b border-slate-800/60"
+      className="bg-[#1f1f24] text-white py-4 px-4 sticky top-0 z-50 border-b border-[#2e2e35]/60"
       role="banner"
     >
       <div className="max-w-lg md:max-w-4xl mx-auto flex items-center justify-between">
@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
         {/* ── Logo — clickable, goes back to landing ── */}
         <button
           onClick={onLogoClick}
-          className="flex items-center gap-3 bg-transparent border-none cursor-pointer p-0 text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 rounded-xl group"
+          className="flex items-center gap-3 bg-transparent border-none cursor-pointer p-0 text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] rounded-xl group"
           aria-label="Go to home screen"
         >
           <LogoMark compact />

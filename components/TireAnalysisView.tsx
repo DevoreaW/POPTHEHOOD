@@ -12,10 +12,10 @@ const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:    'bg-gray-950 rounded-2xl p-5 sm:p-8 border border-slate-800/60',
+  card:    'bg-[#1f1f24] rounded-2xl p-5 sm:p-8 border border-[#2e2e35]/60',
   secIcon: 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secDiv:  'flex-1 h-px bg-slate-800/80',
-  subCard: 'bg-black/40 border border-slate-800/60 rounded-xl p-5',
+  secDiv:  'flex-1 h-px bg-[#2e2e35]/80',
+  subCard: 'bg-black/40 border border-[#2e2e35]/60 rounded-xl p-5',
   label:   'text-[10px] font-bold text-slate-500 uppercase tracking-widest',
 };
 
@@ -104,10 +104,10 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
               <button
                 aria-label={isSaved ? 'Saved' : 'Save tire report to history'}
                 onClick={handleSave}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]
                   ${isSaved
                     ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
-                    : 'bg-black/40 text-slate-500 border-slate-800 hover:border-orange-500/40 hover:text-orange-400'
+                    : 'bg-black/40 text-slate-500 border-[#2e2e35] hover:border-orange-500/40 hover:text-orange-400'
                   }`}
                 style={body}
               >
@@ -127,7 +127,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
               <button
                 aria-label="Share tire scan results"
                 onClick={handleShare}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-950 bg-black/40 text-slate-500 border-slate-800 hover:border-orange-500/40 hover:text-orange-400"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] bg-black/40 text-slate-500 border-[#2e2e35] hover:border-orange-500/40 hover:text-orange-400"
                 style={body}
               >
                 {shareState === 'copied' ? (
@@ -143,7 +143,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
           </div>
 
           {/* Health score */}
-          <div className="flex items-center gap-5 bg-black/40 border border-slate-800/60 px-6 py-4 rounded-xl self-start md:self-auto">
+          <div className="flex items-center gap-5 bg-black/40 border border-[#2e2e35]/60 px-6 py-4 rounded-xl self-start md:self-auto">
             <div className="text-center">
               <p className={`${S.label} mb-1`} style={body}>Health Score</p>
               <p
@@ -188,7 +188,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
           <p className="text-4xl sm:text-5xl font-bold text-white mb-6" style={body}>
             {report.estimatedTreadDepth}
           </p>
-          <div className="w-full bg-black/40 border border-slate-800/60 h-3 rounded-full overflow-hidden">
+          <div className="w-full bg-black/40 border border-[#2e2e35]/60 h-3 rounded-full overflow-hidden">
             <div
               className={`h-full ${getScoreBg(report.healthScore)} transition-all duration-1000`}
               style={{ width: `${report.healthScore}%` }}
@@ -215,7 +215,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {report.findings.map((finding, i) => (
-            <div key={i} className="flex items-start gap-3 bg-black/40 border border-slate-800/60 p-4 rounded-xl">
+            <div key={i} className="flex items-start gap-3 bg-black/40 border border-[#2e2e35]/60 p-4 rounded-xl">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0" />
               <span className="text-slate-400 text-sm leading-relaxed" style={body}>{finding}</span>
             </div>
@@ -272,7 +272,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
         <button
           aria-label="Scan another tire"
           onClick={onReset}
-          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-950"
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]"
           style={{ fontFamily: "'Open Sans', sans-serif", fontStyle: 'normal' }}
         >
           Scan Another Tire
