@@ -154,7 +154,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
               </p>
             </div>
             <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
-              <circle cx="28" cy="28" r="22" fill="none" stroke="#1e293b" strokeWidth="5" />
+              <circle cx="28" cy="28" r="22" fill="none" stroke="#1e3028" strokeWidth="5" />
               <circle
                 cx="28" cy="28" r="22" fill="none"
                 stroke={report.healthScore >= 80 ? '#10b981' : report.healthScore >= 50 ? '#f59e0b' : '#f43f5e'}
