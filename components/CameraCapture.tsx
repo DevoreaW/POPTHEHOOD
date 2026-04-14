@@ -140,6 +140,18 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
       />
 
       {!error && !isStarting && (
+        <div className="mt-4 w-full max-w-lg flex justify-center gap-4 flex-wrap px-2">
+          {[['Good lighting', 'natural daylight'], ['6–12 in. away', 'fill the frame'], ['Aim at grooves', 'not the sidewall'], ['Hold steady', 'no blur']].map(([tip, sub]) => (
+            <div key={tip} className="flex items-center gap-1.5">
+              <span className="w-1 h-1 rounded-full bg-orange-500 shrink-0" />
+              <span className="text-[10px] text-white/50 font-semibold">{tip}</span>
+              <span className="text-[10px] text-white/30">— {sub}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!error && !isStarting && (
         <div className="mt-8 flex items-center justify-between w-full max-w-xs">
           <button
             onClick={onClose}

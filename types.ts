@@ -11,6 +11,8 @@ export interface VehicleInfo {
   year: string;
   mileage: string;
   engine?: string;
+  transmission?: string;
+  recentRepairs?: string;
 }
 
 export interface DiagnosticInput {

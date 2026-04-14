@@ -168,7 +168,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   prefill,
   onPrefillUsed,
 }) => {
-  const [vehicle, setVehicle]             = useState<VehicleInfo>({ make: '', model: '', year: '', mileage: '', engine: '' });
+  const [vehicle, setVehicle]             = useState<VehicleInfo>({ make: '', model: '', year: '', mileage: '', engine: '', transmission: '', recentRepairs: '' });
   const [description, setDescription]     = useState('');
   const [interimText, setInterimText]     = useState('');
   const [obdCodes, setObdCodes]           = useState('');
@@ -268,7 +268,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       const formatted = digits ? Number(digits).toLocaleString() : '';
       setVehicle(p => ({ ...p, mileage: formatted }));
     }
-    else if (name === 'make' || name === 'model' || name === 'year') setVehicle(p => ({ ...p, [name]: value }));
+    else if (name === 'make' || name === 'model' || name === 'year' || name === 'recentRepairs') setVehicle(p => ({ ...p, [name]: value }));
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -331,7 +331,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const handleToggleManual = () => {
     setManualEntry(p => !p);
-    setVehicle({ make: '', model: '', year: '', mileage: vehicle.mileage, engine: '' });
+    setVehicle({ make: '', model: '', year: '', mileage: vehicle.mileage, engine: '', transmission: vehicle.transmission, recentRepairs: vehicle.recentRepairs });
   };
 
   const isTireReport = (item: any): item is TireAnalysisReport => 'healthScore' in item;
@@ -488,6 +488,34 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 <label className={S.fieldLabel} style={body}>Mileage</label>
                 <input name="mileage" inputMode="numeric" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Transmission</label>
+                  <div className="relative">
+                    <select name="transmission" value={vehicle.transmission || ''} onChange={handleSelectChange} className={S.selectBase} style={body}>
+                      <option value="">Unknown / not sure</option>
+                      <option value="Automatic">Automatic</option>
+                      <option value="Manual">Manual (stick shift)</option>
+                      <option value="CVT">CVT</option>
+                      <option value="DCT">Dual-Clutch (DCT)</option>
+                      <option value="Electric">Electric / Single-speed</option>
+                    </select>
+                    <ChevronDown />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Recent repairs or maintenance <span className="text-slate-700 normal-case font-normal">(optional)</span></label>
+                  <input
+                    name="recentRepairs"
+                    value={vehicle.recentRepairs || ''}
+                    onChange={handleInputChange}
+                    placeholder="e.g. oil change 2k miles ago, new battery"
+                    className={S.inputBase}
+                    style={body}
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">
@@ -543,6 +571,34 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               <div className="space-y-2">
                 <label className={S.fieldLabel} style={body}>Mileage</label>
                 <input name="mileage" inputMode="numeric" value={vehicle.mileage} onChange={handleInputChange} placeholder="e.g. 45,000" className={S.inputBase} style={body} />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Transmission</label>
+                  <div className="relative">
+                    <select name="transmission" value={vehicle.transmission || ''} onChange={handleSelectChange} className={S.selectBase} style={body}>
+                      <option value="">Unknown / not sure</option>
+                      <option value="Automatic">Automatic</option>
+                      <option value="Manual">Manual (stick shift)</option>
+                      <option value="CVT">CVT</option>
+                      <option value="DCT">Dual-Clutch (DCT)</option>
+                      <option value="Electric">Electric / Single-speed</option>
+                    </select>
+                    <ChevronDown />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className={S.fieldLabel} style={body}>Recent repairs or maintenance <span className="text-slate-700 normal-case font-normal">(optional)</span></label>
+                  <input
+                    name="recentRepairs"
+                    value={vehicle.recentRepairs || ''}
+                    onChange={handleInputChange}
+                    placeholder="e.g. oil change 2k miles ago, new battery"
+                    className={S.inputBase}
+                    style={body}
+                  />
+                </div>
               </div>
 
               <p className="text-xs text-slate-600 pl-1" style={body}>
@@ -617,7 +673,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   value={description + (interimText ? (description ? ' ' : '') + interimText : '')}
                   onChange={handleInputChange}
                   rows={5}
-                  placeholder="Example: My car makes a loud squealing noise when I brake…"
+                  placeholder="e.g. Loud knocking from the engine at idle, gets worse when accelerating. Started 3 days ago, only happens when the engine is warm. No warning lights."
                   className={`w-full min-h-[120px] px-5 py-4 bg-black/40 border rounded-2xl outline-none resize-none text-white text-sm leading-relaxed transition-colors font-medium
                     ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-slate-800 focus:border-orange-500/50'}`}
                   style={{ ...body, color: '#f1f5f9', caretColor: '#f97316' }}
@@ -635,11 +691,18 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   {charCount} chars
                 </div>
               </div>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1">
+                {[['When?', 'cold start / hot / always'], ['Sound?', 'knock, squeal, grind, hiss'], ['Where?', 'engine, brakes, steering'], ['How long?', 'days, weeks, getting worse']].map(([label, hint]) => (
+                  <span key={label} className="text-[10px] text-slate-600" style={body}>
+                    <span className="text-slate-500 font-semibold">{label}</span> {hint}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label className={S.fieldLabel} style={body}>OBD-II Codes (optional)</label>
+                <label className={S.fieldLabel} style={body}>OBD-II Codes <span className="text-slate-700 normal-case font-normal">(optional — but highly recommended)</span></label>
                 <input
                   name="obdCodes"
                   value={obdCodes}
@@ -647,6 +710,9 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   placeholder="P0300, P0420…"
                   className={`${S.inputBase} font-mono`}
                 />
+                <p className="text-[10px] text-slate-600 pl-1 leading-relaxed" style={body}>
+                  Have a code reader or scanner app? OBD codes narrow the diagnosis from dozens of possibilities to 2–3. They improve accuracy more than anything else.
+                </p>
               </div>
               <div className="space-y-2">
                 <label className={S.fieldLabel} style={body}>Photos or videos</label>

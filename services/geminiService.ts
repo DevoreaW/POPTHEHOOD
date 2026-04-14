@@ -78,6 +78,8 @@ Model: ${vehicle.model}
 Year: ${vehicle.year}
 Mileage: ${vehicle.mileage}
 Engine Type: ${vehicle.engine || 'Unknown'}
+Transmission: ${vehicle.transmission || 'Unknown'}
+Recent Repairs / Maintenance: ${vehicle.recentRepairs || 'None provided'}
 
 USER SYMPTOM DESCRIPTION:
 ${input.description}
@@ -116,15 +118,34 @@ export const analyzeTireTread = async (
   imageData: string,
   mimeType: string
 ): Promise<TireAnalysisReport> => {
-  const prompt = `You are a tire specialist. Analyze this tire image and respond ONLY with a valid JSON object:
+  const prompt = `You are an ASE-certified tire specialist with 20+ years of experience. Analyze this tire image with the following inspection criteria:
+
+TREAD DEPTH ASSESSMENT:
+- Legal minimum is 2/32" (wear bars flush with tread). Replace Soon at 4/32", Excellent at 8/32"+.
+- Estimate depth in 32nds of an inch based on tread groove depth visible in the image.
+
+WEAR PATTERN DIAGNOSIS:
+- Center wear → over-inflation
+- Edge (shoulder) wear → under-inflation
+- One-sided wear → alignment or camber issue
+- Cupping / scalloping → worn shocks or struts
+- Patchy / flat spots → hard braking or imbalance
+
+VISUAL ANOMALY DETECTION:
+- Sidewall bulges or bubbles (blowout risk — flag as Dangerous)
+- Cracking or dry rot in sidewall or tread
+- Embedded objects (nails, screws, glass)
+- Uneven tread blocks indicating belt separation
+
+Respond ONLY with a valid JSON object:
 {
-  "healthScore": number,
-  "estimatedTreadDepth": "string",
+  "healthScore": number (0–100, where 100 = new tire),
+  "estimatedTreadDepth": "string (e.g. '6/32\\"')",
   "condition": "Excellent" | "Good" | "Fair" | "Replace Soon" | "Dangerous",
-  "findings": ["string"],
-  "recommendation": "string",
-  "safetyWarning": "string",
-  "visualAnomalies": ["string"]
+  "findings": ["string — specific observations"],
+  "recommendation": "string — clear action for the owner",
+  "safetyWarning": "string — only if immediate safety risk, omit otherwise",
+  "visualAnomalies": ["string — list each anomaly found, empty array if none"]
 }`;
 
   const base64Data = imageData.split(',')[1] || imageData;
