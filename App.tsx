@@ -361,7 +361,7 @@ const [consentGiven, setConsentGiven] = useState<boolean>(() => {
                   onTireScan={handleTireScan}
                   onFindServices={handleFindServices}
                   isLoading={isLoading}
-                  history={history}
+                  history={isSignedIn ? history : []}
                   onHistorySelect={handleHistorySelect}
                   onHistoryClear={clearHistory}
                 />
