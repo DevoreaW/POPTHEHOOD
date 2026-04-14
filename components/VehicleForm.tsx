@@ -1110,11 +1110,22 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   {charCount} chars
                 </div>
               </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1">
-                {[['When?', 'cold start / hot / always'], ['Sound?', 'knock, squeal, grind, hiss'], ['Where?', 'engine, brakes, steering'], ['How long?', 'days, weeks, getting worse']].map(([label, hint]) => (
-                  <span key={label} className="text-[10px] text-slate-600" style={body}>
-                    <span className="text-slate-500 font-semibold">{label}</span> {hint}
-                  </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                {[
+                  { label: 'When?',     hint: 'Cold start, hot engine, always', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
+                  { label: 'Sound?',    hint: 'Knock, squeal, grind, hiss',     icon: 'M15.536 8.464a5 5 0 010 7.072M12 18.364a9 9 0 000-12.728M8.464 8.464a5 5 0 000 7.072' },
+                  { label: 'Where?',   hint: 'Engine, brakes, steering',        icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z' },
+                  { label: 'How long?', hint: 'Days, weeks, getting worse',     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+                ].map(({ label, hint, icon }) => (
+                  <div key={label} className="flex items-start gap-2 bg-black/30 border border-[#2e2e35]/60 rounded-xl px-3 py-2.5">
+                    <svg className="w-3.5 h-3.5 text-orange-500/60 flex-shrink-0 mt-px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={icon} />
+                    </svg>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-0.5" style={body}>{label}</p>
+                      <p className="text-[10px] text-slate-600 leading-snug" style={body}>{hint}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1130,7 +1141,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   className={`${S.inputBase} font-mono`}
                 />
                 <p className="text-[10px] text-slate-600 pl-1 leading-relaxed" style={body}>
-                  Have a code reader or scanner app? OBD codes narrow the diagnosis from dozens of possibilities to 2–3. They improve accuracy more than anything else.
+                  Narrows results from dozens of causes to 2–3. Biggest accuracy boost.
                 </p>
               </div>
               <div className="space-y-2">
