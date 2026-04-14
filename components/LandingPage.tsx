@@ -262,7 +262,7 @@ const NavBar: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => {
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-      background: scrolled ? 'rgba(3,7,18,0.96)' : 'rgba(3,7,18,0.6)',
+      background: scrolled ? `${C.base}f7` : `${C.base}99`,
       backdropFilter: 'blur(20px)',
       borderBottom: `1px solid ${scrolled ? C.border : 'transparent'}`,
       transition: 'background 0.3s, border-color 0.3s',
