@@ -11,7 +11,7 @@ export interface VehicleInfo {
   year: string;
   mileage: string;
   engine?: string;
-  transmission?: string;
+  trim?: string;
   recentRepairs?: string;
 }
 

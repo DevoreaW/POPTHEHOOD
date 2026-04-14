@@ -78,7 +78,7 @@ Model: ${vehicle.model}
 Year: ${vehicle.year}
 Mileage: ${vehicle.mileage}
 Engine Type: ${vehicle.engine || 'Unknown'}
-Transmission: ${vehicle.transmission || 'Unknown'}
+Trim: ${vehicle.trim || 'Unknown'}
 Recent Repairs / Maintenance: ${vehicle.recentRepairs || 'None provided'}
 
 USER SYMPTOM DESCRIPTION:
