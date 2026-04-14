@@ -125,7 +125,7 @@ const GlobalStyles = () => (
       .pth-cta-row    { flex-direction: column; align-items: flex-start; }
       .pth-nav-status { display: none !important; }
       .pth-nav-signin { display: none !important; }
-      .pth-footer-row { flex-direction: column; text-align: center; gap: 20px; align-items: center; }
+      .pth-footer-row { flex-direction: column; text-align: left; gap: 20px; align-items: flex-start; }
       .pth-stat-item  { border-right: none !important; border-bottom: 1px solid ${C.border}; }
       .pth-stat-item:last-child { border-bottom: none; }
     }
@@ -783,7 +783,7 @@ const BottomCTA: React.FC<{ onCTAClick: () => void }> = ({ onCTAClick }) => (
 
 /* ─── Footer ──────────────────────────────────────────────────────────────── */
 const Footer: React.FC = () => (
-  <footer style={{ background: C.base, borderTop: `1px solid ${C.border}`, padding: '40px 40px' }}>
+  <footer style={{ background: C.base, borderTop: `1px solid ${C.border}`, padding: '40px 20px' }}>
     <div className="pth-sec-inner">
       <div className="pth-footer-row">
         <LogoMark compact />
