@@ -22,7 +22,7 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
 
   return (
     <div className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#1f1f24] border border-[#2e2e35]/60 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+      <div className="bg-[#e8e6e3] border border-[#d4d1cd]/60 rounded-2xl p-8 max-w-md w-full shadow-2xl">
 
         {/* ── Header ── */}
         <div className="flex items-center gap-4 mb-6">
@@ -33,10 +33,10 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
           </div>
           <div>
             {/* Title: regular Barlow bold — readable at modal size */}
-            <h2 className="text-lg font-bold text-white leading-none" style={body}>
+            <h2 className="text-lg font-bold text-[#1a1a1c] leading-none" style={body}>
               Before you begin
             </h2>
-            <p className="text-xs text-slate-600 mt-1" style={body}>
+            <p className="text-xs text-slate-500 mt-1" style={body}>
               Important information
             </p>
           </div>
@@ -63,17 +63,17 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
                 onChange={e => setAgeConfirmed(e.target.checked)}
                 className="sr-only"
               />
-              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${ageConfirmed ? 'bg-orange-500 border-orange-500' : 'border-[#2e2e35] bg-black/40'}`}>
+              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${ageConfirmed ? 'bg-orange-500 border-orange-500' : 'border-[#d4d1cd] bg-black/[0.06]'}`}>
                 {ageConfirmed && (
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-[#1a1a1c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
               </div>
             </div>
-            <span className="text-slate-400 text-sm leading-snug" style={body}>
+            <span className="text-slate-500 text-sm leading-snug" style={body}>
               I confirm that I am{' '}
-              <strong className="text-white font-semibold">13 years of age or older</strong>
+              <strong className="text-[#1a1a1c] font-semibold">13 years of age or older</strong>
             </span>
           </label>
 
@@ -86,15 +86,15 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
                 onChange={e => setTermsAccepted(e.target.checked)}
                 className="sr-only"
               />
-              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${termsAccepted ? 'bg-orange-500 border-orange-500' : 'border-[#2e2e35] bg-black/40'}`}>
+              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${termsAccepted ? 'bg-orange-500 border-orange-500' : 'border-[#d4d1cd] bg-black/[0.06]'}`}>
                 {termsAccepted && (
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-[#1a1a1c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
               </div>
             </div>
-            <span className="text-slate-400 text-sm leading-snug" style={body}>
+            <span className="text-slate-500 text-sm leading-snug" style={body}>
               I agree to the{' '}
               <a href="/terms" className="text-orange-400 hover:text-orange-300 underline underline-offset-2 transition-colors">
                 Terms of Service
@@ -111,10 +111,10 @@ const ConsentBanner: React.FC<ConsentBannerProps> = ({ onAccept }) => {
         <button
           onClick={handleAccept}
           disabled={!canAccept}
-          className={`not-italic w-full py-3 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]
+          className={`not-italic w-full py-3 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2]
             ${canAccept
-              ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
-              : 'bg-black/40 border border-[#2e2e35] text-slate-700 cursor-not-allowed'
+              ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#1a1a1c] shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99]'
+              : 'bg-black/[0.06] border border-[#d4d1cd] text-slate-400 cursor-not-allowed'
             }`}
           style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 900, fontSize: 18, letterSpacing: '0.04em', fontStyle: 'normal' }}
         >

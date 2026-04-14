@@ -12,10 +12,10 @@ const body: React.CSSProperties = { fontFamily: "'Open Sans', sans-serif" };
 
 /* ─── Shared style constants ──────────────────────────────────────────────── */
 const S = {
-  card:    'bg-[#1f1f24] rounded-2xl p-5 sm:p-8 border border-[#2e2e35]/60',
+  card:    'bg-[#e8e6e3] rounded-2xl p-5 sm:p-8 border border-[#d4d1cd]/60',
   secIcon: 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-  secDiv:  'flex-1 h-px bg-[#2e2e35]/80',
-  subCard: 'bg-black/40 border border-[#2e2e35]/60 rounded-xl p-5',
+  secDiv:  'flex-1 h-px bg-[#d4d1cd]/80',
+  subCard: 'bg-black/[0.06] border border-[#d4d1cd]/60 rounded-xl p-5',
   label:   'text-[10px] font-bold text-slate-500 uppercase tracking-widest',
 };
 
@@ -29,7 +29,7 @@ const SectionHead: React.FC<{
   <div className="flex items-center gap-3 mb-6 overflow-hidden">
     <div className={`${S.secIcon} border ${accent} flex-shrink-0`}>{icon}</div>
     <span
-      className="font-bold text-white flex-shrink-0 tracking-wide uppercase"
+      className="font-bold text-[#1a1a1c] flex-shrink-0 tracking-wide uppercase"
       style={{ ...body, fontSize: 'clamp(13px, 3.5vw, 16px)' }}
     >
       {title}
@@ -47,7 +47,7 @@ const getConditionColor = (cond: string) => {
     case 'Fair':         return 'text-amber-400';
     case 'Replace Soon': return 'text-orange-400';
     case 'Dangerous':    return 'text-rose-400';
-    default:             return 'text-slate-400';
+    default:             return 'text-slate-500';
   }
 };
 
@@ -98,16 +98,16 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
           <div>
             <div className="flex items-center gap-3 mb-1">
               {/* Title: regular Barlow bold */}
-              <h2 className="text-xl sm:text-2xl font-bold text-white" style={body}>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1a1a1c]" style={body}>
                 Tire Scan Results
               </h2>
               <button
                 aria-label={isSaved ? 'Saved' : 'Save tire report to history'}
                 onClick={handleSave}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2]
                   ${isSaved
                     ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
-                    : 'bg-black/40 text-slate-500 border-[#2e2e35] hover:border-orange-500/40 hover:text-orange-400'
+                    : 'bg-black/[0.06] text-slate-500 border-[#d4d1cd] hover:border-orange-500/40 hover:text-orange-400'
                   }`}
                 style={body}
               >
@@ -127,7 +127,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
               <button
                 aria-label="Share tire scan results"
                 onClick={handleShare}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10] bg-black/40 text-slate-500 border-[#2e2e35] hover:border-orange-500/40 hover:text-orange-400"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2] bg-black/[0.06] text-slate-500 border-[#d4d1cd] hover:border-orange-500/40 hover:text-orange-400"
                 style={body}
               >
                 {shareState === 'copied' ? (
@@ -137,13 +137,13 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
                 )}
               </button>
             </div>
-            <p className="text-xs text-slate-600" style={body}>
+            <p className="text-xs text-slate-500" style={body}>
               Digital tread analysis report
             </p>
           </div>
 
           {/* Health score */}
-          <div className="flex items-center gap-5 bg-black/40 border border-[#2e2e35]/60 px-6 py-4 rounded-xl self-start md:self-auto">
+          <div className="flex items-center gap-5 bg-black/[0.06] border border-[#d4d1cd]/60 px-6 py-4 rounded-xl self-start md:self-auto">
             <div className="text-center">
               <p className={`${S.label} mb-1`} style={body}>Health Score</p>
               <p
@@ -154,7 +154,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
               </p>
             </div>
             <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
-              <circle cx="28" cy="28" r="22" fill="none" stroke="#2e2e35" strokeWidth="5" />
+              <circle cx="28" cy="28" r="22" fill="none" stroke="#d4d1cd" strokeWidth="5" />
               <circle
                 cx="28" cy="28" r="22" fill="none"
                 stroke={report.healthScore >= 80 ? '#10b981' : report.healthScore >= 50 ? '#f59e0b' : '#f43f5e'}
@@ -179,25 +179,25 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
           >
             {report.condition}
           </p>
-          <p className="text-slate-400 text-sm leading-relaxed" style={body}>{report.recommendation}</p>
+          <p className="text-slate-500 text-sm leading-relaxed" style={body}>{report.recommendation}</p>
         </section>
 
         {/* Tread depth */}
         <section className={S.card}>
           <p className={`${S.label} mb-3`} style={body}>Tread depth est.</p>
-          <p className="text-4xl sm:text-5xl font-bold text-white mb-6" style={body}>
+          <p className="text-4xl sm:text-5xl font-bold text-[#1a1a1c] mb-6" style={body}>
             {report.estimatedTreadDepth}
           </p>
-          <div className="w-full bg-black/40 border border-[#2e2e35]/60 h-3 rounded-full overflow-hidden">
+          <div className="w-full bg-black/[0.06] border border-[#d4d1cd]/60 h-3 rounded-full overflow-hidden">
             <div
               className={`h-full ${getScoreBg(report.healthScore)} transition-all duration-1000`}
               style={{ width: `${report.healthScore}%` }}
             />
           </div>
           <div className="flex justify-between mt-2">
-            <span className="text-xs text-slate-700" style={body}>Replace</span>
-            <span className="text-xs text-slate-700" style={body}>Marginal</span>
-            <span className="text-xs text-slate-700" style={body}>Healthy</span>
+            <span className="text-xs text-slate-400" style={body}>Replace</span>
+            <span className="text-xs text-slate-400" style={body}>Marginal</span>
+            <span className="text-xs text-slate-400" style={body}>Healthy</span>
           </div>
         </section>
       </div>
@@ -206,7 +206,7 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
       <section className={S.card}>
         <SectionHead
           title="Detailed Findings"
-          accent="text-slate-400 bg-slate-500/10 border-slate-500/20"
+          accent="text-slate-500 bg-slate-500/10 border-slate-500/20"
           icon={
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -215,9 +215,9 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {report.findings.map((finding, i) => (
-            <div key={i} className="flex items-start gap-3 bg-black/40 border border-[#2e2e35]/60 p-4 rounded-xl">
+            <div key={i} className="flex items-start gap-3 bg-black/[0.06] border border-[#d4d1cd]/60 p-4 rounded-xl">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0" />
-              <span className="text-slate-400 text-sm leading-relaxed" style={body}>{finding}</span>
+              <span className="text-slate-500 text-sm leading-relaxed" style={body}>{finding}</span>
             </div>
           ))}
         </div>
@@ -272,12 +272,12 @@ const TireAnalysisView: React.FC<TireAnalysisViewProps> = ({ report, onReset, on
         <button
           aria-label="Scan another tire"
           onClick={onReset}
-          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#0e0e10]"
+          className="not-italic bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#1a1a1c] px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#f5f4f2]"
           style={{ fontFamily: "'Open Sans', sans-serif", fontStyle: 'normal' }}
         >
           Scan Another Tire
         </button>
-        <p className="text-xs text-slate-700 max-w-lg text-center leading-relaxed" style={body}>
+        <p className="text-xs text-slate-400 max-w-lg text-center leading-relaxed" style={body}>
           AI-assisted visual inspection only. For accurate tread depth, use a physical gauge. Replace tires when in doubt — don't risk it.
         </p>
       </div>
