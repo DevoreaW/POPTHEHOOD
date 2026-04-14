@@ -1145,9 +1145,6 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   placeholder="P0300, P0420…"
                   className={`${S.inputBase} font-mono`}
                 />
-                <p className="text-[10px] text-slate-400 pl-1 leading-relaxed" style={body}>
-                  Narrows results from dozens of causes to 2–3. Biggest accuracy boost.
-                </p>
               </div>
               <div className="space-y-2">
                 <label className={S.fieldLabel} style={body}>Photos or videos</label>
