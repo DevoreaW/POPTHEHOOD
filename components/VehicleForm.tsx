@@ -580,18 +580,21 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   // ── Fetch models when make changes ────────────────────────────────────────
   useEffect(() => {
     if (!vehicle.make) { setApiModels([]); setApiTrims([]); return; }
+    const cacheKey = `pth_models_${vehicle.make}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) { setApiModels(JSON.parse(cached)); return; }
+
     const controller = new AbortController();
     setLoadingModels(true);
     setApiModels([]);
     setApiTrims([]);
-    const make = encodeURIComponent(vehicle.make.toLowerCase());
-    fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${make}`, { signal: controller.signal })
+
+    fetch(`/api/vehicles?type=models&make=${encodeURIComponent(vehicle.make)}`, { signal: controller.signal })
       .then(r => r.json())
       .then(data => {
-        const names: string[] = [...new Set<string>(
-          (data.Models || []).map((m: any) => m.model_name as string)
-        )].sort();
-        setApiModels(names.length ? names : (CAR_MODELS[vehicle.make] || []));
+        const names: string[] = data.models?.length ? data.models : (CAR_MODELS[vehicle.make] || []);
+        sessionStorage.setItem(cacheKey, JSON.stringify(names));
+        setApiModels(names);
       })
       .catch(err => { if (err.name !== 'AbortError') setApiModels(CAR_MODELS[vehicle.make] || []); })
       .finally(() => setLoadingModels(false));
@@ -601,19 +604,21 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   // ── Fetch trims when make + model changes ─────────────────────────────────
   useEffect(() => {
     if (!vehicle.make || !vehicle.model) { setApiTrims([]); return; }
+    const cacheKey = `pth_trims_${vehicle.make}_${vehicle.model}${vehicle.year ? `_${vehicle.year}` : ''}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) { setApiTrims(JSON.parse(cached)); return; }
+
     const controller = new AbortController();
     setLoadingTrims(true);
     setApiTrims([]);
-    const make  = encodeURIComponent(vehicle.make.toLowerCase());
-    const model = encodeURIComponent(vehicle.model.toLowerCase());
-    const yearParam = vehicle.year ? `&year=${vehicle.year}` : '';
-    fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getTrims&make=${make}&model=${model}${yearParam}`, { signal: controller.signal })
+
+    const yearParam = vehicle.year ? `&year=${encodeURIComponent(vehicle.year)}` : '';
+    fetch(`/api/vehicles?type=trims&make=${encodeURIComponent(vehicle.make)}&model=${encodeURIComponent(vehicle.model)}${yearParam}`, { signal: controller.signal })
       .then(r => r.json())
       .then(data => {
-        const trimNames: string[] = [...new Set<string>(
-          (data.Trims || []).map((t: any) => t.model_trim as string).filter(Boolean)
-        )].sort();
-        setApiTrims(trimNames.length ? trimNames : (CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []));
+        const names: string[] = data.trims?.length ? data.trims : (CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []);
+        sessionStorage.setItem(cacheKey, JSON.stringify(names));
+        setApiTrims(names);
       })
       .catch(err => { if (err.name !== 'AbortError') setApiTrims(CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []); })
       .finally(() => setLoadingTrims(false));
@@ -727,7 +732,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
   const removeFile = (idx: number) => setFiles(p => p.filter((_, i) => i !== idx));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!vehicle.make || !vehicle.model) {
       setValidationError('Please select your vehicle make and model before running a diagnosis.');
