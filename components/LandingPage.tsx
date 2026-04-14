@@ -175,11 +175,6 @@ const TowIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 );
 
-const LightningIcon = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M13 2L4.5 13.5H12L11 22l8.5-11.5H12.5L13 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 
 /* ─── Data ────────────────────────────────────────────────────────────────── */
@@ -228,14 +223,14 @@ const NAV_LINKS = [
 /* ─── Reusable: section header ────────────────────────────────────────────── */
 const SectionHead: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon, title }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 52 }}>
-    <div style={{
+    {icon && <div style={{
       width: 40, height: 40, borderRadius: 12, flexShrink: 0,
       background: C.orangeBg, border: `1px solid ${C.orangeBorder}`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       color: C.orange,
     }}>
       {icon}
-    </div>
+    </div>}
     <span style={{
       fontFamily: F, fontWeight: 700, fontSize: 11,
       color: C.textDim, letterSpacing: '0.14em',
@@ -660,7 +655,7 @@ const FeaturesSection: React.FC = () => {
   return (
     <section className="pth-sec-pad" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
       <div className="pth-sec-inner">
-        <SectionHead icon={<LightningIcon />} title="Features" />
+        <SectionHead icon={null} title="Features" />
 
         <h2 style={{
           fontFamily: F, fontWeight: 700, fontSize: 'clamp(20px, 4vw, 44px)',
