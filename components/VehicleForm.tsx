@@ -542,6 +542,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const [showTireTips, setShowTireTips]     = useState(false);
   const [manualEntry, setManualEntry]       = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [step, setStep]                     = useState<1 | 2>(1);
 
   // ── Car Query API state ────────────────────────────────────────────────────
   const [apiModels, setApiModels]         = useState<string[]>([]);
@@ -562,6 +563,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     if (prefill) {
       setVehicle(prefill.vehicle);
       setDescription(prefill.description);
+      setStep(2);
       onPrefillUsed?.();
       setTimeout(() => textAreaRef.current?.focus(), 100);
     }
@@ -577,12 +579,27 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [isRecording]);
 
+  // ── localStorage cache helpers (7-day TTL) ────────────────────────────────
+  const TTL = 7 * 24 * 60 * 60 * 1000;
+  const lsGet = (key: string): string[] | null => {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const { data, ts } = JSON.parse(raw);
+      if (Date.now() - ts > TTL) { localStorage.removeItem(key); return null; }
+      return data;
+    } catch { return null; }
+  };
+  const lsSet = (key: string, data: string[]) => {
+    try { localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() })); } catch {}
+  };
+
   // ── Fetch models when make changes ────────────────────────────────────────
   useEffect(() => {
     if (!vehicle.make) { setApiModels([]); setApiTrims([]); return; }
     const cacheKey = `pth_models_${vehicle.make}`;
-    const cached = sessionStorage.getItem(cacheKey);
-    if (cached) { setApiModels(JSON.parse(cached)); return; }
+    const cached = lsGet(cacheKey);
+    if (cached) { setApiModels(cached); return; }
 
     const controller = new AbortController();
     setLoadingModels(true);
@@ -593,7 +610,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       .then(r => r.json())
       .then(data => {
         const names: string[] = data.models?.length ? data.models : (CAR_MODELS[vehicle.make] || []);
-        sessionStorage.setItem(cacheKey, JSON.stringify(names));
+        lsSet(cacheKey, names);
         setApiModels(names);
       })
       .catch(err => { if (err.name !== 'AbortError') setApiModels(CAR_MODELS[vehicle.make] || []); })
@@ -605,8 +622,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   useEffect(() => {
     if (!vehicle.make || !vehicle.model) { setApiTrims([]); return; }
     const cacheKey = `pth_trims_${vehicle.make}_${vehicle.model}${vehicle.year ? `_${vehicle.year}` : ''}`;
-    const cached = sessionStorage.getItem(cacheKey);
-    if (cached) { setApiTrims(JSON.parse(cached)); return; }
+    const cached = lsGet(cacheKey);
+    if (cached) { setApiTrims(cached); return; }
 
     const controller = new AbortController();
     setLoadingTrims(true);
@@ -617,7 +634,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
       .then(r => r.json())
       .then(data => {
         const names: string[] = data.trims?.length ? data.trims : (CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []);
-        sessionStorage.setItem(cacheKey, JSON.stringify(names));
+        lsSet(cacheKey, names);
         setApiTrims(names);
       })
       .catch(err => { if (err.name !== 'AbortError') setApiTrims(CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []); })
@@ -751,6 +768,15 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
     setVehicle({ make: '', model: '', year: '', mileage: vehicle.mileage, engine: '', trim: '', recentRepairs: vehicle.recentRepairs });
   };
 
+  const handleNextStep = () => {
+    if (!vehicle.make || !vehicle.model) {
+      setValidationError('Please select your vehicle make and model to continue.');
+      return;
+    }
+    setValidationError(null);
+    setStep(2);
+  };
+
   const isTireReport = (item: any): item is TireAnalysisReport => 'healthScore' in item;
   const models     = apiModels.length ? apiModels : (CAR_MODELS[vehicle.make] || []);
   const trims      = apiTrims.length ? apiTrims : ((vehicle.make && vehicle.model) ? (CAR_TRIMS[`${vehicle.make}|${vehicle.model}`] || []) : []);
@@ -859,8 +885,23 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
 
+        {/* ── Step indicator ───────────────────────────────────────────────── */}
+        <div className="flex items-center gap-3 px-1">
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border transition-colors ${step === 1 ? 'bg-orange-500 border-orange-500 text-white' : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'}`} style={body}>
+              {step === 1 ? '1' : <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" /></svg>}
+            </div>
+            <span className={`text-xs font-semibold transition-colors ${step === 1 ? 'text-[#f1f5f9]' : 'text-slate-400'}`} style={body}>Your Car</span>
+          </div>
+          <div className="flex-1 h-px bg-[#4a4a52]/60" />
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border transition-colors ${step === 2 ? 'bg-orange-500 border-orange-500 text-white' : 'bg-[#4a4a52]/40 border-[#4a4a52] text-slate-500'}`} style={body}>2</div>
+            <span className={`text-xs font-semibold transition-colors ${step === 2 ? 'text-[#f1f5f9]' : 'text-slate-500'}`} style={body}>What's Wrong</span>
+          </div>
+        </div>
+
         {/* ── Vehicle Details ──────────────────────────────────────────────── */}
-        <section className={S.card}>
+        {step === 1 && <section className={S.card}>
           <SectionHead
             icon={<CarIcon />}
             title="Vehicle Details"
@@ -1033,9 +1074,46 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
               </p>
             </div>
           )}
-        </section>
+        </section>}
+
+        {/* ── Step 1 Continue / Step 2 Back ────────────────────────────────── */}
+        {step === 1 && (
+          <>
+            {validationError && (
+              <div role="alert" className="flex items-center gap-3 px-5 py-3 bg-rose-500/10 border border-rose-500/25 rounded-xl">
+                <svg className="w-4 h-4 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span className="text-sm text-rose-300" style={body}>{validationError}</span>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={handleNextStep}
+              className="w-full py-3 rounded-xl flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-[#f1f5f9] shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 active:scale-[0.99] transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-[#2a2a2e] font-bold text-base"
+              style={body}
+            >
+              Continue
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </>
+        )}
 
         {/* ── Diagnostic Information ───────────────────────────────────────── */}
+        {step === 2 && <>
+        <button
+          type="button"
+          onClick={() => { setStep(1); setValidationError(null); }}
+          className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-orange-400 transition-colors focus:outline-none"
+          style={body}
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to vehicle
+        </button>
         <section className={S.card}>
           <SectionHead
             icon={<WarningIcon />}
@@ -1199,7 +1277,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
           )}
         </section>
 
-        {/* ── Validation error ─────────────────────────────────────────── */}
+        {/* ── Validation error (step 2) ─────────────────────────────────── */}
         {validationError && (
           <div role="alert" className="flex items-center gap-3 px-5 py-3 bg-rose-500/10 border border-rose-500/25 rounded-xl">
             <svg className="w-4 h-4 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1237,6 +1315,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
             </>
           )}
         </button>
+        </>}
       </form>
 
       {/* ── History ───────────────────────────────────────────────────────── */}
