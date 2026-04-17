@@ -543,6 +543,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
   const [manualEntry, setManualEntry]       = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [step, setStep]                     = useState<1 | 2>(1);
+  const [descFocused, setDescFocused]       = useState(false);
 
   // ── Car Query API state ────────────────────────────────────────────────────
   const [apiModels, setApiModels]         = useState<string[]>([]);
@@ -967,7 +968,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className={S.fieldLabel} style={body}>Recent repairs or maintenance <span className="text-slate-400 normal-case font-normal">(optional)</span></label>
+                  <label className={S.fieldLabel} style={body}>Recent repairs <span className="text-slate-400 normal-case font-normal">(optional)</span></label>
                   <input
                     name="recentRepairs"
                     value={vehicle.recentRepairs || ''}
@@ -1054,7 +1055,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className={S.fieldLabel} style={body}>Recent repairs or maintenance <span className="text-slate-400 normal-case font-normal">(optional)</span></label>
+                  <label className={S.fieldLabel} style={body}>Recent repairs <span className="text-slate-400 normal-case font-normal">(optional)</span></label>
                   <input
                     name="recentRepairs"
                     value={vehicle.recentRepairs || ''}
@@ -1167,7 +1168,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
 
           <div className="space-y-3 sm:space-y-4">
             <div className="space-y-2">
-              <label className={S.fieldLabel} style={body}>What's happening? — symptoms, noises, leaks</label>
+              <label className={S.fieldLabel} style={body}>Describe the problem</label>
               <div className="relative">
                 <textarea
                   ref={textAreaRef}
@@ -1176,6 +1177,8 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   onChange={handleInputChange}
                   rows={5}
                   placeholder="e.g. Loud knocking from the engine at idle, gets worse when accelerating. Started 3 days ago, only happens when the engine is warm. No warning lights."
+                  onFocus={() => setDescFocused(true)}
+                  onBlur={() => setDescFocused(false)}
                   className={`w-full min-h-[120px] px-5 py-4 bg-black/40 border rounded-2xl outline-none resize-none text-[#f1f5f9] text-sm leading-relaxed transition-colors font-medium
                     ${isRecording ? 'border-orange-500/40 bg-orange-900/5' : 'border-[#4a4a52] focus:border-orange-500/50'}`}
                   style={{ ...body, color: '#f1f5f9', caretColor: "#f97316" }}
@@ -1193,6 +1196,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   {charCount} chars
                 </div>
               </div>
+              {(descFocused || !description) && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
                 {[
                   { label: 'When?',     hint: 'Cold start, hot engine, always', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
@@ -1211,11 +1215,12 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                   </div>
                 ))}
               </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label className={S.fieldLabel} style={body}>OBD-II Codes <span className="text-slate-400 normal-case font-normal">(optional — but highly recommended)</span></label>
+                <label className={S.fieldLabel} style={body}>OBD-II Codes <span className="text-slate-400 normal-case font-normal">(optional)</span></label>
                 <input
                   name="obdCodes"
                   value={obdCodes}
@@ -1225,7 +1230,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({
                 />
               </div>
               <div className="space-y-2">
-                <label className={S.fieldLabel} style={body}>Photos or videos</label>
+                <label className={S.fieldLabel} style={body}>Attach media <span className="text-slate-400 normal-case font-normal">(optional)</span></label>
                 <button
                   type="button"
                   aria-label="Attach photos or videos"
