@@ -28,14 +28,30 @@ const SectionHead: React.FC<{
   title: string;
   accent?: string;
   right?: React.ReactNode;
-}> = ({ icon, title, accent = 'text-orange-500 bg-orange-500/10 border-orange-500/20', right }) => (
-  <div className="flex items-center gap-3 mb-6 overflow-hidden">
+  collapsible?: boolean;
+  isOpen?: boolean;
+  onToggle?: () => void;
+}> = ({ icon, title, accent = 'text-orange-500 bg-orange-500/10 border-orange-500/20', right, collapsible, isOpen, onToggle }) => (
+  <div
+    className={`flex items-center gap-3 overflow-hidden ${collapsible ? 'cursor-pointer select-none' : 'mb-6'}`}
+    onClick={collapsible ? onToggle : undefined}
+    role={collapsible ? 'button' : undefined}
+    aria-expanded={collapsible ? isOpen : undefined}
+  >
     <div className={`${S.secIcon} border ${accent} flex-shrink-0`}>{icon}</div>
     <span className="font-bold text-[#f1f5f9] flex-shrink-0 tracking-wide uppercase" style={{ ...body, fontSize: 'clamp(13px, 3.5vw, 16px)' }}>
       {title}
     </span>
     <div className={S.secDiv} />
     {right && <div className="flex-shrink-0 ml-1">{right}</div>}
+    {collapsible && (
+      <svg
+        className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    )}
   </div>
 );
 
@@ -78,6 +94,8 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
   const [saveState, setSaveState]                   = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [shareState, setShareState]                 = useState<'idle' | 'copied'>('idle');
   const [reportedInaccuracy, setReportedInaccuracy] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ causes: true });
+  const toggle = (key: string) => setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
   type FollowUpEntry = { status: 'idle' | 'open' | 'loading' | 'done'; userInput: string; answer: string | null; error: string | null };
   const [followUpState, setFollowUpState] = useState<Record<number, FollowUpEntry>>({});
 
@@ -189,18 +207,21 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <SectionHead
           title="Most Likely Causes"
           icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
+          collapsible isOpen={openSections.causes} onToggle={() => toggle('causes')}
         />
-        <div className="flex flex-col gap-3">
-          {report.mostLikelyCauses.map((cause, idx) => (
-            <div key={idx} className={S.subCard}>
-              <div className="flex justify-between items-start mb-3 gap-2">
-                <h4 className="font-semibold text-[#f1f5f9] text-sm leading-snug" style={body}>{cause.issue}</h4>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-full border shrink-0 ${getProbStyle(cause.probability)}`} style={body}>{cause.probability}</span>
+        {openSections.causes && (
+          <div className="flex flex-col gap-3 mt-6">
+            {report.mostLikelyCauses.map((cause, idx) => (
+              <div key={idx} className={S.subCard}>
+                <div className="flex justify-between items-start mb-3 gap-2">
+                  <h4 className="font-semibold text-[#f1f5f9] text-sm leading-snug" style={body}>{cause.issue}</h4>
+                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full border shrink-0 ${getProbStyle(cause.probability)}`} style={body}>{cause.probability}</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed" style={body}>{cause.reasoning}</p>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed" style={body}>{cause.reasoning}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── Recommended Actions ──────────────────────────────────────────── */}
@@ -209,15 +230,18 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           title="Recommended Actions"
           accent="text-blue-400 bg-blue-500/10 border-blue-500/20"
           icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
+          collapsible isOpen={openSections.actions} onToggle={() => toggle('actions')}
         />
-        <div className="flex flex-col gap-3">
-          {report.recommendedActions.map((action, idx) => (
-            <div key={idx} className="flex items-start gap-4 bg-black/40 border border-[#4a4a52]/60 p-4 rounded-xl">
-              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-[#f1f5f9] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5" style={body}>{idx + 1}</span>
-              <span className="text-slate-400 text-sm leading-relaxed font-medium" style={body}>{action}</span>
-            </div>
-          ))}
-        </div>
+        {openSections.actions && (
+          <div className="flex flex-col gap-3 mt-6">
+            {report.recommendedActions.map((action, idx) => (
+              <div key={idx} className="flex items-start gap-4 bg-black/40 border border-[#4a4a52]/60 p-4 rounded-xl">
+                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-[#f1f5f9] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5" style={body}>{idx + 1}</span>
+                <span className="text-slate-400 text-sm leading-relaxed font-medium" style={body}>{action}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── Next Steps ───────────────────────────────────────────────────── */}
@@ -226,7 +250,9 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
           title="Next Steps"
           accent="text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
           icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>}
+          collapsible isOpen={openSections.nextSteps} onToggle={() => toggle('nextSteps')}
         />
+        {openSections.nextSteps && <div className="mt-6">
 
         {report.severity === Severity.RED && (
           <div className="bg-rose-500/8 border border-rose-500/25 rounded-xl p-4 mb-4 flex items-start gap-3">
@@ -288,6 +314,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             </>
           )}
         </div>
+        </div>}
       </section>
 
       {/* ── Cost Estimate ────────────────────────────────────────────────── */}
@@ -296,8 +323,10 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
         <SectionHead
           title="Cost Estimate"
           icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+          collapsible isOpen={openSections.cost} onToggle={() => toggle('cost')}
         />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+        {openSections.cost && <div className="mt-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className={S.subCard}>
             <p className={`${S.fieldLabel} mb-2`} style={body}>Estimated Parts</p>
             <p className="text-xl font-bold text-[#f1f5f9]" style={body}>{report.costEstimate.parts}</p>
@@ -316,6 +345,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             <span className="font-semibold text-amber-400/70">Regional note:</span> The same repair can cost 2–3x more in a major city vs. a rural area. Use these as a ballpark — always get 2–3 quotes from local shops before committing.
           </p>
         </div>
+        </div>}
       </section>
 
       {/* ── DIY vs Pro ───────────────────────────────────────────────────── */}
@@ -329,7 +359,9 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
               {report.diyVsPro.canDiy ? 'DIY friendly' : 'Pro needed'}
             </span>
           }
+          collapsible isOpen={openSections.diy} onToggle={() => toggle('diy')}
         />
+        {openSections.diy && <div className="mt-6">
         <p className="text-slate-400 text-sm leading-relaxed mb-5" style={body}>{report.diyVsPro.explanation}</p>
         <div className="flex flex-col gap-4">
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5">
@@ -355,11 +387,18 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             </div>
           </div>
         </div>
+        </div>}
       </section>
 
       {/* ── Additional Context ───────────────────────────────────────────── */}
       <section className={S.card}>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-5" style={body}>Additional Context</p>
+        <SectionHead
+          title="Additional Context"
+          icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+          accent="text-slate-400 bg-slate-500/10 border-slate-500/20"
+          collapsible isOpen={openSections.context} onToggle={() => toggle('context')}
+        />
+        {openSections.context && <div className="mt-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div>
             <p className={`${S.fieldLabel} mb-2`} style={body}>Known issues</p>
@@ -374,11 +413,18 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             <p className="text-sm text-slate-400 leading-relaxed" style={body}>{report.additionalContext.prevention}</p>
           </div>
         </div>
+        </div>}
       </section>
 
       {/* ── Follow-up questions ──────────────────────────────────────────── */}
       <section className={S.card}>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2" style={body}>Narrow It Down</p>
+        <SectionHead
+          title="Narrow It Down"
+          icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.14 2.563-2.785 2.878C12.507 13.11 12 13.769 12 14.5M12 17h.01" /></svg>}
+          accent="text-slate-400 bg-slate-500/10 border-slate-500/20"
+          collapsible isOpen={openSections.followUp} onToggle={() => toggle('followUp')}
+        />
+        {openSections.followUp && <div className="mt-4">
         <p className="text-xs text-slate-400 mb-4" style={body}>Tap a question, answer it, and the AI will respond based on what you say.</p>
         <div className="flex flex-col gap-3">
           {report.followUpQuestions.map((q, i) => {
@@ -443,6 +489,7 @@ const DiagnosticView: React.FC<DiagnosticViewProps> = ({ report, onReset, onSave
             );
           })}
         </div>
+        </div>}
       </section>
 
       {/* ── Reset CTA ────────────────────────────────────────────────────── */}
